@@ -7,7 +7,7 @@ public class SudokuActivity extends AppCompatActivity {
 
     //Stefan's contribution
     // Andi's Contribution
-    // Ivan's Contribution
+    // Ivan's Contributions
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
