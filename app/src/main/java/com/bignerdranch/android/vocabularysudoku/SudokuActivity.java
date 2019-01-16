@@ -5,6 +5,8 @@ import android.os.Bundle;
 
 public class SudokuActivity extends AppCompatActivity {
 
+    //Stefan's contribution
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
