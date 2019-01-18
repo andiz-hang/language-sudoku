@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">Vocabulary Sudoku</string>
+    <string name="title_text">Sudoku Title</string>
+
+    <string name="top_left_button">top_left_button</string>
+    <string name="top_middle_button">top_middle_button</string>
+    <string name="top_right_button">top_right_button</string>
+
+    <string name="middle_left_button">middle_left_button</string>
+    <string name="middle_middle_button">middle_middle_button</string>
+    <string name="middle_right_button">middle_right_button</string>
+
+    <string name="bottom_left_button">bottom_left_button</string>
+    <string name="bottom_middle_button">bottom_middle_button</string>
+    <string name="bottom_right_button">bottom_right_button</string>
+
+
 </resources>
