@@ -9,7 +9,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.GridLayout;
+import android.widget.GridView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -25,7 +27,10 @@ public class SudokuActivity extends AppCompatActivity {
     // Layout
     static boolean on_screen = false;
 
-    Button[] myButtons = new Button[81];
+    //Button[] myButtons = new Button[81];
+    Entry[] Sudoku = new Entry[81];
+
+    Button[] PopUpButtons = new Button[9];
 
     // On clicking a square we show a screen with buttons with word choices
     // Pressing one of those buttons hides that screen and fills in that square
@@ -36,20 +41,24 @@ public class SudokuActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sudoku);
 
         // This is the pop up screen. Currently just a button.
-        final Button PopUpButton = new Button(this);
-        PopUpButton.setText("Pop Up Screen");
-        PopUpButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                ButtonClick(PopUpButton);
-            }
-        });
-        RelativeLayout l_layout = findViewById(R.id.pop_up_layout);
-        RelativeLayout.LayoutParams l_param = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        l_param.width = 1000;
-        l_param.height = 600;
-        l_param.bottomMargin = -1800;
-        l_layout.addView(PopUpButton, l_param);
+        for(int i = 0; i<9; i++) {
+            final Button PopUpButton = new Button(this);
+            PopUpButton.setText("Pop Up Screen");
+            PopUpButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ButtonClick(findViewById(R.id.pop_up_layout));
+                }
+            });
+            GridLayout l_layout = findViewById(R.id.pop_up_layout);
+            GridLayout.LayoutParams l_param = new GridLayout.LayoutParams();//(GridLayout.LayoutParams.WRAP_CONTENT, GridLayout.LayoutParams.WRAP_CONTENT);
+            l_param.width = 300;
+            l_param.height = 300;
+            l_param.bottomMargin = 0;
+            l_layout.addView(PopUpButton, l_param);
+        }
+
+
 
         // Loop creates buttons and adds them to grid
         for(int i = 0; i < 9; i++){
@@ -61,7 +70,7 @@ public class SudokuActivity extends AppCompatActivity {
                 myButton.setOnClickListener(new View.OnClickListener(){
                     @Override
                     public void onClick(View v) {
-                        ButtonClick(PopUpButton);
+                        ButtonClick(findViewById(R.id.pop_up_layout));
                     }
                 });
 
@@ -71,26 +80,26 @@ public class SudokuActivity extends AppCompatActivity {
                 lp.width = 100;
                 lp.height = 100;
                 grid_layout.addView(myButton, lp);
-                // SudokuCell new_cell = new SudokuCell();
-                // new_cell.button = myButton;
-                // SudokuPuzzle[i*9+j] = new_cell;
-                myButtons[i*9+j] = myButton;
+                Entry new_entry = new Entry();
+                new_entry.mButton = myButton;
+                Sudoku[i*9+j] = new_entry;
+                //myButtons[i*9+j] = myButton;
             }
         }
     }
 
 
     // When a button is pressed this pulls up or pushes down the Pop Up Button
-    private void ButtonClick(Button button){
+    private void ButtonClick(View grid){
         if (on_screen) {
-            ObjectAnimator animation = ObjectAnimator.ofFloat(button, "translationY", 0f);
-            animation.setDuration(1500);
+            ObjectAnimator animation = ObjectAnimator.ofFloat(grid, "translationY", 1800f);
+            animation.setDuration(1000);
             animation.start();
             on_screen = false;
         }
         else {
-            ObjectAnimator animation = ObjectAnimator.ofFloat(button, "translationY", -800f);
-            animation.setDuration(1500);
+            ObjectAnimator animation = ObjectAnimator.ofFloat(grid, "translationY", 600f);
+            animation.setDuration(2000);
             animation.start();
             on_screen = true;
         }
