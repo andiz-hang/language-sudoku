@@ -29,8 +29,9 @@ public class SudokuActivity extends AppCompatActivity {
 
     //Button[] myButtons = new Button[81];
     Entry[] Sudoku = new Entry[81];
-
     Button[] PopUpButtons = new Button[9];
+    Language mLanguage1 = new Language("English","one", "two","three","four","five","six","seven","eight","nine");
+    Language mLanguage2 = new Language("French","un", "deux","trois","quatre","cinq","sixe","sept","huit","neuf");
 
     // On clicking a square we show a screen with buttons with word choices
     // Pressing one of those buttons hides that screen and fills in that square
@@ -40,20 +41,20 @@ public class SudokuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sudoku);
 
-        // This is the pop up screen. Currently just a button.
+        // This are the Pop Up Screen Buttons.
         for(int i = 0; i<9; i++) {
             final Button PopUpButton = new Button(this);
-            PopUpButton.setText("Pop Up Screen");
+            PopUpButton.setText(mLanguage2.Words[i]);
             PopUpButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ButtonClick(findViewById(R.id.pop_up_layout));
+                    ButtonClick(findViewById(R.id.pop_up_layout), findViewById(R.id.testing_grid), PopUpButton);
                 }
             });
             GridLayout l_layout = findViewById(R.id.pop_up_layout);
             GridLayout.LayoutParams l_param = new GridLayout.LayoutParams();//(GridLayout.LayoutParams.WRAP_CONTENT, GridLayout.LayoutParams.WRAP_CONTENT);
             l_param.width = 300;
-            l_param.height = 300;
+            l_param.height = 150;
             l_param.bottomMargin = 0;
             l_layout.addView(PopUpButton, l_param);
         }
@@ -70,7 +71,7 @@ public class SudokuActivity extends AppCompatActivity {
                 myButton.setOnClickListener(new View.OnClickListener(){
                     @Override
                     public void onClick(View v) {
-                        ButtonClick(findViewById(R.id.pop_up_layout));
+                        ButtonClick(findViewById(R.id.pop_up_layout), findViewById(R.id.testing_grid), myButton);
                     }
                 });
 
@@ -90,19 +91,52 @@ public class SudokuActivity extends AppCompatActivity {
 
 
     // When a button is pressed this pulls up or pushes down the Pop Up Button
-    private void ButtonClick(View grid){
+    private void ButtonClick(View pop_up_view, View sudoku_view, Button button){
+
+        float zoom_scale = 3;
+        // Move Offscreen
         if (on_screen) {
-            ObjectAnimator animation = ObjectAnimator.ofFloat(grid, "translationY", 1800f);
-            animation.setDuration(1000);
-            animation.start();
+
+            Animate(sudoku_view, "translationX", 0f,500);
+            Animate(sudoku_view, "translationY", 0f,500);
+
+            Animate(pop_up_view, "translationY", 1800f, 500);
+            Animate(sudoku_view, "scaleX", 1f, 500);
+            Animate(sudoku_view, "scaleY", 1f, 500);
             on_screen = false;
         }
+
+        // Move Onscreen
         else {
-            ObjectAnimator animation = ObjectAnimator.ofFloat(grid, "translationY", 600f);
-            animation.setDuration(2000);
-            animation.start();
+
+            Animate(sudoku_view, "translationX",  sudoku_view.getWidth()*1f - button.getX() * (sudoku_view.getWidth()*2/800f),500);
+            Animate(sudoku_view, "translationY",  sudoku_view.getHeight()*1f - button.getY()*((sudoku_view.getHeight()+200)/800f),500);
+
+            //Animate(sudoku_view, "translationX",  (zoom_scale*sudoku_view.getWidth()/2f)-button.getX()*zoom_scale,500);
+            //Animate(sudoku_view, "translationY",  (zoom_scale*sudoku_view.getHeight()/2f)-button.getY()*zoom_scale,500);
+
+            Log.d("Test", "Button.getX : " + button.getX());
+            Log.d("Test", "Button.getY : " + button.getY());
+
+            //Log.d("Test", "Screen.getX : " + sudoku_view.getWidth());
+            //Log.d("Test", "Screen.getY : " + sudoku_view.getHeight());
+
+            //Log.d("Test", "Calculation.X : " + Float.toString(button.getX()-sudoku_view.getWidth()));
+            //Log.d("Test", "Calculation.Y : " + Float.toString(button.getY()-sudoku_view.getHeight()));
+
+            Log.d("Test", " ");
+
+            Animate(pop_up_view, "translationY", 1000f, 500);
+            Animate(sudoku_view, "scaleX", zoom_scale, 500);
+            Animate(sudoku_view, "scaleY", zoom_scale, 500);
             on_screen = true;
         }
+    }
+
+    void Animate(Object obj, String property, Float value, int duration){
+        ObjectAnimator animation = ObjectAnimator.ofFloat(obj, property, value);
+        animation.setDuration(duration);
+        animation.start();
     }
 }
 

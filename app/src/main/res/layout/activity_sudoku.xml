@@ -16,19 +16,22 @@
         android:id="@+id/testing_grid"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:columnCount="9"
         android:rowCount="9"
         android:layout_gravity="center">
     </GridLayout>
 
-    <RelativeLayout
+    <GridLayout
         android:id="@+id/pop_up_layout"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center">
-    </RelativeLayout>
+        android:orientation="horizontal"
+        android:translationY="800dp"
+        android:columnCount="3"
+        android:rowCount="3"
+        android:layout_gravity="center">
+    </GridLayout>
 
 
 </FrameLayout>
