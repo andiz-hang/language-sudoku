@@ -2,11 +2,9 @@ package com.bignerdranch.android.vocabularysudoku;
 
 import android.animation.ObjectAnimator;
 import android.graphics.Canvas;
-import android.graphics.Point;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Display;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -44,10 +42,6 @@ public class SudokuActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sudoku);
 
         // This are the Pop Up Screen Buttons.
-        Display display = getWindowManager().getDefaultDisplay();
-        display.getSize(size);
-        View pop_up_grid=findViewById(R.id.pop_up_layout);
-        pop_up_grid.setTranslationY(size.y);
         for(int i = 0; i<9; i++) {
             final Button PopUpButton = new Button(this);
             PopUpButton.setText(mLanguage2.Words[i]);
@@ -106,7 +100,7 @@ public class SudokuActivity extends AppCompatActivity {
             Animate(sudoku_view, "translationX", 0f,500);
             Animate(sudoku_view, "translationY", 0f,500);
 
-            Animate(pop_up_view, "translationY", size.y*1f, 500);
+            Animate(pop_up_view, "translationY", 1800f, 500);
             Animate(sudoku_view, "scaleX", 1f, 500);
             Animate(sudoku_view, "scaleY", 1f, 500);
             on_screen = false;
@@ -132,7 +126,7 @@ public class SudokuActivity extends AppCompatActivity {
 
             Log.d("Test", " ");
 
-            Animate(pop_up_view, "translationY", size.y*5/8f, 500);
+            Animate(pop_up_view, "translationY", 1000f, 500);
             Animate(sudoku_view, "scaleX", zoom_scale, 500);
             Animate(sudoku_view, "scaleY", zoom_scale, 500);
             on_screen = true;
