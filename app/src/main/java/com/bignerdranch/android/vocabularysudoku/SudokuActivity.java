@@ -59,7 +59,7 @@ public class SudokuActivity extends AppCompatActivity {
             });
             GridLayout l_layout = findViewById(R.id.pop_up_layout);
             GridLayout.LayoutParams l_param = new GridLayout.LayoutParams();//(GridLayout.LayoutParams.WRAP_CONTENT, GridLayout.LayoutParams.WRAP_CONTENT);
-            l_param.width = 300;
+            l_param.width = size.x/4;
             l_param.height = 150;
             l_param.bottomMargin = 0;
             l_layout.addView(PopUpButton, l_param);
@@ -84,8 +84,14 @@ public class SudokuActivity extends AppCompatActivity {
                 // Put the button in the GridLayout and set its Layout Parameters
                 GridLayout grid_layout = findViewById(R.id.testing_grid);
                 GridLayout.LayoutParams lp = new GridLayout.LayoutParams();
-                lp.width = 100;
-                lp.height = 100;
+                lp.width = size.x/10;
+                lp.height = size.x/10;
+                if (i==3 || i==6){
+                    lp.setMargins(lp.leftMargin,20,lp.rightMargin,0);
+                }
+                if (j==3 || j==6){
+                    lp.setMargins(20,lp.topMargin,lp.rightMargin,0);
+                }
                 grid_layout.addView(myButton, lp);
                 Entry new_entry = new Entry();
                 new_entry.mButton = myButton;
