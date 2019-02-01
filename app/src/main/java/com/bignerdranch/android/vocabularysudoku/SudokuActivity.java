@@ -31,7 +31,7 @@ public class SudokuActivity extends AppCompatActivity {
     Entry[] Sudoku = new Entry[81];
     Button[] PopUpButtons = new Button[9];
     Language mLanguage1 = new Language("English","one", "two","three","four","five","six","seven","eight","nine");
-    Language mLanguage2 = new Language("French","un", "deux","trois","quatre","cinq","sixe","sept","huit","neuf");
+    Language mLanguage2 = new Language("Mandarin","一", "二","三","四","五","六","七","八","九");
 
     // On clicking a square we show a screen with buttons with word choices
     // Pressing one of those buttons hides that screen and fills in that square
