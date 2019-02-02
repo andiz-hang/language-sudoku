@@ -177,8 +177,8 @@ public class SudokuActivity extends AppCompatActivity {
         // Move Onscreen
         else {
 
-            Animate(sudoku_view, "translationX",  sudoku_view.getWidth()*1f - button.getX() * (sudoku_view.getWidth()*2/800f),500);
-            Animate(sudoku_view, "translationY",  sudoku_view.getHeight()*1f - button.getY()*((sudoku_view.getHeight()+200)/800f),500);
+            Animate(sudoku_view, "translationX",  sudoku_view.getWidth()*1f - button.getX() * (sudoku_view.getWidth()*2/(size.x*33/40f)),500);
+            Animate(sudoku_view, "translationY",  sudoku_view.getHeight()*1f - button.getY()*((sudoku_view.getHeight()+size.x*5/12)/(size.x*33/40f)),500);
 
             //Animate(sudoku_view, "translationX",  (zoom_scale*sudoku_view.getWidth()/2f)-button.getX()*zoom_scale,500);
             //Animate(sudoku_view, "translationY",  (zoom_scale*sudoku_view.getHeight()/2f)-button.getY()*zoom_scale,500);
