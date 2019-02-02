@@ -53,7 +53,7 @@ public class SudokuActivity extends AppCompatActivity {
         // This are the Pop Up Screen Buttons.
         Display display = getWindowManager().getDefaultDisplay();
         display.getSize(size);
-        View pop_up_grid=findViewById(R.id.pop_up_layout);
+        GridLayout pop_up_grid=findViewById(R.id.pop_up_layout);
         pop_up_grid.setTranslationY(size.y);
         for(int i = 0; i<9; i++) {
             final Button PopUpButton = new Button(this);
@@ -64,19 +64,18 @@ public class SudokuActivity extends AppCompatActivity {
                     ButtonClick(findViewById(R.id.pop_up_layout), findViewById(R.id.testing_grid), PopUpButton);
                 }
             });
-            GridLayout l_layout = findViewById(R.id.pop_up_layout);
             GridLayout.LayoutParams l_param = new GridLayout.LayoutParams();//(GridLayout.LayoutParams.WRAP_CONTENT, GridLayout.LayoutParams.WRAP_CONTENT);
             l_param.width = size.x/4;
             l_param.height = 150;
             l_param.bottomMargin = 0;
-            l_layout.addView(PopUpButton, l_param);
+            pop_up_grid.addView(PopUpButton, l_param);
         }
 
         // Loop creates buttons and adds them to grid
         for(int i = 0; i < 9; i++){
             for(int j = 0; j < 9; j++){
                 final Button myButton = new Button(this);
-                myButton.setText((i*9+j) + " Button");
+                myButton.setText(String.valueOf((i*9)+j));
 
                 // Create Listener for Button
                 myButton.setOnClickListener(new View.OnClickListener(){
