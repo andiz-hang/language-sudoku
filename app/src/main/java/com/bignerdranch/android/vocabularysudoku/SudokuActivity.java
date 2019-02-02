@@ -108,6 +108,7 @@ public class SudokuActivity extends AppCompatActivity {
 
     }
 
+    // Toggle Language Button
     // create an action bar button
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
