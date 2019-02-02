@@ -71,10 +71,31 @@ public class SudokuActivity extends AppCompatActivity {
                         mSudokuCells[currentCell].Button.setText(mLanguage2.Words[ii+1]);
                         mSudokuCells[currentCell].setIndex(ii+1);
                         for (int x=0;x<9;x++){
-                            //check for other index in row and column for repeats and then make red
-                            
+                            if (ii+1==mSudokuCells[currentCell%9+x*9].getIndex() && currentCell%9+x*9!=currentCell){
+                                mSudokuCells[currentCell].Button.setBackgroundColor(Color.RED);
+                                for (int y=0;y<9;y++){
+                                    if (currentCell%9+y*9!=currentCell){
+                                        mSudokuCells[currentCell%9+y*9].Button.setBackgroundColor(Color.BLUE);
+                                    }
+                                    if (currentCell/9+y!=currentCell){
+                                        mSudokuCells[currentCell/9*9+y].Button.setBackgroundColor(Color.BLUE);
+                                    }
+                                }
+                                Log.d("Test",(currentCell%9+x*9+" "));
+                            }
+                            if (ii+1==mSudokuCells[currentCell/9*9+x].getIndex() && currentCell/9+x!=currentCell){
+                                mSudokuCells[currentCell].Button.setBackgroundColor(Color.RED);
+                                for (int y=0;y<9;y++){
+                                    if (currentCell%9+y*9!=currentCell){
+                                        mSudokuCells[currentCell%9+y*9].Button.setBackgroundColor(Color.BLUE);
+                                    }
+                                    if (currentCell/9+y!=currentCell){
+                                        mSudokuCells[currentCell/9*9+y].Button.setBackgroundColor(Color.BLUE);
+                                    }
+                                }
+                                Log.d("Test",(currentCell/9*9+x+" "));
+                            }
                         }
-                        mSudokuCells[currentCell].Button.setTextColor(Color.BLUE);
                     }
                 }
             });
