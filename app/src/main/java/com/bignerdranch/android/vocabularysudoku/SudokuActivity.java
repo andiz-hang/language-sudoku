@@ -2,6 +2,7 @@ package com.bignerdranch.android.vocabularysudoku;
 
 import android.animation.ObjectAnimator;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,11 +28,12 @@ public class SudokuActivity extends AppCompatActivity {
     // Ivan's Contributions
 
     // Layout
-    static boolean on_screen = false;
-
-    //Button[] myButtons = new Button[81];
-    Entry[] Sudoku = new Entry[81];
-    Button[] PopUpButtons = new Button[9];
+    static boolean on_screen = false;// for pop-up-screen
+    static int  currentCell;
+    static String textToFill;
+    SudokuCell[] mSudokuCells = new SudokuCell[81];
+    Button[] mPopUpButtons = new Button[9];
+    //Language mLanguage3 = new Language("French","un", "deux","trois","quatre","cinq","sixe","sept","huit","neuf");
     Language mLanguage1 = new Language("English","one", "two","three","four","five","six","seven","eight","nine");
     Language mLanguage2 = new Language("Mandarin","一", "二","三","四","五","六","七","八","九");
     Point size = new Point();
@@ -49,35 +51,45 @@ public class SudokuActivity extends AppCompatActivity {
         View pop_up_grid=findViewById(R.id.pop_up_layout);
         pop_up_grid.setTranslationY(size.y);
         for(int i = 0; i<9; i++) {
-            final Button PopUpButton = new Button(this);
-            PopUpButton.setText(mLanguage2.Words[i]);
-            PopUpButton.setOnClickListener(new View.OnClickListener() {
+            final int ii = i;
+            mPopUpButtons[i] = new Button(this);
+            mPopUpButtons[i].setText(mLanguage2.Words[i]);
+            mPopUpButtons[i].setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ButtonClick(findViewById(R.id.pop_up_layout), findViewById(R.id.testing_grid), PopUpButton);
+                    ButtonClick(findViewById(R.id.pop_up_layout), findViewById(R.id.testing_grid), mPopUpButtons[ii]);
+                    mSudokuCells[currentCell].Button.setText(mPopUpButtons[ii].getText());
+                    mSudokuCells[currentCell].Button.setTextColor(Color.RED);
                 }
             });
+
             GridLayout l_layout = findViewById(R.id.pop_up_layout);
             GridLayout.LayoutParams l_param = new GridLayout.LayoutParams();//(GridLayout.LayoutParams.WRAP_CONTENT, GridLayout.LayoutParams.WRAP_CONTENT);
             l_param.width = size.x/4;
             l_param.height = 150;
             l_param.bottomMargin = 0;
-            l_layout.addView(PopUpButton, l_param);
+            l_layout.addView(mPopUpButtons[i], l_param);
         }
-
-
 
         // Loop creates buttons and adds them to grid
         for(int i = 0; i < 9; i++){
             for(int j = 0; j < 9; j++){
-                final Button myButton = new Button(this);
-                myButton.setText((i*9+j) + " Button");
-
+                int index = i*9+j;
+                final int ii = index;
+                SudokuCell temp = new SudokuCell();
+                temp.Button = new Button(this);
+                mSudokuCells[index]= temp;
+                mSudokuCells[index].Button.setText(""+(i*9+j));
+                mSudokuCells[index].Button.setTextSize(8);
                 // Create Listener for Button
-                myButton.setOnClickListener(new View.OnClickListener(){
+                mSudokuCells[index].Button.setOnClickListener(new View.OnClickListener(){
                     @Override
                     public void onClick(View v) {
-                        ButtonClick(findViewById(R.id.pop_up_layout), findViewById(R.id.testing_grid), myButton);
+                        ButtonClick(findViewById(R.id.pop_up_layout), findViewById(R.id.testing_grid), mSudokuCells[ii].Button);
+                        if(! mSudokuCells[ii].isLock()){
+                            currentCell=ii;
+                        }
+
                     }
                 });
 
@@ -92,11 +104,7 @@ public class SudokuActivity extends AppCompatActivity {
                 if (j==3 || j==6){
                     lp.setMargins(20,lp.topMargin,lp.rightMargin,0);
                 }
-                grid_layout.addView(myButton, lp);
-                Entry new_entry = new Entry();
-                new_entry.mButton = myButton;
-                Sudoku[i*9+j] = new_entry;
-                //myButtons[i*9+j] = myButton;
+                grid_layout.addView(mSudokuCells[index].Button, lp);
             }
         }
     }
