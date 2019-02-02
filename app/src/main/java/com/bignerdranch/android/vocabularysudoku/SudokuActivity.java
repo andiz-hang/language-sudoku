@@ -70,6 +70,9 @@ public class SudokuActivity extends AppCompatActivity {
                     if(! mSudokuCells[currentCell].isLock()){
                         mSudokuCells[currentCell].Button.setText(mLanguage2.Words[ii+1]);
                         mSudokuCells[currentCell].setIndex(ii+1);
+                        for (int x=0;x<9;x++){
+                            //check for other index in row and column for repeats and then make red
+                        }
                         mSudokuCells[currentCell].Button.setTextColor(Color.BLUE);
                     }
                 }
