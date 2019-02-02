@@ -59,7 +59,7 @@ public class SudokuActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     ButtonClick(findViewById(R.id.pop_up_layout), findViewById(R.id.testing_grid), mPopUpButtons[ii]);
                     mSudokuCells[currentCell].Button.setText(mPopUpButtons[ii].getText());
-                    mSudokuCells[currentCell].Button.setTextColor(Color.RED);
+                    mSudokuCells[currentCell].Button.setTextColor(Color.BLUE);
                 }
             });
 
