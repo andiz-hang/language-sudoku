@@ -3,6 +3,7 @@ package com.bignerdranch.android.vocabularysudoku;
 import android.animation.ObjectAnimator;
 import android.content.res.Resources;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -30,11 +31,13 @@ public class SudokuActivity extends AppCompatActivity {
     // Ivan's Contributions
 
     // Layout
-    static boolean on_screen = false;
+    static boolean on_screen = false;// for pop-up-screen
+    static int  currentCell;
+    static String textToFill;
+    SudokuCell[] mSudokuCells = new SudokuCell[81];
+    Button[] mPopUpButtons = new Button[9];
+    //Language mLanguage3 = new Language("French","un", "deux","trois","quatre","cinq","sixe","sept","huit","neuf");
 
-    //Button[] myButtons = new Button[81];
-    Entry[] Sudoku = new Entry[81];
-    Button[] PopUpButtons = new Button[9];
     int[] values = new int[81];
     static boolean isLanguage1 = true; // determines whether the first language is the toggled language or not
     Language mLanguage1 = new Language("English","one", "two","three","four","five","six","seven","eight","nine");
@@ -58,44 +61,58 @@ public class SudokuActivity extends AppCompatActivity {
         GridLayout pop_up_grid=findViewById(R.id.pop_up_layout);
         pop_up_grid.setTranslationY(size.y);
         for(int i = 0; i<9; i++) {
-            final Button PopUpButton = new Button(this);
-            PopUpButton.setText(mLanguage2.Words[i]);
-            PopUpButton.setOnClickListener(new View.OnClickListener() {
+            final int ii = i;
+            mPopUpButtons[i] = new Button(this);
+            mPopUpButtons[i].setText(mLanguage2.Words[i]);
+            mPopUpButtons[i].setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ButtonClick(findViewById(R.id.pop_up_layout), findViewById(R.id.testing_grid), PopUpButton);
+                    ButtonClick(findViewById(R.id.pop_up_layout), findViewById(R.id.testing_grid), mPopUpButtons[ii]);
+                    if(! mSudokuCells[currentCell].isLock()){
+                        mSudokuCells[currentCell].Button.setText(mPopUpButtons[ii].getText());
+                        mSudokuCells[currentCell].Button.setTextColor(Color.BLUE);
+                    }
                 }
             });
             GridLayout.LayoutParams l_param = new GridLayout.LayoutParams();//(GridLayout.LayoutParams.WRAP_CONTENT, GridLayout.LayoutParams.WRAP_CONTENT);
             l_param.width = size.x/4;
             l_param.height = 150;
             l_param.bottomMargin = 0;
-            pop_up_grid.addView(PopUpButton, l_param);
+            pop_up_grid.addView(mPopUpButtons[i], l_param);
         }
 
 
 
         // Loop creates buttons and adds them to grid
         Resources res = getResources();
+        String full=res.getStringArray(R.array.puzz)[0];//gets puzzle 0
         for(int data = 0;data<81;data++){
-            values[data]=Character.getNumericValue(res.getStringArray(R.array.puzz)[0].charAt(data));
+            values[data]=Character.getNumericValue(full.charAt(data));
+            //Character.getNumericValue change string to int
         }
         for(int i = 0; i < 9; i++){
             for(int j = 0; j < 9; j++){
-                final Button myButton = new Button(this);
+                int index = i*9+j;
+                final int ii = index;
+                SudokuCell temp = new SudokuCell();
+                temp.Button = new Button(this);
+                mSudokuCells[index]= temp;
                 if (values[i*9+j]==0){
-                    myButton.setText("");
+                    mSudokuCells[index].Button.setText("");
                 }
                 else {
-                    myButton.setText(String.valueOf(values[i*9+j]));
-                }
 
+                    String word = mLanguage1.Words[values[index]];
+                    mSudokuCells[index].Button.setText(word);
+                    mSudokuCells[index].setLock(true);
+                }
+                mSudokuCells[index].Button.setTextSize(8);
                 // Create Listener for Button
-                myButton.setOnClickListener(new View.OnClickListener(){
+                mSudokuCells[index].Button.setOnClickListener(new View.OnClickListener(){
                     @Override
                     public void onClick(View v) {
-                        ButtonClick(findViewById(R.id.pop_up_layout), findViewById(R.id.testing_grid), myButton);
-
+                        ButtonClick(findViewById(R.id.pop_up_layout), findViewById(R.id.testing_grid), mSudokuCells[ii].Button);
+                        currentCell=ii;
                     }
                 });
 
@@ -110,11 +127,7 @@ public class SudokuActivity extends AppCompatActivity {
                 if (j==3 || j==6){
                     lp.setMargins(20,lp.topMargin,lp.rightMargin,0);
                 }
-                grid_layout.addView(myButton, lp);
-                Entry new_entry = new Entry();
-                new_entry.mButton = myButton;
-                Sudoku[i*9+j] = new_entry;
-                //myButtons[i*9+j] = myButton;
+                grid_layout.addView(mSudokuCells[index].Button, lp);
             }
         }
 
