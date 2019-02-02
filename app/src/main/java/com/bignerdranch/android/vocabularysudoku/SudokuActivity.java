@@ -36,7 +36,7 @@ public class SudokuActivity extends AppCompatActivity {
     static String textToFill;
     SudokuCell[] mSudokuCells = new SudokuCell[81];
     Button[] mPopUpButtons = new Button[9];
-    //Language mLanguage3 = new Language("French","un", "deux","trois","quatre","cinq","sixe","sept","huit","neuf");
+    //Language mLanguage3 = new Language("French","un", "deux","trois","quatre","cinq","six","sept","huit","neuf");
 
     int[] values = new int[81];
     static boolean isLanguage1 = true; // determines whether the first language is the toggled language or not
