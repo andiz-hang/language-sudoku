@@ -6,14 +6,20 @@ public class SudokuCell {
     //scope when you want to make your variable/function visible in all classes that extend current class AND its parent classes
     protected Button Button;
     private boolean Lock;
-
-    public SudokuCell(){
+    private int index=0;
+    public int getIndex(){
+        return index;
+    }
+    public void setIndex(int value){
+        this.index=value;
+    }
+    SudokuCell(){
         Lock = false;
     }
-    public void setLock(boolean lock) {
+    void setLock(boolean lock) {
         this.Lock = lock;
     }
-    public boolean isLock() {
+    boolean isLock() {
         return Lock;
     }
 }
