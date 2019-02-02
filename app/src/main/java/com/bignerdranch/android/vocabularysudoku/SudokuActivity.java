@@ -51,7 +51,6 @@ public class SudokuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sudoku);
 
-        // Creates the language toggle button in the top corner of the screen
 
 
 
@@ -149,6 +148,10 @@ public class SudokuActivity extends AppCompatActivity {
 
         if (id == R.id.LanguageToggle) {
             isLanguage1 = !isLanguage1;
+            for (int i = 0; i < 9; i++) {
+                if (isLanguage1) mPopUpButtons[i].setText(mLanguage1.Words[i]);
+                else if (!isLanguage1) mPopUpButtons[i].setText(mLanguage2.Words[i]);
+            }
         }
         return super.onOptionsItemSelected(item);
     }
