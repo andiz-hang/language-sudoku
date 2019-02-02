@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -34,6 +36,7 @@ public class SudokuActivity extends AppCompatActivity {
     Entry[] Sudoku = new Entry[81];
     Button[] PopUpButtons = new Button[9];
     int[] values = new int[81];
+    static boolean isLanguage1 = true; // determines whether the first language is the toggled language or not
     Language mLanguage1 = new Language("English","one", "two","three","four","five","six","seven","eight","nine");
     Language mLanguage2 = new Language("Mandarin","一", "二","三","四","五","六","七","八","九");
     Point size = new Point();
@@ -44,6 +47,10 @@ public class SudokuActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sudoku);
+
+        // Creates the language toggle button in the top corner of the screen
+
+
 
         // This are the Pop Up Screen Buttons.
         Display display = getWindowManager().getDefaultDisplay();
@@ -88,6 +95,7 @@ public class SudokuActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         ButtonClick(findViewById(R.id.pop_up_layout), findViewById(R.id.testing_grid), myButton);
+
                     }
                 });
 
@@ -109,6 +117,27 @@ public class SudokuActivity extends AppCompatActivity {
                 //myButtons[i*9+j] = myButton;
             }
         }
+
+
+    }
+
+    // Toggle Language Button
+    // create an action bar button
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.mymenu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+    // handle button activities
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+
+        if (id == R.id.LanguageToggle) {
+            isLanguage1 = !isLanguage1;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 
