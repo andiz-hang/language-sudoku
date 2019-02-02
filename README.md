@@ -1,1 +1,1 @@
-This is a README File
+This app is a Sudoku game designed to allow for users to learn Chinese characters
