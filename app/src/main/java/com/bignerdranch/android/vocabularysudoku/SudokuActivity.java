@@ -63,7 +63,7 @@ public class SudokuActivity extends AppCompatActivity {
         for(int i = 0; i<9; i++) {
             final int ii = i;
             mPopUpButtons[i] = new Button(this);
-            mPopUpButtons[i].setText(mLanguage2.Words[i]);
+            mPopUpButtons[i].setText(mLanguage2.Words[i+1]);
             mPopUpButtons[i].setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -101,12 +101,13 @@ public class SudokuActivity extends AppCompatActivity {
                     mSudokuCells[index].Button.setText("");
                 }
                 else {
-
                     String word = mLanguage1.Words[values[index]];
                     mSudokuCells[index].Button.setText(word);
                     mSudokuCells[index].setLock(true);
                 }
                 mSudokuCells[index].Button.setTextSize(8);
+                mSudokuCells[index].Button.setPadding(0,0,0,0);
+
                 // Create Listener for Button
                 mSudokuCells[index].Button.setOnClickListener(new View.OnClickListener(){
                     @Override
@@ -121,6 +122,7 @@ public class SudokuActivity extends AppCompatActivity {
                 GridLayout.LayoutParams lp = new GridLayout.LayoutParams();
                 lp.width = size.x/10;
                 lp.height = size.x/10;
+
                 if (i==3 || i==6){
                     lp.setMargins(lp.leftMargin,20,lp.rightMargin,0);
                 }
