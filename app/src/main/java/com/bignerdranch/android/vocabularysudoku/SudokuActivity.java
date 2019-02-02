@@ -72,6 +72,7 @@ public class SudokuActivity extends AppCompatActivity {
                         mSudokuCells[currentCell].setIndex(ii+1);
                         for (int x=0;x<9;x++){
                             //check for other index in row and column for repeats and then make red
+                            
                         }
                         mSudokuCells[currentCell].Button.setTextColor(Color.BLUE);
                     }
@@ -124,6 +125,7 @@ public class SudokuActivity extends AppCompatActivity {
                 GridLayout.LayoutParams lp = new GridLayout.LayoutParams();
                 lp.width = size.x/10;
                 lp.height = size.x/10;
+                mSudokuCells[index].Button.setPadding(0,0,0,0);
                 if (i==3 || i==6){
                     lp.setMargins(lp.leftMargin,20,lp.rightMargin,0);
                 }
