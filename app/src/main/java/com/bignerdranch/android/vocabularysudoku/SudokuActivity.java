@@ -71,7 +71,7 @@ public class SudokuActivity extends AppCompatActivity {
         for(int i = 0; i < 9; i++){
             for(int j = 0; j < 9; j++){
                 final Button myButton = new Button(this);
-                myButton.setText((i*9+j) + " Button");
+                myButton.setText((i*9+j));
 
                 // Create Listener for Button
                 myButton.setOnClickListener(new View.OnClickListener(){
