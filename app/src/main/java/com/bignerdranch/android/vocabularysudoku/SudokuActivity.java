@@ -1,6 +1,7 @@
 package com.bignerdranch.android.vocabularysudoku;
 
 import android.animation.ObjectAnimator;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.support.v7.app.AppCompatActivity;
@@ -32,6 +33,7 @@ public class SudokuActivity extends AppCompatActivity {
     //Button[] myButtons = new Button[81];
     Entry[] Sudoku = new Entry[81];
     Button[] PopUpButtons = new Button[9];
+    int[] values = new int[81];
     Language mLanguage1 = new Language("English","one", "two","three","four","five","six","seven","eight","nine");
     Language mLanguage2 = new Language("Mandarin","一", "二","三","四","五","六","七","八","九");
     Point size = new Point();
@@ -67,10 +69,19 @@ public class SudokuActivity extends AppCompatActivity {
 
 
         // Loop creates buttons and adds them to grid
+        Resources res = getResources();
+        for(int data = 0;data<81;data++){
+            values[data]=Character.getNumericValue(res.getStringArray(R.array.puzz)[0].charAt(data));
+        }
         for(int i = 0; i < 9; i++){
             for(int j = 0; j < 9; j++){
                 final Button myButton = new Button(this);
-                myButton.setText(String.valueOf((i*9)+j));
+                if (values[i*9+j]==0){
+                    myButton.setText("");
+                }
+                else {
+                    myButton.setText(String.valueOf(values[i*9+j]));
+                }
 
                 // Create Listener for Button
                 myButton.setOnClickListener(new View.OnClickListener(){
