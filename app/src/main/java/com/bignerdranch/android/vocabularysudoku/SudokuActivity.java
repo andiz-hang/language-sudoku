@@ -97,7 +97,7 @@ public class SudokuActivity extends AppCompatActivity {
                                         mSudokuCells[x / 9 * 9 + y].Button.setBackgroundResource(R.drawable.bg_btn_red);
                                     }
                                 }
-                                mSudokuCells[x].Button.setBackgroundResource(R.drawable.bg_btn_red);
+                                mSudokuCells[x].Button.setBackgroundResource(R.drawable.bg_btn_ex_red);
                             }
                         }
                     }
