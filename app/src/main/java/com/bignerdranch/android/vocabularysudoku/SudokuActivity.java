@@ -55,8 +55,6 @@ public class SudokuActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sudoku);
 
 
-
-
         // This are the Pop Up Screen Buttons.
         Display display = getWindowManager().getDefaultDisplay();
         display.getSize(size);
