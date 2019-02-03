@@ -75,7 +75,7 @@ public class SudokuActivity extends AppCompatActivity {
                         mSudokuCells[currentCell].setIndex(ii+1);
                         wrong[81]=0;
                         for (int x=0;x<9;x++) {
-                            if ((ii + 1 == mSudokuCells[currentCell % 9 + x * 9].getIndex() && currentCell % 9 + x * 9 != currentCell )||(ii + 1 == mSudokuCells[currentCell / 9 * 9 + x].getIndex() && currentCell / 9 * 9 + x != currentCell)) {
+                            if ((ii + 1 == mSudokuCells[currentCell % 9 + x * 9].getIndex() && currentCell % 9 + x * 9 != currentCell )||(ii + 1 == mSudokuCells[currentCell / 9 * 9 + x].getIndex() && currentCell / 9 * 9 + x != currentCell)||(ii + 1 == mSudokuCells[currentCell / 9 /3*27 + currentCell%9/3*3 + x%3 + x/3*9].getIndex() && currentCell / 9 /3*27 + currentCell%9/3*3 + x%3 + x/3*9 != currentCell)) {
                                 wrong[currentCell] = 1;
                                 wrong[81]=1;
                             }
@@ -83,6 +83,7 @@ public class SudokuActivity extends AppCompatActivity {
                         if (wrong[81]==0){
                             wrong[currentCell] = 0;
                             for (int x=0;x<9;x++){
+                                mSudokuCells[currentCell / 9 /3*27 + currentCell%9/3*3 + x%3 + x/3*9].Button.setBackgroundResource(R.drawable.bg_btn);
                                 mSudokuCells[currentCell % 9 + x * 9].Button.setBackgroundResource(R.drawable.bg_btn);
                                 mSudokuCells[currentCell / 9 * 9 + x].Button.setBackgroundResource(R.drawable.bg_btn);
                             }
@@ -95,6 +96,9 @@ public class SudokuActivity extends AppCompatActivity {
                                     }
                                     if (wrong[x / 9 * 9 + y] != 1) {
                                         mSudokuCells[x / 9 * 9 + y].Button.setBackgroundResource(R.drawable.bg_btn_red);
+                                    }
+                                    if (wrong[x / 9 /3*27 + x%9/3*3 + y%3 + y/3*9]!=1){
+                                        mSudokuCells[x / 9 /3*27 + x%9/3*3 + y%3 + y/3*9].Button.setBackgroundResource(R.drawable.bg_btn_red);
                                     }
                                 }
                                 mSudokuCells[x].Button.setBackgroundResource(R.drawable.bg_btn_ex_red);
