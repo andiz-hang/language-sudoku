@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -34,6 +35,7 @@ public class SudokuActivity extends AppCompatActivity {
     static boolean on_screen = false;// for pop-up-screen
     static int  currentCell;
     int wrong[]= new int[82];
+    Drawable d;
     static String textToFill;
     SudokuCell[] mSudokuCells = new SudokuCell[81];
     Button[] mPopUpButtons = new Button[9];
@@ -73,24 +75,30 @@ public class SudokuActivity extends AppCompatActivity {
                         mSudokuCells[currentCell].setIndex(ii+1);
                         wrong[81]=0;
                         for (int x=0;x<9;x++) {
-                            if (ii + 1 == mSudokuCells[currentCell % 9 + x * 9].getIndex() && currentCell % 9 + x * 9 != currentCell || ii + 1 == mSudokuCells[currentCell / 9 * 9 + x].getIndex() && currentCell / 9 + x != currentCell) {
+                            if ((ii + 1 == mSudokuCells[currentCell % 9 + x * 9].getIndex() && currentCell % 9 + x * 9 != currentCell )||(ii + 1 == mSudokuCells[currentCell / 9 * 9 + x].getIndex() && currentCell / 9 * 9 + x != currentCell)) {
                                 wrong[currentCell] = 1;
                                 wrong[81]=1;
                             }
                         }
                         if (wrong[81]==0){
                             wrong[currentCell] = 0;
+                            for (int x=0;x<9;x++){
+                                mSudokuCells[currentCell % 9 + x * 9].Button.setBackgroundResource(R.drawable.bg_btn);
+                                mSudokuCells[currentCell / 9 * 9 + x].Button.setBackgroundResource(R.drawable.bg_btn);
+                            }
                         }
                         for (int x=0;x<81;x++) {
-                            for (int y = 0; y < 9; y++) {
-                                if (wrong[currentCell % 9 + y * 9]!=1) {
-                                    mSudokuCells[currentCell % 9 + y * 9].Button.setBackgroundResource(R.color.colorPrimaryDark);
+                            if (wrong[x]==1) {
+                                for (int y = 0; y < 9; y++) {
+                                    if (wrong[x % 9 + y * 9] != 1) {
+                                        mSudokuCells[x % 9 + y * 9].Button.setBackgroundResource(R.drawable.bg_btn_red);
+                                    }
+                                    if (wrong[x / 9 * 9 + y] != 1) {
+                                        mSudokuCells[x / 9 * 9 + y].Button.setBackgroundResource(R.drawable.bg_btn_red);
+                                    }
                                 }
-                                if (wrong[currentCell / 9 * 9 + y]!=1) {
-                                    mSudokuCells[currentCell / 9 * 9 + y].Button.setBackgroundResource(R.color.colorPrimaryDark);
-                                }
+                                mSudokuCells[x].Button.setBackgroundResource(R.drawable.bg_btn_red);
                             }
-                            mSudokuCells[currentCell].Button.setBackgroundResource(R.color.colorAccent);
                         }
                     }
                 }
@@ -118,7 +126,8 @@ public class SudokuActivity extends AppCompatActivity {
                 SudokuCell temp = new SudokuCell();
                 temp.Button = new Button(this);
                 mSudokuCells[index]= temp;
-                if (values[i*9+j]==0){
+                mSudokuCells[index].Button.setBackgroundResource(R.drawable.bg_btn);
+                if (values[index]==0){
                     mSudokuCells[index].Button.setText("");
                 }
                 else {
@@ -140,18 +149,20 @@ public class SudokuActivity extends AppCompatActivity {
                 // Put the button in the GridLayout and set its Layout Parameters
                 GridLayout grid_layout = findViewById(R.id.testing_grid);
                 GridLayout.LayoutParams lp = new GridLayout.LayoutParams();
-                lp.width = size.x/10;
-                lp.height = size.x/10;
+                lp.width = size.x/13;
+                lp.height = size.x/13;
                 mSudokuCells[index].Button.setPadding(0,0,0,0);
+                lp.setMargins(15,15,15,15);
                 if (i==3 || i==6){
-                    lp.setMargins(lp.leftMargin,20,lp.rightMargin,0);
+                    lp.setMargins(lp.leftMargin,25,lp.rightMargin,lp.bottomMargin);
                 }
                 if (j==3 || j==6){
-                    lp.setMargins(20,lp.topMargin,lp.rightMargin,0);
+                    lp.setMargins(25,lp.topMargin,lp.rightMargin,lp.bottomMargin);
                 }
                 grid_layout.addView(mSudokuCells[index].Button, lp);
             }
         }
+        d=mSudokuCells[0].Button.getBackground();
 
 
     }
@@ -199,8 +210,8 @@ public class SudokuActivity extends AppCompatActivity {
         // Move Onscreen
         else {
 
-            Animate(sudoku_view, "translationX",  sudoku_view.getWidth()*1f - button.getX() * (sudoku_view.getWidth()*2/(size.x*33/40f)),500);
-            Animate(sudoku_view, "translationY",  sudoku_view.getHeight()*1f - button.getY()*((sudoku_view.getHeight()+size.x*5/12)/(size.x*33/40f)),500);
+            Animate(sudoku_view, "translationX",  sudoku_view.getWidth()*1f - button.getX() * (sudoku_view.getWidth()*2/(size.x*71/80f)),500);
+            Animate(sudoku_view, "translationY",  sudoku_view.getHeight()*1f - button.getY()*((sudoku_view.getHeight()+size.x*6/12)/(size.x*71/80f)),500);
 
             //Animate(sudoku_view, "translationX",  (zoom_scale*sudoku_view.getWidth()/2f)-button.getX()*zoom_scale,500);
             //Animate(sudoku_view, "translationY",  (zoom_scale*sudoku_view.getHeight()/2f)-button.getY()*zoom_scale,500);
