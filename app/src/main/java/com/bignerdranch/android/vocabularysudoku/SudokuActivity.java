@@ -76,6 +76,7 @@ public class SudokuActivity extends AppCompatActivity {
                     if(! mSudokuCells[currentCell].isLock()){
                         mSudokuCells[currentCell].Button.setText(mLanguage2.Words[ii+1]);
                         mSudokuCells[currentCell].setIndex(ii+1);
+                        mSudokuCells[currentCell].Button.setTextColor(Color.BLUE);
                         wrong[81]=0;
                         for (int x=0;x<9;x++) {
                             if ((ii + 1 == mSudokuCells[currentCell % 9 + x * 9].getIndex() && currentCell % 9 + x * 9 != currentCell )||(ii + 1 == mSudokuCells[currentCell / 9 * 9 + x].getIndex() && currentCell / 9 * 9 + x != currentCell)||(ii + 1 == mSudokuCells[currentCell / 9 /3*27 + currentCell%9/3*3 + x%3 + x/3*9].getIndex() && currentCell / 9 /3*27 + currentCell%9/3*3 + x%3 + x/3*9 != currentCell)) {
