@@ -8,6 +8,7 @@ import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
@@ -36,6 +37,8 @@ public class SudokuActivity extends AppCompatActivity {
     static int  currentCell;
     int wrong[]= new int[82];
     Drawable d;
+    DisplayMetrics displayMetrics = new DisplayMetrics();
+    int width,height;
     static String textToFill;
     SudokuCell[] mSudokuCells = new SudokuCell[81];
     Button[] mPopUpButtons = new Button[9];
@@ -57,10 +60,11 @@ public class SudokuActivity extends AppCompatActivity {
 
         
         // This are the Pop Up Screen Buttons.
-        Display display = getWindowManager().getDefaultDisplay();
-        display.getSize(size);
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        height = displayMetrics.heightPixels;
+        width = displayMetrics.widthPixels;
         GridLayout pop_up_grid=findViewById(R.id.pop_up_layout);
-        pop_up_grid.setTranslationY(size.y);
+        pop_up_grid.setTranslationY(height);
         for(int i = 0; i<9; i++) {
             final int ii = i;
             mPopUpButtons[i] = new Button(this);
@@ -107,7 +111,7 @@ public class SudokuActivity extends AppCompatActivity {
                 }
             });
             GridLayout.LayoutParams l_param = new GridLayout.LayoutParams();//(GridLayout.LayoutParams.WRAP_CONTENT, GridLayout.LayoutParams.WRAP_CONTENT);
-            l_param.width = size.x/4;
+            l_param.width = width/4;
             l_param.height = 150;
             l_param.bottomMargin = 0;
             pop_up_grid.addView(mPopUpButtons[i], l_param);
@@ -152,8 +156,8 @@ public class SudokuActivity extends AppCompatActivity {
                 // Put the button in the GridLayout and set its Layout Parameters
                 GridLayout grid_layout = findViewById(R.id.testing_grid);
                 GridLayout.LayoutParams lp = new GridLayout.LayoutParams();
-                lp.width = size.x/13;
-                lp.height = size.x/13;
+                lp.width = width/13;
+                lp.height = width/13;
                 mSudokuCells[index].Button.setPadding(0,0,0,0);
                 lp.setMargins(15,15,15,15);
                 if (i==3 || i==6){
@@ -205,7 +209,7 @@ public class SudokuActivity extends AppCompatActivity {
             Animate(sudoku_view, "translationX", 0f,500);
             Animate(sudoku_view, "translationY", 0f,500);
 
-            Animate(pop_up_view, "translationY", size.y*1f, 500);
+            Animate(pop_up_view, "translationY", height*1f, 500);
             Animate(sudoku_view, "scaleX", 1f, 500);
             Animate(sudoku_view, "scaleY", 1f, 500);
             on_screen = false;
@@ -214,8 +218,8 @@ public class SudokuActivity extends AppCompatActivity {
         // Move Onscreen
         else {
 
-            Animate(sudoku_view, "translationX",  sudoku_view.getWidth()*1f - button.getX() * (sudoku_view.getWidth()*2/(size.x*71/80f)),500);
-            Animate(sudoku_view, "translationY",  sudoku_view.getHeight()*1f - button.getY()*((sudoku_view.getHeight()+size.x*6/12)/(size.x*71/80f)),500);
+            Animate(sudoku_view, "translationX",  sudoku_view.getWidth()*1f - button.getX() * (sudoku_view.getWidth()*2/(width*71/80f)),500);
+            Animate(sudoku_view, "translationY",  sudoku_view.getHeight()*1f - button.getY()*((sudoku_view.getHeight()+width*6/12)/(width*71/80f)),500);
 
             //Animate(sudoku_view, "translationX",  (zoom_scale*sudoku_view.getWidth()/2f)-button.getX()*zoom_scale,500);
             //Animate(sudoku_view, "translationY",  (zoom_scale*sudoku_view.getHeight()/2f)-button.getY()*zoom_scale,500);
@@ -231,7 +235,7 @@ public class SudokuActivity extends AppCompatActivity {
 
             Log.d("Test", " ");
 
-            Animate(pop_up_view, "translationY", size.y*5/8f, 500);
+            Animate(pop_up_view, "translationY", height*5/8f, 500);
             Animate(sudoku_view, "scaleX", zoom_scale, 500);
             Animate(sudoku_view, "scaleY", zoom_scale, 500);
             on_screen = true;
