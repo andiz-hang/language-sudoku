@@ -45,7 +45,7 @@ public class SudokuActivity extends AppCompatActivity {
     //Language mLanguage3 = new Language("French","un", "deux","trois","quatre","cinq","six","sept","huit","neuf");
 
     int[] values = new int[81];
-    static boolean isLanguage1 = true; // determines whether the first language is the toggled language or not
+    static boolean isLanguage1 = false; // determines whether the first language is the toggled language or not
     Language mLanguage1 = new Language("English","one", "two","three","four","five","six","seven","eight","nine");
     Language mLanguage2 = new Language("Mandarin","一", "二","三","四","五","六","七","八","九");
     Point size = new Point();
@@ -190,9 +190,10 @@ public class SudokuActivity extends AppCompatActivity {
 
         if (id == R.id.LanguageToggle) {
             isLanguage1 = !isLanguage1;
+
             for (int i = 0; i < 9; i++) {
                 if (isLanguage1) mPopUpButtons[i].setText(mLanguage1.Words[i + 1]);
-                else if (!isLanguage1) mPopUpButtons[i].setText(mLanguage2.Words[i + 1]);
+                else mPopUpButtons[i].setText(mLanguage2.Words[i + 1]);
             }
         }
         return super.onOptionsItemSelected(item);
