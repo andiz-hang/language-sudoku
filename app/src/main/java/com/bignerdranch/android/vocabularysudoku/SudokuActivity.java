@@ -185,9 +185,10 @@ public class SudokuActivity extends AppCompatActivity {
 
         if (id == R.id.LanguageToggle) {
             isLanguage1 = !isLanguage1;
+
             for (int i = 0; i < 9; i++) {
                 if (isLanguage1) mPopUpButtons[i].setText(mLanguage1.Words[i + 1]);
-                else if (!isLanguage1) mPopUpButtons[i].setText(mLanguage2.Words[i + 1]);
+                else mPopUpButtons[i].setText(mLanguage2.Words[i + 1]);
             }
         }
         return super.onOptionsItemSelected(item);
