@@ -37,10 +37,8 @@ public class SudokuActivity extends AppCompatActivity {
     static boolean on_screen = false;// for pop-up-screen
     static int  currentCell;
     int wrong[]= new int[81];
-    Drawable d;
     DisplayMetrics displayMetrics = new DisplayMetrics();
     int width,height,count;
-    static String textToFill;
     SudokuCell[] mSudokuCells = new SudokuCell[81];
     Button[] mPopUpButtons = new Button[9];
     //Language mLanguage3 = new Language("French","un", "deux","trois","quatre","cinq","six","sept","huit","neuf");
@@ -76,6 +74,7 @@ public class SudokuActivity extends AppCompatActivity {
                     ButtonClick(findViewById(R.id.pop_up_layout), findViewById(R.id.testing_grid), mPopUpButtons[ii]);
                     if(! mSudokuCells[currentCell].isLock()){
                         mSudokuCells[currentCell].Button.setText(mLanguage2.Words[ii+1]);
+                        mSudokuCells[currentCell].Button.setTextColor(Color.BLUE);
                         if (mSudokuCells[currentCell].getIndex()==0){
                             count+=1;
                         }
@@ -135,10 +134,8 @@ public class SudokuActivity extends AppCompatActivity {
         int rand_int = rand.nextInt(75);
         Resources res = getResources();
         String full=res.getStringArray(R.array.puzz)[rand_int];//gets puzzle 0
-        for(int data = 0;data<81;data++){
-            values[data]=Character.getNumericValue(full.charAt(data));
-            //Character.getNumericValue change string to int
-        }
+        //Character.getNumericValue change string to int
+        for(int data = 0;data<81;data++) {values[data] = Character.getNumericValue(full.charAt(data));}
         for(int i = 0; i < 9; i++){
             for(int j = 0; j < 9; j++){
                 int index = i*9+j;
@@ -184,9 +181,6 @@ public class SudokuActivity extends AppCompatActivity {
                 grid_layout.addView(mSudokuCells[index].Button, lp);
             }
         }
-        d=mSudokuCells[0].Button.getBackground();
-
-
     }
 
     // Toggle Language Button
