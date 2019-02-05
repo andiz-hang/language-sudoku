@@ -120,7 +120,7 @@ public class SudokuActivity extends AppCompatActivity {
             });
             GridLayout.LayoutParams l_param = new GridLayout.LayoutParams();//(GridLayout.LayoutParams.WRAP_CONTENT, GridLayout.LayoutParams.WRAP_CONTENT);
             l_param.width = width/4;
-            l_param.height = 150;
+            l_param.height = height/13;
             l_param.bottomMargin = 0;
             pop_up_grid.addView(mPopUpButtons[i], l_param);
         }
@@ -169,12 +169,12 @@ public class SudokuActivity extends AppCompatActivity {
                 lp.width = width/13;
                 lp.height = width/13;
                 mSudokuCells[index].Button.setPadding(0,0,0,0);
-                lp.setMargins(15,15,15,15);
+                lp.setMargins(width / 72,height / 128,width / 72,height / 128);
                 if (i==3 || i==6){
-                    lp.setMargins(lp.leftMargin,25,lp.rightMargin,lp.bottomMargin);
+                    lp.setMargins(lp.leftMargin,height / 77,lp.rightMargin,lp.bottomMargin);
                 }
                 if (j==3 || j==6){
-                    lp.setMargins(25,lp.topMargin,lp.rightMargin,lp.bottomMargin);
+                    lp.setMargins(width / 43,lp.topMargin,lp.rightMargin,lp.bottomMargin);
                 }
                 grid_layout.addView(mSudokuCells[index].Button, lp);
             }
