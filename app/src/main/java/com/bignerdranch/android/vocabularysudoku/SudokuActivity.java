@@ -99,6 +99,9 @@ public class SudokuActivity extends AppCompatActivity {
                         if ((prev_state==0)&&(wrong[currentCell]==1)){
                             count-=1;
                         }
+                        if (count==81){
+                            Toast.makeText(getApplicationContext(),"Congrats! You win!",Toast.LENGTH_SHORT).show();
+                        }
                         for (int x=0;x<81;x++) {
                             if (wrong[x]==1) {
                                 for (int y = 0; y < 9; y++) {
@@ -128,8 +131,10 @@ public class SudokuActivity extends AppCompatActivity {
 
 
         // Loop creates buttons and adds them to grid
+        Random rand = new Random();
+        int rand_int = rand.nextInt(75);
         Resources res = getResources();
-        String full=res.getStringArray(R.array.puzz)[0];//gets puzzle 0
+        String full=res.getStringArray(R.array.puzz)[rand_int];//gets puzzle 0
         for(int data = 0;data<81;data++){
             values[data]=Character.getNumericValue(full.charAt(data));
             //Character.getNumericValue change string to int
