@@ -23,6 +23,7 @@ import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import java.util.Currency;
 import java.util.Random;
 
 
@@ -35,10 +36,10 @@ public class SudokuActivity extends AppCompatActivity {
     // Layout
     static boolean on_screen = false;// for pop-up-screen
     static int  currentCell;
-    int wrong[]= new int[82];
+    int wrong[]= new int[81];
     Drawable d;
     DisplayMetrics displayMetrics = new DisplayMetrics();
-    int width,height;
+    int width,height,count;
     static String textToFill;
     SudokuCell[] mSudokuCells = new SudokuCell[81];
     Button[] mPopUpButtons = new Button[9];
@@ -75,21 +76,28 @@ public class SudokuActivity extends AppCompatActivity {
                     ButtonClick(findViewById(R.id.pop_up_layout), findViewById(R.id.testing_grid), mPopUpButtons[ii]);
                     if(! mSudokuCells[currentCell].isLock()){
                         mSudokuCells[currentCell].Button.setText(mLanguage2.Words[ii+1]);
+                        if (mSudokuCells[currentCell].getIndex()==0){
+                            count+=1;
+                        }
                         mSudokuCells[currentCell].setIndex(ii+1);
-                        wrong[81]=0;
+                        int prev_state = wrong[currentCell];
+                        wrong[currentCell] = 0;
                         for (int x=0;x<9;x++) {
-                            if ((ii + 1 == mSudokuCells[currentCell % 9 + x * 9].getIndex() && currentCell % 9 + x * 9 != currentCell )||(ii + 1 == mSudokuCells[currentCell / 9 * 9 + x].getIndex() && currentCell / 9 * 9 + x != currentCell)||(ii + 1 == mSudokuCells[currentCell / 9 /3*27 + currentCell%9/3*3 + x%3 + x/3*9].getIndex() && currentCell / 9 /3*27 + currentCell%9/3*3 + x%3 + x/3*9 != currentCell)) {
+                            if (wrong[currentCell] == 0 && ((ii + 1 == mSudokuCells[currentCell % 9 + x * 9].getIndex() && currentCell % 9 + x * 9 != currentCell )||(ii + 1 == mSudokuCells[currentCell / 9 * 9 + x].getIndex() && currentCell / 9 * 9 + x != currentCell)||(ii + 1 == mSudokuCells[currentCell / 9 /3*27 + currentCell%9/3*3 + x%3 + x/3*9].getIndex() && currentCell / 9 /3*27 + currentCell%9/3*3 + x%3 + x/3*9 != currentCell))) {
                                 wrong[currentCell] = 1;
-                                wrong[81]=1;
                             }
                         }
-                        if (wrong[81]==0){
-                            wrong[currentCell] = 0;
+                        if ((prev_state==1)&&(wrong[currentCell]==0)){
+
+                            count+=1;
                             for (int x=0;x<9;x++){
                                 mSudokuCells[currentCell / 9 /3*27 + currentCell%9/3*3 + x%3 + x/3*9].Button.setBackgroundResource(R.drawable.bg_btn);
                                 mSudokuCells[currentCell % 9 + x * 9].Button.setBackgroundResource(R.drawable.bg_btn);
                                 mSudokuCells[currentCell / 9 * 9 + x].Button.setBackgroundResource(R.drawable.bg_btn);
                             }
+                        }
+                        if ((prev_state==0)&&(wrong[currentCell]==1)){
+                            count-=1;
                         }
                         for (int x=0;x<81;x++) {
                             if (wrong[x]==1) {
@@ -133,11 +141,13 @@ public class SudokuActivity extends AppCompatActivity {
                 SudokuCell temp = new SudokuCell();
                 temp.Button = new Button(this);
                 mSudokuCells[index]= temp;
+                wrong[index]=0;
                 mSudokuCells[index].Button.setBackgroundResource(R.drawable.bg_btn);
                 if (values[index]==0){
                     mSudokuCells[index].Button.setText("");
                 }
                 else {
+                    count+=1;
                     String word = mLanguage1.Words[values[index]];
                     mSudokuCells[index].Button.setText(word);
                     mSudokuCells[index].setLock(true);
