@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -50,6 +51,11 @@ public class SudokuActivity extends AppCompatActivity {
     Point size = new Point();
     // On clicking a square we show a screen with buttons with word choices
     // Pressing one of those buttons hides that screen and fills in that square
+
+    private Button mClearButton;
+    private Button mToggleButton;
+    private Button mHintButton;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,6 +130,7 @@ public class SudokuActivity extends AppCompatActivity {
             l_param.width = width/4;
             l_param.height = height/13;
             l_param.bottomMargin = 0;
+            //l_param.setGravity(Gravity.TOP);
             pop_up_grid.addView(mPopUpButtons[i], l_param);
         }
 
@@ -181,6 +188,23 @@ public class SudokuActivity extends AppCompatActivity {
                 grid_layout.addView(mSudokuCells[index].Button, lp);
             }
         }
+
+        mClearButton =(Button) findViewById(R.id.clear_button);
+        mClearButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //to be filled
+            }
+        });
+        mToggleButton = (Button) findViewById(R.id.toggle_button);
+        mHintButton = (Button) findViewById(R.id.hint_button);
+
+        //View view = parentView.findViewById(R.id.subject);
+       // RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) findViewById(R.id.options_layout).getLayoutParams();
+        //params.addRule(RelativeLayout.ALIGN_RIGHT, R.id.date); //or params.addRule(RelativeLayout.CENTER_IN_PARENT);
+        //view.setLayoutParams(params);
+
+
     }
 
     // Toggle Language Button
@@ -217,7 +241,11 @@ public class SudokuActivity extends AppCompatActivity {
             Animate(sudoku_view, "translationX", 0f,500);
             Animate(sudoku_view, "translationY", 0f,500);
 
-            Animate(pop_up_view, "translationY", height*1f, 500);
+            Animate(pop_up_view, "translationY", height/13*3f, 500);
+            Animate(findViewById(R.id.clear_button), "translationX", height/5f,300);
+            Animate(findViewById(R.id.toggle_button), "translationX", height/5f,400);
+            Animate(findViewById(R.id.hint_button), "translationX", height/5f,500);
+
             Animate(sudoku_view, "scaleX", 1f, 500);
             Animate(sudoku_view, "scaleY", 1f, 500);
             on_screen = false;
@@ -243,7 +271,11 @@ public class SudokuActivity extends AppCompatActivity {
 
             Log.d("Test", " ");
 
-            Animate(pop_up_view, "translationY", height*5/8f, 500);
+            Animate(pop_up_view, "translationY", 0f, 500);
+            Animate(findViewById(R.id.clear_button), "translationX", 0f,300);
+            Animate(findViewById(R.id.toggle_button), "translationX", 0f,400);
+            Animate(findViewById(R.id.hint_button), "translationX", 0f,500);
+
             Animate(sudoku_view, "scaleX", zoom_scale, 500);
             Animate(sudoku_view, "scaleY", zoom_scale, 500);
             on_screen = true;
