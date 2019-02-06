@@ -1,38 +1,68 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical"
     android:paddingTop="10dp">
-    <TextView
-        android:id="@+id/title_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text=""
-        android:padding="24dp"/>
 
     <GridLayout
         android:id="@+id/testing_grid"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
         android:columnCount="9"
         android:rowCount="9"
-        android:layout_gravity="center">
+        android:layout_gravity="fill_horizontal"
+        android:layout_centerHorizontal="true">
     </GridLayout>
 
-    <GridLayout
-        android:id="@+id/pop_up_layout"
+    <RelativeLayout
+        android:id="@+id/InnerRelativeLayout"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:translationY="5000dp"
-        android:columnCount="3"
-        android:rowCount="3"
-        android:layout_gravity="center"
-        android:background="@color/colorPrimaryDark">
-    </GridLayout>
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|bottom"
+        android:orientation="vertical">
 
 
-</FrameLayout>
+        <GridLayout
+            android:id="@+id/pop_up_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|bottom"
+            android:background="@color/colorPrimaryDark"
+            android:columnCount="3"
+            android:rowCount="3"
+            android:layout_alignParentBottom="true"></GridLayout>
+
+        <RelativeLayout
+            android:id="@+id/options_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true">
+
+            <Button
+                android:id="@+id/clear_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:text="clear"/>
+
+            <Button
+                android:id="@+id/toggle_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/clear_button"
+                android:text="toggle"/>
+
+
+            <Button
+                android:id="@+id/hint_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/toggle_button"
+                android:text="hint"/>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+</RelativeLayout>
