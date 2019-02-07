@@ -3,7 +3,6 @@ package com.bignerdranch.android.vocabularysudoku;
 import android.animation.ObjectAnimator;
 import android.content.res.Resources;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -19,35 +18,34 @@ import java.util.Random;
 
 public class SudokuActivity extends AppCompatActivity {
     
-    //Variable Naming Convention:
+    // Variable Naming Convention:
     // m: member variable
     // c: constant
     // p: pointer
     // s: static
     // i: index
 
-    // Layout
+    // The number of correct, filled in cells
+    static int      sCorrectCellCount;
     static boolean  sPopUpOnScreen = false;// for pop-up-screen
     static int      sCurrentCell;
 
+
     // Holds location of incorrect cells
-    int             mWrong[]= new int[81];
+    boolean[]       mWrong= new boolean[81];
     int             mScreenWidth, mScreenHeight;
-    // The number of correct, filled in cells
-    int             mCorrectCellCount;
     DisplayMetrics  mDisplayMetrics = new DisplayMetrics();
     SudokuCell[]    mSudokuCells = new SudokuCell[81];
     Button[]        mPopUpButtons = new Button[9];
-
-    int[]           mValues = new int[81];
+    int[]           mSudokuValues = new int[81];
     boolean         mIsLanguage1 = false; // determines whether the first language is the toggled language or not
     Language        mLanguage1 = new Language("English","one", "two","three","four","five","six","seven","eight","nine");
     Language        mLanguage2 = new Language("Mandarin","一", "二","三","四","五","六","七","八","九");
     //Language mLanguage3 = new Language("French","un", "deux","trois","quatre","cinq","six","sept","huit","neuf");
-    //Point         size = new Point();
-    private Button mClearButton;
-    private Button mToggleButton;
-    private Button mHintButton;
+    Button mClearButton;  // unimplemented
+    Button mToggleButton; // unimplemented
+    Button mHintButton;   // unimplemented
+
 
     // On clicking a square we show a screen with buttons with word choices
     // Pressing one of those buttons hides that screen and fills in that square
@@ -64,146 +62,241 @@ public class SudokuActivity extends AppCompatActivity {
         // Get popup layout
         GridLayout pop_up_grid=findViewById(R.id.pop_up_layout);
         pop_up_grid.setTranslationY(mScreenHeight);
+
+
+        // Create popup buttons which fill in sudoku cells and show conflicts when pressed
         for(int i = 0; i<9; i++) {
+            // Final index ii allows inner functions to access index i
             final int ii = i;
             mPopUpButtons[i] = new Button(this);
             mPopUpButtons[i].setText(mLanguage2.Words[i+1]);
             mPopUpButtons[i].setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ButtonClick(findViewById(R.id.pop_up_layout), findViewById(R.id.sudoku_grid), mPopUpButtons[ii]);
+                    // Zoom out once a word is selected from popup menu
+                    OnClickZoom(findViewById(R.id.pop_up_layout), findViewById(R.id.sudoku_grid), mPopUpButtons[ii]);
+
+                    // If a cell isn't locked, set its text to the chosen word and show any conflicts
                     if(! mSudokuCells[sCurrentCell].isLock()){
-                        mSudokuCells[sCurrentCell].Button.setText(mLanguage2.Words[ii+1]);
-                        mSudokuCells[sCurrentCell].Button.setTextColor(Color.BLUE);
-                        if (mSudokuCells[sCurrentCell].getIndex()==0){
-                            mCorrectCellCount+=1;
-                        }
+                        // Fills current cell's button with input value
+                        mSudokuCells[sCurrentCell].Button = FillInValue(sCurrentCell, ii);
+
+                        boolean cellWasWrong = mWrong[sCurrentCell];
+                        boolean cellWasBlank = false;
+                        if (mSudokuCells[sCurrentCell].getIndex()==0) cellWasBlank = true;
                         mSudokuCells[sCurrentCell].setIndex(ii+1);
-                        int prev_state = mWrong[sCurrentCell];
-                        mWrong[sCurrentCell] = 0;
 
-                        // Compares sCurrentCell to all potentially conflicting cells
-                        // If a conflict is found, set that cell to mWrong.
-
-
-                        for (int x=0;x<9;x++) {
-                            if (mWrong[sCurrentCell] == 0 && ((ii + 1 == mSudokuCells[sCurrentCell % 9 + x * 9].getIndex() && sCurrentCell % 9 + x * 9 != sCurrentCell )||(ii + 1 == mSudokuCells[sCurrentCell / 9 * 9 + x].getIndex() && sCurrentCell / 9 * 9 + x != sCurrentCell)||(ii + 1 == mSudokuCells[sCurrentCell / 9 /3*27 + sCurrentCell%9/3*3 + x%3 + x/3*9].getIndex() && sCurrentCell / 9 /3*27 + sCurrentCell%9/3*3 + x%3 + x/3*9 != sCurrentCell))) {
-                                mWrong[sCurrentCell] = 1;
-                            }
-                        }
-                        // If cell was mWrong, but is now correct
-                        if ((prev_state==1)&&(mWrong[sCurrentCell]==0)){
-                            mCorrectCellCount+=1;
-                            // Set all cells back to default button
-                            for (int x=0;x<9;x++){
-                                mSudokuCells[sCurrentCell / 9 /3*27 + sCurrentCell%9/3*3 + x%3 + x/3*9].Button.setBackgroundResource(R.drawable.bg_btn);
-                                mSudokuCells[sCurrentCell % 9 + x * 9].Button.setBackgroundResource(R.drawable.bg_btn);
-                                mSudokuCells[sCurrentCell / 9 * 9 + x].Button.setBackgroundResource(R.drawable.bg_btn);
-                            }
-                        }
-                        if ((prev_state==0)&&(mWrong[sCurrentCell]==1)){
-                            mCorrectCellCount-=1;
-                        }
-                        if (mCorrectCellCount==81){
-                            Toast.makeText(getApplicationContext(),"Congrats! You win!",Toast.LENGTH_SHORT).show();
-                        }
-                        for (int x=0;x<81;x++) {
-                            if (mWrong[x]==1) {
-                                for (int y = 0; y < 9; y++) {
-                                    if (mWrong[x % 9 + y * 9] != 1) {
-                                        mSudokuCells[x % 9 + y * 9].Button.setBackgroundResource(R.drawable.bg_btn_red);
-                                    }
-                                    if (mWrong[x / 9 * 9 + y] != 1) {
-                                        mSudokuCells[x / 9 * 9 + y].Button.setBackgroundResource(R.drawable.bg_btn_red);
-                                    }
-                                    if (mWrong[x / 9 /3*27 + x%9/3*3 + y%3 + y/3*9]!=1){
-                                        mSudokuCells[x / 9 /3*27 + x%9/3*3 + y%3 + y/3*9].Button.setBackgroundResource(R.drawable.bg_btn_red);
-                                    }
-                                }
-                                mSudokuCells[x].Button.setBackgroundResource(R.drawable.bg_btn_ex_red);
-                            }
-                        }
+                        // Update all potentially conflicting cells in mWrong
+                        mWrong = UpdateWrongArray(mWrong,mSudokuCells,sCurrentCell, ii);
+                        // Update SudokuCells to show conflicts and tally CurrentCorrectCells
+                        mSudokuCells = UpdateSudoku(mWrong, mSudokuCells, sCurrentCell, cellWasWrong, cellWasBlank);
                     }
                 }
             });
-            GridLayout.LayoutParams l_param = new GridLayout.LayoutParams();//(GridLayout.LayoutParams.WRAP_CONTENT, GridLayout.LayoutParams.WRAP_CONTENT);
-            l_param.width = mScreenWidth/4;
-            l_param.height = mScreenHeight/13;
-            l_param.bottomMargin = 0;
-            //l_param.setGravity(Gravity.TOP);
-            pop_up_grid.addView(mPopUpButtons[i], l_param);
+            // Create and set parameters for button, then add button with parameters to Popup Grid
+            GridLayout.LayoutParams layoutParams = CreatePopUpButtonParameters();
+            pop_up_grid.addView(mPopUpButtons[i], layoutParams);
         }
 
 
-
-        // Loop creates buttons and adds them to grid
+        // Creates SudokuCells and adds them to SudokuCell array and Grid
         Random rand = new Random();
-        int rand_int = rand.nextInt(75);
+        int randInt = rand.nextInt(75);
         Resources res = getResources();
-        String full=res.getStringArray(R.array.puzz)[rand_int];//gets puzzle 0
-        //Character.getNumericValue change string to int
-        for(int data = 0;data<81;data++) {mValues[data] = Character.getNumericValue(full.charAt(data));}
+        // Gets string holding values for a random puzzle
+        String full = res.getStringArray(R.array.puzz)[randInt];
+        // Character.getNumericValue change string to int
+        // Fill mSudokuValues[data] with Sudoku values
+        for(int data = 0;data<81;data++) {mSudokuValues[data] = Character.getNumericValue(full.charAt(data));}
         for(int i = 0; i < 9; i++){
             for(int j = 0; j < 9; j++){
                 int index = i*9+j;
                 final int ii = index;
-                SudokuCell temp = new SudokuCell();
-                temp.Button = new Button(this);
-                mSudokuCells[index]= temp;
-                mWrong[index]=0;
-                mSudokuCells[index].Button.setBackgroundResource(R.drawable.bg_btn);
-                if (mValues[index]==0){
-                    mSudokuCells[index].Button.setText("");
-                }
-                else {
-                    mCorrectCellCount+=1;
-                    String word = mLanguage1.Words[mValues[index]];
-                    mSudokuCells[index].Button.setText(word);
-                    mSudokuCells[index].setLock(true);
-                    mSudokuCells[index].setIndex(mValues[index]);
-                }
-                mSudokuCells[index].Button.setTextSize(8);
+                // Initalize new sudoku cell, give it a button, and add it to SudokuCells
+                SudokuCell newCell = new SudokuCell();
+                newCell.Button = new Button(this);
+                mSudokuCells[index] = SetCellValue(newCell, mSudokuValues, index);
+                mWrong[index]=false;
+
                 // Create Listener for Button
                 mSudokuCells[index].Button.setOnClickListener(new View.OnClickListener(){
                     @Override
                     public void onClick(View v) {
-                        ButtonClick(findViewById(R.id.pop_up_layout), findViewById(R.id.sudoku_grid), mSudokuCells[ii].Button);
+                        OnClickZoom(findViewById(R.id.pop_up_layout), findViewById(R.id.sudoku_grid), mSudokuCells[ii].Button);
                         sCurrentCell=ii;
                     }
                 });
-
-                // Put the button in the GridLayout and set its Layout Parameters
-                GridLayout grid_layout = findViewById(R.id.sudoku_grid);
-                GridLayout.LayoutParams lp = new GridLayout.LayoutParams();
-                lp.width = mScreenWidth/13;
-                lp.height = mScreenWidth/13;
-                mSudokuCells[index].Button.setPadding(0,0,0,0);
-                lp.setMargins(mScreenWidth / 72,mScreenHeight / 128,mScreenWidth / 72,mScreenHeight / 128);
-                if (i==3 || i==6){
-                    lp.setMargins(lp.leftMargin,mScreenHeight / 77,lp.rightMargin,lp.bottomMargin);
-                }
-                if (j==3 || j==6){
-                    lp.setMargins(mScreenWidth / 43,lp.topMargin,lp.rightMargin,lp.bottomMargin);
-                }
-                grid_layout.addView(mSudokuCells[index].Button, lp);
+                // Set button width, height, and margins in layoutParameters
+                // Then add that button and its parameters to the Popup Menu Grid
+                GridLayout gridLayout = findViewById(R.id.sudoku_grid);
+                GridLayout.LayoutParams layoutParameters = CreateSudokuCellParameters(i, j);
+                gridLayout.addView(mSudokuCells[index].Button, layoutParameters);
             }
         }
-
         // Menu Button Actions
-        mClearButton =(Button) findViewById(R.id.clear_button);
+        mClearButton = findViewById(R.id.clear_button);
         mClearButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //to be filled
             }
         });
-        mToggleButton = (Button) findViewById(R.id.toggle_button);
-        mHintButton = (Button) findViewById(R.id.hint_button);
+        mToggleButton = findViewById(R.id.toggle_button);
+        mHintButton = findViewById(R.id.hint_button);
     }
 
+    // METHODS
 
-    int[] checkCell(int[] mWrong){
-        return mWrong;
+    // Return an array of potential conflicts
+    boolean[] UpdateWrongArray(boolean[] wrong, SudokuCell[] sudoku, int cellIndex, int value){
+        wrong[cellIndex] = false;
+        // Compares current cell to all potentially conflicting cells
+        // If a conflict is found, set that cell to wrong
+        // Iterates through all cells in the same row, column, and box as the current cell
+        for (int j=0;j<9;j++) {
+            // value           = 1-9 corresponding to the answer being put into the current cell
+            // sCurrentCell = index of the current cell
+            // If the current cell was correct, but the new value conflicts with a cell in the same row, column, or box:
+            //     Label this cell as wrong in the mWrong array
+            if (!wrong[cellIndex]
+                    &&(CellConflictInColumn(sudoku, cellIndex, value, j)
+                    || CellConflictInRow(sudoku, cellIndex, value, j)
+                    || CellConflictInBox(sudoku, cellIndex, value, j))) {
+                wrong[cellIndex] = true;
+            }
+        }
+        return wrong;
+    }
+
+    // Update the Sudoku array to show potential conflicts
+    // Tally CorrectCellCount and Toast when sudoku is completed
+    SudokuCell[] UpdateSudoku(boolean[] wrong, SudokuCell[] sudoku, int currentCellIndex, boolean cellWasWrong, boolean cellWasBlank){
+        // If cell was wrong, but is now correct
+        if ((cellWasWrong)&&(!wrong[currentCellIndex])){
+            // Set no longer conflicting cells back to default color
+            sudoku = UncolorFixedCells(sudoku, currentCellIndex);
+        }
+        // If the cell was blank or wrong, but now is correct: increment the tally of correct cells
+        if ((cellWasBlank || cellWasWrong) && !wrong[currentCellIndex]) sCorrectCellCount++;
+            // Otherwise, if cell was right, but now is wrong: decrement the tally of correct cells
+        else if (!cellWasBlank && !cellWasWrong && wrong[currentCellIndex]) sCorrectCellCount--;
+        Log.d("Test","CorrectCellCount : "+sCorrectCellCount);
+
+        if (sCorrectCellCount==81){
+            Toast.makeText(getApplicationContext(),"Congrats! You win!",Toast.LENGTH_SHORT).show();
+        }
+        // Colours all potentially conflicting cells red
+        for (int x=0;x<81;x++) {
+            if (CellAtIndexIsWrong(wrong, x)){
+                sudoku = SetConflictingCellsRed(sudoku, x);
+            }
+        }
+        return sudoku;
+    }
+
+    // Buttons coloured red previously are now uncoloured
+    SudokuCell[] UncolorFixedCells(SudokuCell[] sudoku, int currentCellIndex){
+        for (int x=0;x<9;x++) {
+            sudoku[currentCellIndex / 9 / 3 * 27 + sCurrentCell % 9 / 3 * 3 + x % 3 + x / 3 * 9].Button.setBackgroundResource(R.drawable.bg_btn);
+            sudoku[currentCellIndex % 9 + x * 9].Button.setBackgroundResource(R.drawable.bg_btn);
+            sudoku[currentCellIndex / 9 * 9 + x].Button.setBackgroundResource(R.drawable.bg_btn);
+        }
+        return sudoku;
+    }
+
+    // Return a button with its text updated
+    Button FillInValue(int index, int newValue){
+        Button button = mSudokuCells[index].Button;
+        button.setText(mLanguage2.Words[newValue+1]);
+        button.setTextColor(Color.BLUE);
+        return button;
+    }
+
+    // Returns true IF (the cell in question is in the same column as the current cell)
+    //                 AND (the cell in question isn't the current cell)
+    boolean CellConflictInColumn(SudokuCell[] sudoku, int currentCellIndex, int popupIndex, int distanceIndex){
+        int targetCellIndex = currentCellIndex % 9 + distanceIndex * 9;
+        return popupIndex + 1 == sudoku[targetCellIndex].getIndex() && targetCellIndex != currentCellIndex;
+    }
+
+    // Returns true IF (the cell in question is in the same row as the current cell)
+    //                 AND(the cell in question isn't the current cell)
+    boolean CellConflictInRow(SudokuCell[] sudoku, int currentCellIndex, int popupIndex, int distanceIndex){
+        int targetCellIndex = currentCellIndex / 9 * 9 + distanceIndex;
+        return popupIndex + 1 == sudoku[targetCellIndex].getIndex() && targetCellIndex != currentCellIndex;
+    }
+
+    // Returns true IF (the cell in question is in the same box as the current cell)
+    //                 AND(the cell in question isn't the current cell)
+    boolean CellConflictInBox(SudokuCell[] sudoku, int currentCellIndex, int popupIndex, int distanceIndex){
+        int targetCellIndex = currentCellIndex / 9 /3*27 + currentCellIndex%9/3*3 + distanceIndex%3 + distanceIndex/3*9;
+        return popupIndex + 1 == sudoku[targetCellIndex].getIndex() && targetCellIndex != currentCellIndex;
+    }
+
+    // Returns true if the cell at index is incorrect
+    boolean CellAtIndexIsWrong(boolean[] wrong, int index){
+        return wrong[index];
+    }
+
+    // Returns a SudokuCell array with possibly conflicting cells highlighted red
+    SudokuCell[] SetConflictingCellsRed(SudokuCell[] sudoku, int cellIndex){
+        for (int i = 0; i < 9; i++) {
+            if (!mWrong[cellIndex % 9 + i * 9]) {
+                sudoku[cellIndex % 9 + i * 9].Button.setBackgroundResource(R.drawable.bg_btn_red);
+            }
+            if (!mWrong[cellIndex / 9 * 9 + i]) {
+                sudoku[cellIndex / 9 * 9 + i].Button.setBackgroundResource(R.drawable.bg_btn_red);
+            }
+            if (!mWrong[cellIndex / 9 / 3 * 27 + cellIndex % 9 / 3 * 3 + i % 3 + i / 3 * 9]){
+                sudoku[cellIndex / 9 /3*27 + cellIndex%9/3*3 + i%3 + i/3*9].Button.setBackgroundResource(R.drawable.bg_btn_red);
+            }
+        }
+        sudoku[cellIndex].Button.setBackgroundResource(R.drawable.bg_btn_ex_red);
+        return sudoku;
+    }
+
+    // Creates and returns layout parameters for popup button
+    GridLayout.LayoutParams CreatePopUpButtonParameters(){
+        GridLayout.LayoutParams layoutParameters = new GridLayout.LayoutParams();//(GridLayout.LayoutParams.WRAP_CONTENT, GridLayout.LayoutParams.WRAP_CONTENT);
+        layoutParameters.width = mScreenWidth/4;
+        layoutParameters.height = mScreenHeight/13;
+        layoutParameters.bottomMargin = 0;
+        return layoutParameters;
+    }
+
+    // Create and return layout parameters for a sudokucell
+    GridLayout.LayoutParams CreateSudokuCellParameters(int indexI, int indexJ){
+        GridLayout.LayoutParams layoutParameters = new GridLayout.LayoutParams();
+
+        layoutParameters.width = mScreenWidth/13;
+        layoutParameters.height = mScreenWidth/13;
+        layoutParameters.setMargins(mScreenWidth / 72,mScreenHeight / 128,mScreenWidth / 72,mScreenHeight / 128);
+        if (indexI==3 || indexI==6){
+            layoutParameters.setMargins(layoutParameters.leftMargin,mScreenHeight / 77,layoutParameters.rightMargin,layoutParameters.bottomMargin);
+        }
+        if (indexJ==3 || indexJ==6){
+            layoutParameters.setMargins(mScreenWidth / 43,layoutParameters.topMargin,layoutParameters.rightMargin,layoutParameters.bottomMargin);
+        }
+
+        return layoutParameters;
+    }
+
+    // Create and return a SudokuCell with text set based on current puzzle
+    SudokuCell SetCellValue(SudokuCell sudokuCell, int[] values, int index){
+        sudokuCell.Button.setBackgroundResource(R.drawable.bg_btn);
+        if (values[index]==0){
+            sudokuCell.Button.setText("");
+        }
+        else {
+            sCorrectCellCount+=1;
+            String word = mLanguage1.Words[values[index]];
+            sudokuCell.Button.setText(word);
+            sudokuCell.setLock(true);
+            sudokuCell.setIndex(mSudokuValues[index]);
+        }
+        sudokuCell.Button.setTextSize(8);
+        sudokuCell.Button.setPadding(0,0,0,0);
+        return sudokuCell;
     }
 
     // Create an action bar button
@@ -231,7 +324,7 @@ public class SudokuActivity extends AppCompatActivity {
 
     // When a button is pressed this pulls up or pushes down the Pop Up Button
     // Zooms in on the selected button
-    private void ButtonClick(View pop_up_view, View sudoku_view, Button button){
+    private void OnClickZoom(View pop_up_view, View sudoku_view, Button button){
 
         float zoom_scale = 3;
         // Move Offscreen
