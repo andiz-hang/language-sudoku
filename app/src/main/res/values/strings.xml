@@ -2,7 +2,7 @@
     <string name="app_name">Vocabulary Sudoku</string>
     <string name="title_text">Sudoku Title</string>
 
-    <string name="testing_grid">testing_grid</string>
+    <string name="sudoku_grid">sudoku_grid</string>
     <string name="pop_up_layout">pop_up_layout</string>
 
     <string name="language_toggle">Toggle Language</string>
