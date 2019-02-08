@@ -26,7 +26,7 @@ public class SudokuActivity extends AppCompatActivity {
     // i: index
 
     // The number of correct, filled in cells
-    static int      sCorrectCellCount;
+    static int       sCorrectCellCount;
     static boolean  sPopUpOnScreen = false;// for pop-up-screen
     static int      sCurrentCell;
 
@@ -38,7 +38,8 @@ public class SudokuActivity extends AppCompatActivity {
     SudokuCell[]    mSudokuCells = new SudokuCell[81];
     Button[]        mPopUpButtons = new Button[9];
     int[]           mSudokuValues = new int[81];
-    boolean         mIsLanguage1 = false; // determines whether the first language is the toggled language or not
+    boolean         mIsMode1 = false;//mode1 is Language1 puzzle with Language2 filled in
+    //boolean         mIsLanguage1 = false; // determines whether the first language is the toggled language or not
     Language        mLanguage1 = new Language("English","one", "two","three","four","five","six","seven","eight","nine");
     Language        mLanguage2 = new Language("Mandarin","一", "二","三","四","五","六","七","八","九");
     //Language mLanguage3 = new Language("French","un", "deux","trois","quatre","cinq","six","sept","huit","neuf");
@@ -134,16 +135,38 @@ public class SudokuActivity extends AppCompatActivity {
             }
         }
         // Menu Button Actions
-        mClearButton = findViewById(R.id.clear_button);
+        mClearButton = findViewById(R.id.clear_button);//clean the filled in word
         mClearButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!mSudokuCells[sCurrentCell].isLock()) {
+                    mSudokuCells[sCurrentCell].Button.setText("");
+                    mSudokuCells[sCurrentCell].setIndex(0); ;
+                }
+            }
+        });
+        mToggleButton = findViewById(R.id.toggle_button);//only toggle pop up buttons' language
+        mToggleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for (int i = 0; i < 9; i++) {
+                    if (mIsMode1) mPopUpButtons[i].setText(mLanguage1.Words[i + 1]);
+                    else mPopUpButtons[i].setText(mLanguage2.Words[i + 1]);
+                }
+            }
+        });
+        mHintButton = findViewById(R.id.hint_button);// highlight right answer of pop up buttons
+        mHintButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //to be filled
             }
         });
-        mToggleButton = findViewById(R.id.toggle_button);
-        mHintButton = findViewById(R.id.hint_button);
-    }
+        //initially hide the buttons
+        mClearButton.setTranslationX(mScreenHeight/5f);
+        mToggleButton.setTranslationX(mScreenHeight/5f);
+        mHintButton.setTranslationX(mScreenHeight/5f);
+    }//end of onCreate
 
     // METHODS
 
@@ -312,15 +335,30 @@ public class SudokuActivity extends AppCompatActivity {
 
         int id = item.getItemId();
         // When the LanguageToggle  button is clicked, switch language of all pop up menu buttons
-        if (id == R.id.LanguageToggle) {
-            mIsLanguage1 = !mIsLanguage1;
-            for (int i = 0; i < 9; i++) {
-                if (mIsLanguage1) mPopUpButtons[i].setText(mLanguage1.Words[i + 1]);
-                else mPopUpButtons[i].setText(mLanguage2.Words[i + 1]);
+        if(id == R.id.ChangeMode) {
+            if (!mIsMode1) {//then set to mode1
+                for (int i = 0; i < 81; i++) {
+                    if (mSudokuCells[i].isLock())
+                        mSudokuCells[i].Button.setText(mLanguage1.Words[i + 1]);
+                }
+                for (int j = 0; j < 9; j++) {
+                    mPopUpButtons[j].setText(mLanguage2.Words[j + 1]);
+                }
+            } else {
+                for (int i = 0; i < 81; i++) {
+                    if (mSudokuCells[i].isLock())
+                        mSudokuCells[i].Button.setText(mLanguage2.Words[i + 1]);
+                }
+                for (int j = 0; j < 9; j++) {
+                    mPopUpButtons[j].setText(mLanguage1.Words[j + 1]);
+                }
             }
+            mIsMode1 = !mIsMode1;
         }
         return super.onOptionsItemSelected(item);
     }
+
+
 
     // When a button is pressed this pulls up or pushes down the Pop Up Button
     // Zooms in on the selected button

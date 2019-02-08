@@ -5,5 +5,5 @@
     <string name="sudoku_grid">sudoku_grid</string>
     <string name="pop_up_layout">pop_up_layout</string>
 
-    <string name="language_toggle">Toggle Language</string>
+    <string name="change_mode">change mode</string>
 </resources>
