@@ -6,4 +6,7 @@
     <string name="pop_up_layout">pop_up_layout</string>
 
     <string name="language_toggle">Toggle Language</string>
+    <string name="clear">clear</string>
+    <string name="toggle">toggle</string>
+    <string name="hint">hint</string>
 </resources>

@@ -31,13 +31,13 @@
             android:background="@color/colorPrimaryDark"
             android:columnCount="3"
             android:rowCount="3"
-            android:layout_alignParentBottom="true"></GridLayout>
+            android:layout_alignParentBottom="true"/>
 
         <RelativeLayout
             android:id="@+id/options_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true">
 
             <Button
@@ -45,14 +45,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
-                android:text="clear"/>
+                android:text="@string/clear"/>
 
             <Button
                 android:id="@+id/toggle_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/clear_button"
-                android:text="toggle"/>
+                android:text="@string/toggle"/>
 
 
             <Button
@@ -60,7 +60,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/toggle_button"
-                android:text="hint"/>
+                android:text="@string/hint"/>
 
         </RelativeLayout>
 
