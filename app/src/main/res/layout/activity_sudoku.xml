@@ -45,6 +45,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
+                android:textColor="@color/colorWhite"
+                android:background="@drawable/bg_btn_green"
+                android:layout_marginBottom="5dp"
+                android:layout_marginEnd="1dp"
                 android:text="@string/clear"/>
 
             <Button
@@ -52,7 +56,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/clear_button"
-                android:text="@string/toggle"/>
+                android:text="@string/toggle"
+                android:textColor="@color/colorWhite"
+                android:background="@drawable/bg_btn_green"
+                android:layout_marginBottom="5dp"
+                android:layout_marginEnd="1dp"/>
 
 
             <Button
@@ -60,7 +68,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/toggle_button"
-                android:text="@string/hint"/>
+                android:text="@string/hint"
+                android:textColor="@color/colorWhite"
+                android:background="@drawable/bg_btn_green"
+                android:layout_marginEnd="1dp"/>
 
         </RelativeLayout>
 

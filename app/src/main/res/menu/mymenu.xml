@@ -1,8 +1,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/LanguageToggle"
-        android:title="@string/language_toggle"
+        android:id="@+id/ChangeMode"
+        android:title="@string/change_mode"
         app:showAsAction="always"
         />
 </menu>
