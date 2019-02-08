@@ -38,8 +38,8 @@ public class SudokuActivity extends AppCompatActivity {
     SudokuCell[]    mSudokuCells = new SudokuCell[81];
     Button[]        mPopUpButtons = new Button[9];
     int[]           mSudokuValues = new int[81];
-    boolean         mIsMode1 = false;//mode1 is Language1 puzzle with Language2 filled in
-    //boolean         mIsLanguage1 = false; // determines whether the first language is the toggled language or not
+    boolean         mIsMode1 = true;//mode1 is Language1 puzzle with Language2 filled in, determines whether the first mode is the toggled mode not
+    boolean         mIsLanguage1 = false; // determines whether the first language is the toggled language or not
     Language        mLanguage1 = new Language("English","one", "two","three","four","five","six","seven","eight","nine");
     Language        mLanguage2 = new Language("Mandarin","一", "二","三","四","五","六","七","八","九");
     //Language mLanguage3 = new Language("French","un", "deux","trois","quatre","cinq","six","sept","huit","neuf");
@@ -68,7 +68,7 @@ public class SudokuActivity extends AppCompatActivity {
         // Create popup buttons which fill in sudoku cells and show conflicts when pressed
         for(int i = 0; i<9; i++) {
             // Final index ii allows inner functions to access index i
-            final int ii = i;
+            final int ii = i;//0~8
             mPopUpButtons[i] = new Button(this);
             mPopUpButtons[i].setText(mLanguage2.Words[i+1]);
             mPopUpButtons[i].setOnClickListener(new View.OnClickListener() {
@@ -80,12 +80,12 @@ public class SudokuActivity extends AppCompatActivity {
                     // If a cell isn't locked, set its text to the chosen word and show any conflicts
                     if(! mSudokuCells[sCurrentCell].isLock()){
                         // Fills current cell's button with input value
-                        mSudokuCells[sCurrentCell].Button = FillInValue(sCurrentCell, ii);
+                        mSudokuCells[sCurrentCell].Button = FillLockedCellByMode(sCurrentCell, ii+1);
 
                         boolean cellWasWrong = mWrong[sCurrentCell];
                         boolean cellWasBlank = false;
-                        if (mSudokuCells[sCurrentCell].getIndex()==0) cellWasBlank = true;
-                        mSudokuCells[sCurrentCell].setIndex(ii+1);
+                        if (mSudokuCells[sCurrentCell].getValue()==0) cellWasBlank = true;
+                        mSudokuCells[sCurrentCell].setValue(ii+1);
 
                         // Update all potentially conflicting cells in mWrong
                         mWrong = UpdateWrongArray(mWrong,mSudokuCells,sCurrentCell, ii);
@@ -98,6 +98,7 @@ public class SudokuActivity extends AppCompatActivity {
             GridLayout.LayoutParams layoutParams = CreatePopUpButtonParameters();
             pop_up_grid.addView(mPopUpButtons[i], layoutParams);
         }
+
 
 
         // Creates SudokuCells and adds them to SudokuCell array and Grid
@@ -141,8 +142,20 @@ public class SudokuActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (!mSudokuCells[sCurrentCell].isLock()) {
                     mSudokuCells[sCurrentCell].Button.setText("");
-                    mSudokuCells[sCurrentCell].setIndex(0); ;
+                    mSudokuCells[sCurrentCell].setValue(0); ;
                 }
+                //needs be figure out~~~~~~~~~~
+//                for (int i=0; i<81; i++){
+//                    if(! mSudokuCells[i].isLock()){
+//                        boolean cellWasWrong = mWrong[i];
+//                        boolean cellWasBlank = false;
+//                        if (mSudokuCells[i].getValue()==0) cellWasBlank = true;
+//                        // Update all potentially conflicting cells in mWrong
+//                        mWrong = UpdateWrongArray(mWrong,mSudokuCells,i, mSudokuCells[i].getValue());
+//                        // Update SudokuCells to show conflicts and tally CurrentCorrectCells
+//                        mSudokuCells = UpdateSudoku(mWrong, mSudokuCells, i, cellWasWrong, cellWasBlank);
+//                    }
+//                }
             }
         });
         mToggleButton = findViewById(R.id.toggle_button);//only toggle pop up buttons' language
@@ -150,16 +163,23 @@ public class SudokuActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 for (int i = 0; i < 9; i++) {
-                    if (mIsMode1) mPopUpButtons[i].setText(mLanguage1.Words[i + 1]);
-                    else mPopUpButtons[i].setText(mLanguage2.Words[i + 1]);
+                    if (mIsLanguage1)
+                        mPopUpButtons[i].setText(mLanguage2.Words[i + 1]);
+                    else
+                        mPopUpButtons[i].setText(mLanguage1.Words[i + 1]);
                 }
+                mIsLanguage1 = !mIsLanguage1;
             }
         });
+        final String fullAnsw = res.getStringArray(R.array.answ)[randInt];
+
         mHintButton = findViewById(R.id.hint_button);// highlight right answer of pop up buttons
         mHintButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //to be filled
+                    //need CHANGE !
+//                int valueForPopUpHint = Character.getNumericValue((fullAnsw.charAt(sCurrentCell)));
+//                mPopUpButtons[valueForPopUpHint].setBackgroundResource(R.drawable.bg_btn_yellow);
             }
         });
         //initially hide the buttons
@@ -228,9 +248,10 @@ public class SudokuActivity extends AppCompatActivity {
     }
 
     // Return a button with its text updated
-    Button FillInValue(int index, int newValue){
+    Button FillLockedCellByMode(int index, int newValue){
         Button button = mSudokuCells[index].Button;
-        button.setText(mLanguage2.Words[newValue+1]);
+        if (mIsMode1) button.setText(mLanguage2.Words[newValue]);
+        else button.setText(mLanguage1.Words[newValue]);
         button.setTextColor(Color.BLUE);
         return button;
     }
@@ -239,21 +260,21 @@ public class SudokuActivity extends AppCompatActivity {
     //                 AND (the cell in question isn't the current cell)
     boolean CellConflictInColumn(SudokuCell[] sudoku, int currentCellIndex, int popupIndex, int distanceIndex){
         int targetCellIndex = currentCellIndex % 9 + distanceIndex * 9;
-        return popupIndex + 1 == sudoku[targetCellIndex].getIndex() && targetCellIndex != currentCellIndex;
+        return popupIndex + 1 == sudoku[targetCellIndex].getValue() && targetCellIndex != currentCellIndex;
     }
 
     // Returns true IF (the cell in question is in the same row as the current cell)
     //                 AND(the cell in question isn't the current cell)
     boolean CellConflictInRow(SudokuCell[] sudoku, int currentCellIndex, int popupIndex, int distanceIndex){
         int targetCellIndex = currentCellIndex / 9 * 9 + distanceIndex;
-        return popupIndex + 1 == sudoku[targetCellIndex].getIndex() && targetCellIndex != currentCellIndex;
+        return popupIndex + 1 == sudoku[targetCellIndex].getValue() && targetCellIndex != currentCellIndex;
     }
 
     // Returns true IF (the cell in question is in the same box as the current cell)
     //                 AND(the cell in question isn't the current cell)
     boolean CellConflictInBox(SudokuCell[] sudoku, int currentCellIndex, int popupIndex, int distanceIndex){
         int targetCellIndex = currentCellIndex / 9 /3*27 + currentCellIndex%9/3*3 + distanceIndex%3 + distanceIndex/3*9;
-        return popupIndex + 1 == sudoku[targetCellIndex].getIndex() && targetCellIndex != currentCellIndex;
+        return popupIndex + 1 == sudoku[targetCellIndex].getValue() && targetCellIndex != currentCellIndex;
     }
 
     // Returns true if the cell at index is incorrect
@@ -315,7 +336,7 @@ public class SudokuActivity extends AppCompatActivity {
             String word = mLanguage1.Words[values[index]];
             sudokuCell.Button.setText(word);
             sudokuCell.setLock(true);
-            sudokuCell.setIndex(mSudokuValues[index]);
+            sudokuCell.setValue(mSudokuValues[index]);
         }
         sudokuCell.Button.setTextSize(8);
         sudokuCell.Button.setPadding(0,0,0,0);
@@ -336,22 +357,17 @@ public class SudokuActivity extends AppCompatActivity {
         int id = item.getItemId();
         // When the LanguageToggle  button is clicked, switch language of all pop up menu buttons
         if(id == R.id.ChangeMode) {
-            if (!mIsMode1) {//then set to mode1
-                for (int i = 0; i < 81; i++) {
-                    if (mSudokuCells[i].isLock())
-                        mSudokuCells[i].Button.setText(mLanguage1.Words[i + 1]);
+            for (int i = 0; i < 81; i++) {
+                int value = mSudokuCells[i].getValue();
+                FillLockedCellByMode(i, value);
+                if(!mSudokuCells[i].isLock()){//clean other filled cells
+                    mSudokuCells[i].Button.setText("");
+                    mSudokuCells[i].setValue(0);
                 }
-                for (int j = 0; j < 9; j++) {
-                    mPopUpButtons[j].setText(mLanguage2.Words[j + 1]);
-                }
-            } else {
-                for (int i = 0; i < 81; i++) {
-                    if (mSudokuCells[i].isLock())
-                        mSudokuCells[i].Button.setText(mLanguage2.Words[i + 1]);
-                }
-                for (int j = 0; j < 9; j++) {
-                    mPopUpButtons[j].setText(mLanguage1.Words[j + 1]);
-                }
+            }
+            for (int j = 0; j < 9; j++) {
+                if (!mIsMode1) mPopUpButtons[j].setText(mLanguage2.Words[j + 1]);
+                else mPopUpButtons[j].setText(mLanguage1.Words[j + 1]);
             }
             mIsMode1 = !mIsMode1;
         }
