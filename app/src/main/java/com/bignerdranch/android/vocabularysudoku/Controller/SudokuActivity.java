@@ -1,4 +1,4 @@
-package com.bignerdranch.android.vocabularysudoku;
+package com.bignerdranch.android.vocabularysudoku.Controller;
 
 import android.animation.ObjectAnimator;
 import android.content.res.Resources;
@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,10 +13,15 @@ import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.Toast;
 import java.util.Random;
-
+import com.bignerdranch.android.vocabularysudoku.R;
+import com.bignerdranch.android.vocabularysudoku.Model.Language;
+import com.bignerdranch.android.vocabularysudoku.Model.SudokuCell;
+import com.bignerdranch.android.vocabularysudoku.Model.SudokuGrid;
+import com.bignerdranch.android.vocabularysudoku.View.ButtonUI;
+import com.bignerdranch.android.vocabularysudoku.View.GridLayoutUI;
 
 public class SudokuActivity extends AppCompatActivity {
-    
+
     // Variable Naming Convention:
     // m: member variable
     // c: constant
@@ -26,15 +30,19 @@ public class SudokuActivity extends AppCompatActivity {
     // i: index
 
     // The number of correct, filled in cells
-    static int       sCorrectCellCount;
+    static int      sSize = 9;
+    static int      sCorrectCellCount;
     static boolean  sPopUpOnScreen = false;// for pop-up-screen
     static int      sCurrentCell;
 
+    Resources res = getResources();
+    SudokuGrid      mSudokuGrid = new SudokuGrid(sSize, res);
+    GridLayoutUI    mPopupMenu;
 
     // Holds location of incorrect cells
     int             mScreenWidth, mScreenHeight;
     DisplayMetrics  mDisplayMetrics = new DisplayMetrics();
-    SudokuCell[]    mSudokuCells = new SudokuCell[81];
+//    SudokuCell[]    mSudokuCells = new SudokuCell[81];
     Button[]        mPopUpButtons = new Button[9];
     int[]           mSudokuValues = new int[81];
     boolean         mIsMode1 = true;//mode1 is Language1 puzzle with Language2 filled in, determines whether the first mode is the toggled mode not
@@ -45,6 +53,7 @@ public class SudokuActivity extends AppCompatActivity {
     Button mClearButton;  // unimplemented
     Button mToggleButton; // unimplemented
     Button mHintButton;   // unimplemented
+    GridLayoutUI mGridLayout;
 
 
     // On clicking a square we show a screen with buttons with word choices
@@ -53,6 +62,9 @@ public class SudokuActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sudoku);
+
+        GridLayout newLayout = findViewById(R.id.sudoku_grid);
+        mGridLayout = new GridLayoutUI(newLayout);
 
         // Get width and height of screen
         getWindowManager().getDefaultDisplay().getMetrics(mDisplayMetrics);
@@ -63,13 +75,12 @@ public class SudokuActivity extends AppCompatActivity {
         GridLayout pop_up_grid=findViewById(R.id.pop_up_layout);
         pop_up_grid.setTranslationY(mScreenHeight);
 
-
         // Create popup buttons which fill in sudoku cells and show conflicts when pressed
         for(int i = 0; i<9; i++) {
             // Final index ii allows inner functions to access index i
             final int ii = i;//0~8
             mPopUpButtons[i] = new Button(this);
-            mPopUpButtons[i].setText(mLanguage2.Words[i+1]);
+            mPopUpButtons[i].setText(mLanguage2.getWord(i + 1));
             mPopUpButtons[i].setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -77,14 +88,14 @@ public class SudokuActivity extends AppCompatActivity {
                     OnClickZoom(findViewById(R.id.pop_up_layout), findViewById(R.id.sudoku_grid), mPopUpButtons[ii]);
 
                     // If a cell isn't locked, set its text to the chosen word and show any conflicts
-                    if(! mSudokuCells[sCurrentCell].isLock()){
+                    if(!mSudokuCells[sCurrentCell].isLock()){
                         // Fills current cell's button with input value
-                        mSudokuCells[sCurrentCell].Button = FillLockedCellByMode(sCurrentCell, ii+1);
+                        mSudokuCells[sCurrentCell].setButton(FillLockedCellByMode(sCurrentCell, ii+1));
                         mSudokuCells[sCurrentCell].setValue(ii+1);
 
                         int count=0,correct;
                         for (int y=0;y<81;y++)
-                            mSudokuCells[y].Button.setBackgroundResource(R.drawable.bg_btn);
+                            mSudokuCells[y].getButton().setBackgroundResource(R.drawable.bg_btn);
                         for (int x=0;x<81;x++) {
                             correct = UpdateWrongArray(x);
                             if (correct == 1 && mSudokuCells[x].getValue() != 0)
@@ -100,39 +111,25 @@ public class SudokuActivity extends AppCompatActivity {
             pop_up_grid.addView(mPopUpButtons[i], layoutParams);
         }
 
-
-
-        // Creates SudokuCells and adds them to SudokuCell array and Grid
-        Random rand = new Random();
-        int randInt = rand.nextInt(75);
-        Resources res = getResources();
-        // Gets string holding values for a random puzzle
-        String full = res.getStringArray(R.array.puzz)[randInt];
         // Character.getNumericValue change string to int
         // Fill mSudokuValues[data] with Sudoku values
-        for(int data = 0;data<81;data++) {mSudokuValues[data] = Character.getNumericValue(full.charAt(data));}
-        for(int i = 0; i < 9; i++){
-            for(int j = 0; j < 9; j++){
-                int index = i*9+j;
+        for(int i = 0; i < sSize; i++){
+            for(int j = 0; j < sSize; j++){
+                int index = i*sSize+j;
                 final int ii = index;
                 // Initalize new sudoku cell, give it a button, and add it to SudokuCells
-                SudokuCell newCell = new SudokuCell();
-                newCell.Button = new Button(this);
-                mSudokuCells[index] = SetCellValue(newCell, mSudokuValues, index);
+                Button   button = new Button(this);
+                ButtonUI buttonUI = new ButtonUI(button, mGridLayout.getLayout(), i, j);
+
 
                 // Create Listener for Button
-                mSudokuCells[index].Button.setOnClickListener(new View.OnClickListener(){
+                button.setOnClickListener(new View.OnClickListener(){
                     @Override
                     public void onClick(View v) {
-                        OnClickZoom(findViewById(R.id.pop_up_layout), findViewById(R.id.sudoku_grid), mSudokuCells[ii].Button);
+                        OnClickZoom(findViewById(R.id.pop_up_layout), findViewById(R.id.sudoku_grid), mSudokuCells[ii].getButton());
                         sCurrentCell=ii;
                     }
                 });
-                // Set button width, height, and margins in layoutParameters
-                // Then add that button and its parameters to the Popup Menu Grid
-                GridLayout gridLayout = findViewById(R.id.sudoku_grid);
-                GridLayout.LayoutParams layoutParameters = CreateSudokuCellParameters(i, j);
-                gridLayout.addView(mSudokuCells[index].Button, layoutParameters);
             }
         }
         // Menu Button Actions
@@ -141,8 +138,8 @@ public class SudokuActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (!mSudokuCells[sCurrentCell].isLock()) {
-                    mSudokuCells[sCurrentCell].Button.setText("");
-                    mSudokuCells[sCurrentCell].setValue(0); ;
+                    mSudokuCells[sCurrentCell].getButton().setText("");
+                    mSudokuCells[sCurrentCell].setValue(0);
                 }
                 //needs be figure out~~~~~~~~~~
 //                for (int i=0; i<81; i++){
@@ -164,9 +161,9 @@ public class SudokuActivity extends AppCompatActivity {
             public void onClick(View v) {
                 for (int i = 0; i < 9; i++) {
                     if (mIsLanguage1)
-                        mPopUpButtons[i].setText(mLanguage2.Words[i + 1]);
+                        mPopUpButtons[i].setText(mLanguage2.getWord(i + 1));
                     else
-                        mPopUpButtons[i].setText(mLanguage1.Words[i + 1]);
+                        mPopUpButtons[i].setText(mLanguage1.getWord(i + 1));
                 }
                 mIsLanguage1 = !mIsLanguage1;
             }
@@ -177,7 +174,7 @@ public class SudokuActivity extends AppCompatActivity {
         mHintButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    //need CHANGE !
+                //need CHANGE !
 //                int valueForPopUpHint = Character.getNumericValue((fullAnsw.charAt(sCurrentCell)));
 //                mPopUpButtons[valueForPopUpHint].setBackgroundResource(R.drawable.bg_btn_yellow);
             }
@@ -216,35 +213,35 @@ public class SudokuActivity extends AppCompatActivity {
         if (row)SetRowCellsRed(cellIndex);
         if (column)SetColumnCellsRed(cellIndex);
         if (box)SetBoxCellsRed(cellIndex);
-        if (box||column||row)mSudokuCells[cellIndex].Button.setBackgroundResource(R.drawable.bg_btn_ex_red);
+        if (box||column||row)mSudokuCells[cellIndex].getButton().setBackgroundResource(R.drawable.bg_btn_ex_red);
         else return 1;
         return 0;
     }
     // Returns a SudokuCell array with possibly conflicting cells highlighted red
     void SetRowCellsRed(int cellIndex) {
         for (int i = 0; i < 9; i++) {
-            if (mSudokuCells[cellIndex / 9 * 9 + i].Button.getBackground().getConstantState()==getResources().getDrawable(R.drawable.bg_btn).getConstantState())
-                mSudokuCells[cellIndex / 9 * 9 + i].Button.setBackgroundResource(R.drawable.bg_btn_red);
+            if (mSudokuCells[cellIndex / 9 * 9 + i].getButton().getBackground().getConstantState()==getResources().getDrawable(R.drawable.bg_btn).getConstantState())
+                mSudokuCells[cellIndex / 9 * 9 + i].getButton().setBackgroundResource(R.drawable.bg_btn_red);
         }
     }
     void SetColumnCellsRed(int cellIndex) {
         for (int i = 0; i < 9; i++) {
-            if (mSudokuCells[cellIndex % 9 + i * 9].Button.getBackground().getConstantState()==getResources().getDrawable(R.drawable.bg_btn).getConstantState())
-                mSudokuCells[cellIndex % 9 + i * 9].Button.setBackgroundResource(R.drawable.bg_btn_red);
+            if (mSudokuCells[cellIndex % 9 + i * 9].getButton().getBackground().getConstantState()==getResources().getDrawable(R.drawable.bg_btn).getConstantState())
+                mSudokuCells[cellIndex % 9 + i * 9].getButton().setBackgroundResource(R.drawable.bg_btn_red);
         }
     }
     void SetBoxCellsRed(int cellIndex) {
         for (int i = 0; i < 9; i++) {
-            if (mSudokuCells[cellIndex / 9 /3*27 + cellIndex%9/3*3 + i%3 + i/3*9].Button.getBackground().getConstantState()==getResources().getDrawable(R.drawable.bg_btn).getConstantState())
-                mSudokuCells[cellIndex / 9 /3*27 + cellIndex%9/3*3 + i%3 + i/3*9].Button.setBackgroundResource(R.drawable.bg_btn_red);
+            if (mSudokuCells[cellIndex / 9 /3*27 + cellIndex%9/3*3 + i%3 + i/3*9].getButton().getBackground().getConstantState()==getResources().getDrawable(R.drawable.bg_btn).getConstantState())
+                mSudokuCells[cellIndex / 9 /3*27 + cellIndex%9/3*3 + i%3 + i/3*9].getButton().setBackgroundResource(R.drawable.bg_btn_red);
         }
     }
 
     // Return a button with its text updated
     Button FillLockedCellByMode(int index, int newValue){
-        Button button = mSudokuCells[index].Button;
-        if (mIsMode1) button.setText(mLanguage2.Words[newValue]);
-        else button.setText(mLanguage1.Words[newValue]);
+        Button button = mSudokuCells[index].getButton();
+        if (mIsMode1) button.setText(mLanguage2.getWord(newValue));
+        else button.setText(mLanguage1.getWord(newValue));
         button.setTextColor(Color.BLUE);
         return button;
     }
@@ -279,38 +276,38 @@ public class SudokuActivity extends AppCompatActivity {
         return layoutParameters;
     }
 
-    // Create and return layout parameters for a sudokucell
-    GridLayout.LayoutParams CreateSudokuCellParameters(int indexI, int indexJ){
-        GridLayout.LayoutParams layoutParameters = new GridLayout.LayoutParams();
-
-        layoutParameters.width = mScreenWidth/13;
-        layoutParameters.height = mScreenWidth/13;
-        layoutParameters.setMargins(mScreenWidth / 72,mScreenHeight / 128,mScreenWidth / 72,mScreenHeight / 128);
-        if (indexI==3 || indexI==6){
-            layoutParameters.setMargins(layoutParameters.leftMargin,mScreenHeight / 77,layoutParameters.rightMargin,layoutParameters.bottomMargin);
-        }
-        if (indexJ==3 || indexJ==6){
-            layoutParameters.setMargins(mScreenWidth / 43,layoutParameters.topMargin,layoutParameters.rightMargin,layoutParameters.bottomMargin);
-        }
-
-        return layoutParameters;
-    }
+//    // Create and return layout parameters for a sudokucell
+//    GridLayout.LayoutParams CreateSudokuCellParameters(int indexI, int indexJ){
+//        GridLayout.LayoutParams layoutParameters = new GridLayout.LayoutParams();
+//
+//        layoutParameters.width = mScreenWidth/13;
+//        layoutParameters.height = mScreenWidth/13;
+//        layoutParameters.setMargins(mScreenWidth / 72,mScreenHeight / 128,mScreenWidth / 72,mScreenHeight / 128);
+//        if (indexI==3 || indexI==6){
+//            layoutParameters.setMargins(layoutParameters.leftMargin,mScreenHeight / 77,layoutParameters.rightMargin,layoutParameters.bottomMargin);
+//        }
+//        if (indexJ==3 || indexJ==6){
+//            layoutParameters.setMargins(mScreenWidth / 43,layoutParameters.topMargin,layoutParameters.rightMargin,layoutParameters.bottomMargin);
+//        }
+//
+//        return layoutParameters;
+//    }
 
     // Create and return a SudokuCell with text set based on current puzzle
     SudokuCell SetCellValue(SudokuCell sudokuCell, int[] values, int index){
-        sudokuCell.Button.setBackgroundResource(R.drawable.bg_btn);
+        sudokuCell.getButton().setBackgroundResource(R.drawable.bg_btn);
         if (values[index]==0){
-            sudokuCell.Button.setText("");
+            sudokuCell.getButton().setText("");
         }
         else {
             sCorrectCellCount+=1;
-            String word = mLanguage1.Words[values[index]];
-            sudokuCell.Button.setText(word);
+            String word = mLanguage1.getWord(values[index]);
+            sudokuCell.getButton().setText(word);
             sudokuCell.setLock(true);
             sudokuCell.setValue(mSudokuValues[index]);
         }
-        sudokuCell.Button.setTextSize(8);
-        sudokuCell.Button.setPadding(0,0,0,0);
+        sudokuCell.getButton().setTextSize(8);
+        sudokuCell.getButton().setPadding(0,0,0,0);
         return sudokuCell;
     }
 
@@ -332,13 +329,13 @@ public class SudokuActivity extends AppCompatActivity {
                 int value = mSudokuCells[i].getValue();
                 FillLockedCellByMode(i, value);
                 if(!mSudokuCells[i].isLock()){//clean other filled cells
-                    mSudokuCells[i].Button.setText("");
+                    mSudokuCells[i].getButton().setText("");
                     mSudokuCells[i].setValue(0);
                 }
             }
             for (int j = 0; j < 9; j++) {
-                if (!mIsMode1) mPopUpButtons[j].setText(mLanguage2.Words[j + 1]);
-                else mPopUpButtons[j].setText(mLanguage1.Words[j + 1]);
+                if (!mIsMode1) mPopUpButtons[j].setText(mLanguage2.getWord(j + 1));
+                else mPopUpButtons[j].setText(mLanguage1.getWord(j + 1));
             }
             mIsMode1 = !mIsMode1;
         }
@@ -389,6 +386,7 @@ public class SudokuActivity extends AppCompatActivity {
     }
 
     // Change the object's property to value over duration frames
+    // REMOVE ME
     void Animate(Object obj, String property, Float value, int duration){
         ObjectAnimator animation = ObjectAnimator.ofFloat(obj, property, value);
         animation.setDuration(duration);
