@@ -32,7 +32,6 @@ public class SudokuActivity extends AppCompatActivity {
 
 
     // Holds location of incorrect cells
-    boolean[]       mWrong= new boolean[81];
     int             mScreenWidth, mScreenHeight;
     DisplayMetrics  mDisplayMetrics = new DisplayMetrics();
     SudokuCell[]    mSudokuCells = new SudokuCell[81];
@@ -81,16 +80,18 @@ public class SudokuActivity extends AppCompatActivity {
                     if(! mSudokuCells[sCurrentCell].isLock()){
                         // Fills current cell's button with input value
                         mSudokuCells[sCurrentCell].Button = FillLockedCellByMode(sCurrentCell, ii+1);
-
-                        boolean cellWasWrong = mWrong[sCurrentCell];
-                        boolean cellWasBlank = false;
-                        if (mSudokuCells[sCurrentCell].getValue()==0) cellWasBlank = true;
                         mSudokuCells[sCurrentCell].setValue(ii+1);
 
-                        // Update all potentially conflicting cells in mWrong
-                        mWrong = UpdateWrongArray(mWrong,mSudokuCells,sCurrentCell, ii);
-                        // Update SudokuCells to show conflicts and tally CurrentCorrectCells
-                        mSudokuCells = UpdateSudoku(mWrong, mSudokuCells, sCurrentCell, cellWasWrong, cellWasBlank);
+                        int count=0,correct;
+                        for (int y=0;y<81;y++)
+                            mSudokuCells[y].Button.setBackgroundResource(R.drawable.bg_btn);
+                        for (int x=0;x<81;x++) {
+                            correct = UpdateWrongArray(x);
+                            if (correct == 1 && mSudokuCells[x].getValue() != 0)
+                                count+=1;
+                        }
+                        if (count==81)
+                            Toast.makeText(getApplicationContext(),"Congrats! You win!",Toast.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -118,7 +119,6 @@ public class SudokuActivity extends AppCompatActivity {
                 SudokuCell newCell = new SudokuCell();
                 newCell.Button = new Button(this);
                 mSudokuCells[index] = SetCellValue(newCell, mSudokuValues, index);
-                mWrong[index]=false;
 
                 // Create Listener for Button
                 mSudokuCells[index].Button.setOnClickListener(new View.OnClickListener(){
@@ -191,8 +191,8 @@ public class SudokuActivity extends AppCompatActivity {
     // METHODS
 
     // Return an array of potential conflicts
-    boolean[] UpdateWrongArray(boolean[] wrong, SudokuCell[] sudoku, int cellIndex, int value){
-        wrong[cellIndex] = false;
+    int UpdateWrongArray(int cellIndex){
+        boolean row=false,column=false,box=false;
         // Compares current cell to all potentially conflicting cells
         // If a conflict is found, set that cell to wrong
         // Iterates through all cells in the same row, column, and box as the current cell
@@ -201,50 +201,43 @@ public class SudokuActivity extends AppCompatActivity {
             // sCurrentCell = index of the current cell
             // If the current cell was correct, but the new value conflicts with a cell in the same row, column, or box:
             //     Label this cell as wrong in the mWrong array
-            if (!wrong[cellIndex]
-                    &&(CellConflictInColumn(sudoku, cellIndex, value, j)
-                    || CellConflictInRow(sudoku, cellIndex, value, j)
-                    || CellConflictInBox(sudoku, cellIndex, value, j))) {
-                wrong[cellIndex] = true;
+            if (mSudokuCells[cellIndex].getValue()!=0){
+                if (CellConflictInColumn(cellIndex, mSudokuCells[cellIndex].getValue()-1, j)){
+                    column=true;
+                }
+                if (CellConflictInRow(cellIndex, mSudokuCells[cellIndex].getValue()-1, j)){
+                    row=true;
+                }
+                if (CellConflictInBox(cellIndex, mSudokuCells[cellIndex].getValue()-1, j)){
+                    box=true;
+                }
             }
         }
-        return wrong;
+        if (row)SetRowCellsRed(cellIndex);
+        if (column)SetColumnCellsRed(cellIndex);
+        if (box)SetBoxCellsRed(cellIndex);
+        if (box||column||row)mSudokuCells[cellIndex].Button.setBackgroundResource(R.drawable.bg_btn_ex_red);
+        else return 1;
+        return 0;
     }
-
-    // Update the Sudoku array to show potential conflicts
-    // Tally CorrectCellCount and Toast when sudoku is completed
-    SudokuCell[] UpdateSudoku(boolean[] wrong, SudokuCell[] sudoku, int currentCellIndex, boolean cellWasWrong, boolean cellWasBlank){
-        // If cell was wrong, but is now correct
-        if ((cellWasWrong)&&(!wrong[currentCellIndex])){
-            // Set no longer conflicting cells back to default color
-            sudoku = UncolorFixedCells(sudoku, currentCellIndex);
+    // Returns a SudokuCell array with possibly conflicting cells highlighted red
+    void SetRowCellsRed(int cellIndex) {
+        for (int i = 0; i < 9; i++) {
+            if (mSudokuCells[cellIndex / 9 * 9 + i].Button.getBackground().getConstantState()==getResources().getDrawable(R.drawable.bg_btn).getConstantState())
+                mSudokuCells[cellIndex / 9 * 9 + i].Button.setBackgroundResource(R.drawable.bg_btn_red);
         }
-        // If the cell was blank or wrong, but now is correct: increment the tally of correct cells
-        if ((cellWasBlank || cellWasWrong) && !wrong[currentCellIndex]) sCorrectCellCount++;
-            // Otherwise, if cell was right, but now is wrong: decrement the tally of correct cells
-        else if (!cellWasBlank && !cellWasWrong && wrong[currentCellIndex]) sCorrectCellCount--;
-        Log.d("Test","CorrectCellCount : "+sCorrectCellCount);
-
-        if (sCorrectCellCount==81){
-            Toast.makeText(getApplicationContext(),"Congrats! You win!",Toast.LENGTH_SHORT).show();
-        }
-        // Colours all potentially conflicting cells red
-        for (int x=0;x<81;x++) {
-            if (CellAtIndexIsWrong(wrong, x)){
-                sudoku = SetConflictingCellsRed(sudoku, x);
-            }
-        }
-        return sudoku;
     }
-
-    // Buttons coloured red previously are now uncoloured
-    SudokuCell[] UncolorFixedCells(SudokuCell[] sudoku, int currentCellIndex){
-        for (int x=0;x<9;x++) {
-            sudoku[currentCellIndex / 9 / 3 * 27 + sCurrentCell % 9 / 3 * 3 + x % 3 + x / 3 * 9].Button.setBackgroundResource(R.drawable.bg_btn);
-            sudoku[currentCellIndex % 9 + x * 9].Button.setBackgroundResource(R.drawable.bg_btn);
-            sudoku[currentCellIndex / 9 * 9 + x].Button.setBackgroundResource(R.drawable.bg_btn);
+    void SetColumnCellsRed(int cellIndex) {
+        for (int i = 0; i < 9; i++) {
+            if (mSudokuCells[cellIndex % 9 + i * 9].Button.getBackground().getConstantState()==getResources().getDrawable(R.drawable.bg_btn).getConstantState())
+                mSudokuCells[cellIndex % 9 + i * 9].Button.setBackgroundResource(R.drawable.bg_btn_red);
         }
-        return sudoku;
+    }
+    void SetBoxCellsRed(int cellIndex) {
+        for (int i = 0; i < 9; i++) {
+            if (mSudokuCells[cellIndex / 9 /3*27 + cellIndex%9/3*3 + i%3 + i/3*9].Button.getBackground().getConstantState()==getResources().getDrawable(R.drawable.bg_btn).getConstantState())
+                mSudokuCells[cellIndex / 9 /3*27 + cellIndex%9/3*3 + i%3 + i/3*9].Button.setBackgroundResource(R.drawable.bg_btn_red);
+        }
     }
 
     // Return a button with its text updated
@@ -258,45 +251,23 @@ public class SudokuActivity extends AppCompatActivity {
 
     // Returns true IF (the cell in question is in the same column as the current cell)
     //                 AND (the cell in question isn't the current cell)
-    boolean CellConflictInColumn(SudokuCell[] sudoku, int currentCellIndex, int popupIndex, int distanceIndex){
+    boolean CellConflictInColumn(int currentCellIndex, int popupIndex, int distanceIndex){
         int targetCellIndex = currentCellIndex % 9 + distanceIndex * 9;
-        return popupIndex + 1 == sudoku[targetCellIndex].getValue() && targetCellIndex != currentCellIndex;
+        return popupIndex + 1 == mSudokuCells[targetCellIndex].getValue() && targetCellIndex != currentCellIndex;
     }
 
     // Returns true IF (the cell in question is in the same row as the current cell)
     //                 AND(the cell in question isn't the current cell)
-    boolean CellConflictInRow(SudokuCell[] sudoku, int currentCellIndex, int popupIndex, int distanceIndex){
+    boolean CellConflictInRow(int currentCellIndex, int popupIndex, int distanceIndex){
         int targetCellIndex = currentCellIndex / 9 * 9 + distanceIndex;
-        return popupIndex + 1 == sudoku[targetCellIndex].getValue() && targetCellIndex != currentCellIndex;
+        return popupIndex + 1 == mSudokuCells[targetCellIndex].getValue() && targetCellIndex != currentCellIndex;
     }
 
     // Returns true IF (the cell in question is in the same box as the current cell)
     //                 AND(the cell in question isn't the current cell)
-    boolean CellConflictInBox(SudokuCell[] sudoku, int currentCellIndex, int popupIndex, int distanceIndex){
+    boolean CellConflictInBox(int currentCellIndex, int popupIndex, int distanceIndex){
         int targetCellIndex = currentCellIndex / 9 /3*27 + currentCellIndex%9/3*3 + distanceIndex%3 + distanceIndex/3*9;
-        return popupIndex + 1 == sudoku[targetCellIndex].getValue() && targetCellIndex != currentCellIndex;
-    }
-
-    // Returns true if the cell at index is incorrect
-    boolean CellAtIndexIsWrong(boolean[] wrong, int index){
-        return wrong[index];
-    }
-
-    // Returns a SudokuCell array with possibly conflicting cells highlighted red
-    SudokuCell[] SetConflictingCellsRed(SudokuCell[] sudoku, int cellIndex){
-        for (int i = 0; i < 9; i++) {
-            if (!mWrong[cellIndex % 9 + i * 9]) {
-                sudoku[cellIndex % 9 + i * 9].Button.setBackgroundResource(R.drawable.bg_btn_red);
-            }
-            if (!mWrong[cellIndex / 9 * 9 + i]) {
-                sudoku[cellIndex / 9 * 9 + i].Button.setBackgroundResource(R.drawable.bg_btn_red);
-            }
-            if (!mWrong[cellIndex / 9 / 3 * 27 + cellIndex % 9 / 3 * 3 + i % 3 + i / 3 * 9]){
-                sudoku[cellIndex / 9 /3*27 + cellIndex%9/3*3 + i%3 + i/3*9].Button.setBackgroundResource(R.drawable.bg_btn_red);
-            }
-        }
-        sudoku[cellIndex].Button.setBackgroundResource(R.drawable.bg_btn_ex_red);
-        return sudoku;
+        return popupIndex + 1 == mSudokuCells[targetCellIndex].getValue() && targetCellIndex != currentCellIndex;
     }
 
     // Creates and returns layout parameters for popup button
