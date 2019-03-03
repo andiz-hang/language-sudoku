@@ -2,20 +2,35 @@ package com.bignerdranch.android.vocabularysudoku.View;
 
 import android.animation.ObjectAnimator;
 import android.text.Layout;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridLayout;
+import static com.bignerdranch.android.vocabularysudoku.Controller.SudokuActivity.sScreenHeight;
+import static com.bignerdranch.android.vocabularysudoku.Controller.SudokuActivity.sScreenWidth;
 
 public class ButtonUI {
     private Button mButton;
     private int mIndexX;
     private int mIndexY;
 
-    public ButtonUI(Button button, GridLayout grid, int x, int y) {
-
+    public ButtonUI(Button button){
+        Log.d("Test", "ButtonUI Created");
         mButton = button;
-        GridLayout.LayoutParams buttonUIParams = CreateSudokuCellParameters(x,y);
+    }
+
+    public ButtonUI(Button button, GridLayout grid, int x, int y) {
+        Log.d("Test", "ButtonUI Created");
+        mButton = button;
+        GridLayout.LayoutParams buttonUIParams = CreateSudokuCellButtonParameters(x,y);
         grid.addView(button,buttonUIParams);
+    }
+
+    public Button getButton(){
+        return mButton;
+    }
+    public void setButton(Button button){
+        mButton = button;
     }
 
     // Change the object's property to value over duration frames
@@ -34,17 +49,17 @@ public class ButtonUI {
     }
 
     // Create and return layout parameters for a sudokucell
-    GridLayout.LayoutParams CreateSudokuCellParameters(int indexI, int indexJ){
+    GridLayout.LayoutParams CreateSudokuCellButtonParameters(int indexI, int indexJ){
         GridLayout.LayoutParams layoutParameters = new GridLayout.LayoutParams();
 
-        layoutParameters.width = mScreenWidth/13;
-        layoutParameters.height = mScreenWidth/13;
-        layoutParameters.setMargins(mScreenWidth / 72,mScreenHeight / 128,mScreenWidth / 72,mScreenHeight / 128);
+        layoutParameters.width = sScreenWidth/13;
+        layoutParameters.height = sScreenWidth/13;
+        layoutParameters.setMargins(sScreenWidth / 72,sScreenHeight / 128,sScreenWidth / 72,sScreenHeight / 128);
         if (indexI==3 || indexI==6){
-            layoutParameters.setMargins(layoutParameters.leftMargin,mScreenHeight / 77,layoutParameters.rightMargin,layoutParameters.bottomMargin);
+            layoutParameters.setMargins(layoutParameters.leftMargin,sScreenHeight / 77,layoutParameters.rightMargin,layoutParameters.bottomMargin);
         }
         if (indexJ==3 || indexJ==6){
-            layoutParameters.setMargins(mScreenWidth / 43,layoutParameters.topMargin,layoutParameters.rightMargin,layoutParameters.bottomMargin);
+            layoutParameters.setMargins(sScreenWidth / 43,layoutParameters.topMargin,layoutParameters.rightMargin,layoutParameters.bottomMargin);
         }
 
         return layoutParameters;

@@ -4,7 +4,7 @@ import android.widget.Button;
 
 public class SudokuCell {
     //scope when you want to make your variable/function visible in all classes that extend current class AND its parent classes
-    private Button mButton;
+    //private Button mButton;
     private boolean mLock = false;
     private int mValue = 0;
 
@@ -24,11 +24,11 @@ public class SudokuCell {
         return mLock;
     }
 
-    public Button getButton() {
-        return mButton;
-    }
-
-    public void setButton(Button newButton) {
-        mButton = newButton;
-    }
+//    public Button getButton() {
+//        return mButton;
+//    }
+//
+//    public void setButton(Button newButton) {
+//        mButton = newButton;
+//    }
 }

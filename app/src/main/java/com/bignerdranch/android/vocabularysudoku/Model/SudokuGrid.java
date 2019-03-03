@@ -1,12 +1,15 @@
 package com.bignerdranch.android.vocabularysudoku.Model;
 
 import android.content.res.Resources;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridLayout;
 
 import com.bignerdranch.android.vocabularysudoku.R;
 import java.util.Random;
+
+import static com.bignerdranch.android.vocabularysudoku.Controller.SudokuActivity.sSize;
 
 public class SudokuGrid {
 
@@ -23,6 +26,7 @@ public class SudokuGrid {
     // Methods
 
     public SudokuGrid(int N, Resources res) {
+        Log.d("Test", "SudokuGrid getting initialized");
         mGrid = new SudokuCell[N][N];
         mWrongRows = new boolean[N];
         mWrongCols = new boolean[N];
@@ -54,6 +58,12 @@ public class SudokuGrid {
     }
 
     public SudokuCell getSudokuCell(int x, int y) {
+        return mGrid[y][x];
+    }
+
+    public SudokuCell getSudokuCell(int index){
+        int y = index / sSize;
+        int x = index % sSize;
         return mGrid[y][x];
     }
 
