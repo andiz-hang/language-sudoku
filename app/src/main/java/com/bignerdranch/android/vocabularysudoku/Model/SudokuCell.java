@@ -7,6 +7,7 @@ public class SudokuCell {
     //private Button mButton;
     private boolean mLock = false;
     private int mValue = 0;
+    private boolean mConflicting = false;
 
     public void setValue(int value) {
         this.mValue = value;
@@ -22,6 +23,14 @@ public class SudokuCell {
 
     public boolean isLock() {
         return mLock;
+    }
+
+    public void setConflicting(boolean value){
+        mConflicting = value;
+    }
+
+    public boolean isConflicting(){
+        return mConflicting;
     }
 
 //    public Button getButton() {

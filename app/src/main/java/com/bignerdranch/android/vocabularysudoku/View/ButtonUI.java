@@ -48,7 +48,7 @@ public class ButtonUI {
 
     }
 
-    // Create and return layout parameters for a sudokucell
+    // Create and return layout parameters for a Sudokucell
     GridLayout.LayoutParams CreateSudokuCellButtonParameters(int indexI, int indexJ){
         GridLayout.LayoutParams layoutParameters = new GridLayout.LayoutParams();
 
@@ -62,6 +62,14 @@ public class ButtonUI {
             layoutParameters.setMargins(sScreenWidth / 43,layoutParameters.topMargin,layoutParameters.rightMargin,layoutParameters.bottomMargin);
         }
 
+        return layoutParameters;
+    }
+    // Creates and returns layout parameters for a Popup button
+    public GridLayout.LayoutParams CreatePopUpButtonParameters(){
+        GridLayout.LayoutParams layoutParameters = new GridLayout.LayoutParams();//(GridLayout.LayoutParams.WRAP_CONTENT, GridLayout.LayoutParams.WRAP_CONTENT);
+        layoutParameters.width = sScreenWidth/4;
+        layoutParameters.height = sScreenHeight/13;
+        layoutParameters.bottomMargin = 0;
         return layoutParameters;
     }
 }
