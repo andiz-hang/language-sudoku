@@ -1,4 +1,4 @@
-package com.bignerdranch.android.vocabularysudoku;
+package com.bignerdranch.android.vocabularysudoku.model;
 
 public class Language {
     String name;
@@ -16,5 +16,9 @@ public class Language {
         Words[7] = word7;
         Words[8] = word8;
         Words[9] = word9;
+    }
+
+    public String getWord(int index){
+        return Words[index];
     }
 }
