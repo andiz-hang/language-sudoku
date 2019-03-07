@@ -5,7 +5,7 @@ public class SudokuCell {
     //scope when you want to make your variable/function visible in all classes that extend current class AND its parent classes
     //private Button mButton;
     private boolean mLock = false;
-    private int mValue = 0;
+    private int mValue;
     private boolean mConflicting = false;
 
     public SudokuCell(){
