@@ -11,7 +11,8 @@
     <string name="toggle">toggle</string>
     <string name="hint">hint</string>
     <string name="word_input_dialog_title">Please enter a valid word:</string>
-    <string name="enter_word_here">Enter Word Here</string>
+    <string name="enter_word_1_here">Enter word in first language here</string>
+    <string name="enter_word_2_here">Enter word in second language here</string>
     <string name="enter">Enter</string>
     <string name="cancel">Cancel</string>
 </resources>

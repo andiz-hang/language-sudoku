@@ -13,12 +13,21 @@
         android:text="@string/word_input_dialog_title" />
 
     <EditText
-        android:id="@+id/et_input"
+        android:id="@+id/et_input1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:ems="10"
-        android:hint="@string/enter_word_here"
+        android:hint="@string/enter_word_1_here"
+        android:inputType="textPersonName"/>
+
+    <EditText
+        android:id="@+id/et_input2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:ems="10"
+        android:hint="@string/enter_word_2_here"
         android:inputType="textPersonName"/>
 
     <LinearLayout
