@@ -1,7 +1,6 @@
 package com.bignerdranch.android.vocabularysudoku.view;
 
 import android.animation.ObjectAnimator;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.GridLayout;
 import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sScreenHeight;
