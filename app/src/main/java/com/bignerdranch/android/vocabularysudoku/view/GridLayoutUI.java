@@ -82,6 +82,7 @@ public class GridLayoutUI {
     }
     public void SetColumnCellsRed(int colNum) {
         for (int i = 0; i < 9; i++) {
+            Log.d("Test", "Column: " + i);
             //if (getButtonUI(cellIndex % 9 + i * 9).getButton().getBackground().getConstantState() == res.getDrawable(R.drawable.bg_btn).getConstantState())
             //getButtonUI(cellIndex % 9 + i * 9).getButton().setBackgroundResource(R.drawable.bg_btn_red);
             getButtonUI(colNum + i * 9).getButton().setBackgroundResource(R.drawable.bg_btn_red);

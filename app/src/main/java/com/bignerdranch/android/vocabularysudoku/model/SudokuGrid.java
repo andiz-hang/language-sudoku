@@ -161,7 +161,7 @@ public class SudokuGrid {
     public void updateSudokuModel(int value){
         // If a cell isn't locked, set its text to the chosen word and show any conflicts
         if(!getSudokuCell(sCurrentCell).isLock()){
-            getSudokuCell(sCurrentCell).setValue(value+1);
+            getSudokuCell(sCurrentCell).setValue(value);
 
             int count=0,correct;
             for(int i = 0; i < 81; i++){
@@ -176,11 +176,12 @@ public class SudokuGrid {
             }
 //            if (count==81)
 //                Toast.makeText(getApplicationContext(),"Congrats! You win!",Toast.LENGTH_SHORT).show();
-            setButtonValue(value);
+            if (value != 0) setButtonValue(value);
             resetButtonImage();
         }
-
     }
+
+
 
     public int FindConflictAtIndex(int cellIndex){
         boolean row=false,column=false,box=false;

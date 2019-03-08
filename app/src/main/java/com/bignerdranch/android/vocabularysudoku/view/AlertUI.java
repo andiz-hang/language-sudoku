@@ -12,15 +12,17 @@ public class AlertUI {
 
     AlertDialog.Builder mBuilder;
     View mView;
-    EditText mInput;
+    EditText mInput1;
+    EditText mInput2;
     Button mEnter;
     Button mCancel;
     AlertDialog mDialog;
 
-    public AlertUI(AlertDialog.Builder builder,View view, EditText input, Button enter, Button cancel) {
+    public AlertUI(AlertDialog.Builder builder,View view, EditText input1, EditText input2,  Button enter, Button cancel) {
         mBuilder = builder;
         mView = view;
-        mInput = input;
+        mInput1 = input1;
+        mInput2 = input2;
         mEnter = enter;
         mCancel = cancel;
 
@@ -29,8 +31,12 @@ public class AlertUI {
         mDialog.show();
     }
 
-    public EditText getInput() {
-        return mInput;
+    public EditText getInput1() {
+        return mInput1;
+    }
+
+    public EditText getInput2() {
+        return mInput2;
     }
 
     public Button getEnter() {
