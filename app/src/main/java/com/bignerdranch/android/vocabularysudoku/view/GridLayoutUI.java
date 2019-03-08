@@ -1,7 +1,6 @@
 package com.bignerdranch.android.vocabularysudoku.view;
 
 import android.animation.ObjectAnimator;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.util.Log;
 import android.widget.Button;
