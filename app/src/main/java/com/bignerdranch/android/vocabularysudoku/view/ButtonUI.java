@@ -3,6 +3,9 @@ package com.bignerdranch.android.vocabularysudoku.view;
 import android.animation.ObjectAnimator;
 import android.widget.Button;
 import android.widget.GridLayout;
+
+import com.bignerdranch.android.vocabularysudoku.R;
+
 import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sScreenHeight;
 import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sScreenWidth;
 
@@ -26,6 +29,7 @@ public class ButtonUI {
         //mButton.setMinWidth(0);
         //mButton.setIncludeFontPadding(false);
         mButton.setPadding(0,0,0,0);
+        mButton.setBackgroundResource(R.drawable.bg_btn);
         GridLayout.LayoutParams buttonUIParams = CreateSudokuCellButtonParameters(x,y);
         grid.addView(button,buttonUIParams);
     }
@@ -62,7 +66,7 @@ public class ButtonUI {
                 layoutParameters.width = sScreenWidth / 10;
                 layoutParameters.height = sScreenWidth / 10;
 
-                layoutParameters.setMargins(0,0, 0, 0);
+                layoutParameters.setMargins(15,15, 15, 15);
                 if (indexI==3 || indexI==6){
                     layoutParameters.setMargins(layoutParameters.leftMargin,sScreenHeight / 77,layoutParameters.rightMargin,layoutParameters.bottomMargin);
                 }
@@ -74,7 +78,7 @@ public class ButtonUI {
                 layoutParameters.width = sScreenHeight / 11;
                 layoutParameters.height = sScreenHeight / 11;
 
-                layoutParameters.setMargins(0,0,0,0);
+                layoutParameters.setMargins(15,15, 15, 15);
                 if (indexI==3 || indexI==6){
                     layoutParameters.setMargins(layoutParameters.leftMargin,sScreenHeight / 200,layoutParameters.rightMargin,layoutParameters.bottomMargin);
                 }
