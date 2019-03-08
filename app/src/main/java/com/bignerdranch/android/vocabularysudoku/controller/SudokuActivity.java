@@ -9,7 +9,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.GridLayout;
+import android.support.v7.app.AlertDialog;
+import android.widget.Toast;
 
 import com.bignerdranch.android.vocabularysudoku.model.Language;
 import com.bignerdranch.android.vocabularysudoku.R;
@@ -35,8 +38,8 @@ public class SudokuActivity extends AppCompatActivity {
     DisplayMetrics mDisplayMetrics = new DisplayMetrics();
     ButtonUI[] mPopUpButtons = new ButtonUI[9];
     //    Button[]        mPopUpButtons = new Button[9];
-    Button mClearButton;  // unimplemented
-    Button mToggleButton; // unimplemented
+    Button mClearButton;
+    Button mToggleButton;
     Button mHintButton;   // unimplemented
 
 
@@ -55,8 +58,8 @@ public class SudokuActivity extends AppCompatActivity {
 
     GridLayoutUI mSudokuLayout;
     GridLayoutUI mPopupMenu;
-    ButtonUI mClearButtonUI;  // unimplemented
-    ButtonUI mToggleButtonUI; // unimplemented
+    ButtonUI mClearButtonUI;
+    ButtonUI mToggleButtonUI;
     ButtonUI mHintButtonUI;   // unimplemented
 
     // On clicking a square we show a screen with buttons with word choices
@@ -120,6 +123,7 @@ public class SudokuActivity extends AppCompatActivity {
                     }
                 }
             }
+//            KNOWN BUG: NOT ALL THE WRONG CELLS ARE HIGHLIGHTED RED
 //            mSudokuGrid.sendModelToView();
         }
         // Get width and height of screen
@@ -157,8 +161,12 @@ public class SudokuActivity extends AppCompatActivity {
                 }
             });
             // Create and set parameters for button, then add button with parameters to Popup Grid
-            GridLayout.LayoutParams layoutParams = mPopUpButtons[i].CreatePopUpButtonParameters();
-            mPopupMenu.getLayout().addView(mPopUpButtons[i].getButton(), layoutParams);
+            if (sScreenHeight > sScreenWidth) {
+                GridLayout.LayoutParams layoutParams = mPopUpButtons[i].CreatePopUpButtonParameters();
+                mPopupMenu.getLayout().addView(mPopUpButtons[i].getButton(), layoutParams);
+            } else {
+                mPopupMenu.getLayout().addView(mPopUpButtons[i].getButton(), i);
+            }
         }
 
         Log.d("Test", "Create Sudoku Buttons");
@@ -234,15 +242,11 @@ public class SudokuActivity extends AppCompatActivity {
 //                mPopUpButtons[valueForPopUpHint].setBackgroundResource(R.drawable.bg_btn_yellow);
             }
         });
-        //initially hide the buttons
+        //initially hide the buttons if in Portrait mode
         if (sScreenHeight > sScreenWidth) {
             mClearButtonUI.getButton().setTranslationX(sScreenHeight / 5f);
             mToggleButtonUI.getButton().setTranslationX(sScreenHeight / 5f);
             mHintButtonUI.getButton().setTranslationX(sScreenHeight / 5f);
-        } else {
-            mClearButtonUI.getButton().setTranslationX(sScreenWidth / 5f);
-            mToggleButtonUI.getButton().setTranslationX(sScreenWidth / 5f);
-            mHintButtonUI.getButton().setTranslationX(sScreenWidth / 5f);
         }
 
         //Log.d("Test","");
@@ -304,7 +308,7 @@ public class SudokuActivity extends AppCompatActivity {
     // Create an action bar button
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.mymenu, menu);
+        getMenuInflater().inflate(R.menu.menu_button, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -313,21 +317,44 @@ public class SudokuActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         int id = item.getItemId();
-        // When the LanguageToggle  button is clicked, switch language of all pop up menu buttons
-        if (id == R.id.ChangeMode) {
-            for (int i = 0; i < 81; i++) {
-                int value = mSudokuGrid.getSudokuCell(i).getValue();
-                mSudokuLayout.FillLockedCellByMode(i, value);
-                if (!mSudokuGrid.getSudokuCell(i).isLock()) {//clean other filled cells
-                    mSudokuLayout.getButtonUI(i).getButton().setText("");
-                    mSudokuGrid.getSudokuCell(i).setValue(0);
+        // When "INPUT WORD" is clicked, allow the user to input a word for the word pair thing
+        if (id == R.id.input_word_button) {
+            // Create a dialog box popup
+            AlertDialog.Builder mBuilder = new AlertDialog.Builder(SudokuActivity.this);
+            View mView = getLayoutInflater().inflate(R.layout.word_input_dialog, null);
+            final EditText mInput = mView.findViewById(R.id.et_input);
+            Button mEnter = mView.findViewById(R.id.enter_button);
+            Button mCancel = mView.findViewById(R.id.cancel_button);
+            mBuilder.setView(mView);
+            final AlertDialog dialog = mBuilder.create();
+            dialog.show();
+
+            // Enter button functionality
+            mEnter.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!mInput.getText().toString().isEmpty()) {
+//                        if (/* Word is valid */) {
+                            Toast.makeText(SudokuActivity.this, "Word Accepted", Toast.LENGTH_SHORT).show();
+                            /* To store the inputted word string, use line below */
+//                            mInput.getText().toString();
+                            dialog.dismiss();
+//                        } else {
+//                            Toast.makeText(SudokuActivity.this, "Sorry, that word is invalid", Toast.LENGTH_SHORT).show();
+//                        }
+                    } else {
+                        Toast.makeText(SudokuActivity.this, "Please enter a word", Toast.LENGTH_SHORT).show();
+                    }
                 }
-            }
-            for (int j = 0; j < 9; j++) {
-                if (!sIsMode1) mPopUpButtons[j].setText(sLanguage2.getWord(j + 1));
-                else mPopUpButtons[j].setText(sLanguage1.getWord(j + 1));
-            }
-            sIsMode1 = !sIsMode1;
+            });
+
+            mCancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -382,7 +409,7 @@ public class SudokuActivity extends AppCompatActivity {
                 mSudokuLayout.Animate("translationX", 0f, 500);
                 mSudokuLayout.Animate("translationY", 0f, 500);
                 // Move pop up view offscreen
-                mPopupMenu.Animate("translationX", sScreenHeight / 13 * 3f, 500);
+                mPopupMenu.Animate("translationX", sScreenWidth / 10 * 3f, 500);
                 // Move buttons off screen
                 mClearButtonUI.Animate("translationX", sScreenWidth / 5f, 300);
                 mToggleButtonUI.Animate("translationX", sScreenWidth / 5f, 400);
@@ -393,6 +420,7 @@ public class SudokuActivity extends AppCompatActivity {
                 sPopUpOnScreen = false;
             }
             // Move Onscreen
+            // KNOWN BUG: ZOOM IN ZOOM OUT DOESN'T WORK PROPERLY IN LANDSCAPE MODE
             else {
                 // Pan to the selected button
                 mSudokuLayout.Animate("translationX", sudoku_view.getWidth() * 1f - button.getX() * (sudoku_view.getWidth() * 2 / (sScreenWidth * 71 / 80f)), 500);
