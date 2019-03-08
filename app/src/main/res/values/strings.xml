@@ -5,9 +5,13 @@
     <string name="sudoku_grid">sudoku_grid</string>
     <string name="pop_up_layout">pop_up_layout</string>
 
-    <string name="change_mode">change mode</string>
+    <string name="change_mode">Input Word</string>
 
     <string name="clear">clear</string>
     <string name="toggle">toggle</string>
     <string name="hint">hint</string>
+    <string name="word_input_dialog_title">Please enter a valid word:</string>
+    <string name="enter_word_here">Enter Word Here</string>
+    <string name="enter">Enter</string>
+    <string name="cancel">Cancel</string>
 </resources>

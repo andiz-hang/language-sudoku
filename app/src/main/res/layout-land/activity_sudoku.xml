@@ -2,16 +2,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
-    android:orientation="vertical"
-    android:paddingTop="10dp">
+    android:orientation="horizontal">
 
     <GridLayout
         android:id="@+id/sudoku_grid"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:columnCount="9"
         android:rowCount="9"
-        android:layout_gravity="fill_horizontal"
+        android:layout_gravity="fill_vertical"
         android:layout_centerHorizontal="true">
     </GridLayout>
 
@@ -19,7 +18,7 @@
         android:id="@+id/InnerRelativeLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical|bottom"
+        android:layout_gravity="center_vertical|end"
         android:orientation="vertical">
 
 
@@ -27,25 +26,17 @@
             android:id="@+id/pop_up_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal|bottom"
-            android:background="@color/colorPrimaryDark"
-            android:columnCount="3"
-            android:rowCount="3"
-            android:layout_alignParentBottom="true"/>
-
-        <RelativeLayout
-            android:id="@+id/options_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true">
+            android:layout_gravity="center_vertical|end"
+            android:background="@color/colorPrimaryDark"
+            android:orientation="vertical"
+            android:columnCount="2"
+            android:rowCount="6">
 
             <Button
                 android:id="@+id/clear_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_marginTop="0dp"
                 android:layout_marginEnd="1dp"
                 android:layout_marginBottom="5dp"
                 android:background="@drawable/bg_btn_green"
@@ -56,25 +47,22 @@
                 android:id="@+id/toggle_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/clear_button"
-                android:text="@string/toggle"
-                android:textColor="@color/colorWhite"
-                android:background="@drawable/bg_btn_green"
+                android:layout_marginEnd="1dp"
                 android:layout_marginBottom="5dp"
-                android:layout_marginEnd="1dp"/>
+                android:background="@drawable/bg_btn_green"
+                android:text="@string/toggle"
+                android:textColor="@color/colorWhite" />
 
 
             <Button
                 android:id="@+id/hint_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/toggle_button"
-                android:text="@string/hint"
-                android:textColor="@color/colorWhite"
+                android:layout_marginEnd="1dp"
                 android:background="@drawable/bg_btn_green"
-                android:layout_marginEnd="1dp"/>
-
-        </RelativeLayout>
+                android:text="@string/hint"
+                android:textColor="@color/colorWhite" />
+        </GridLayout>
 
     </RelativeLayout>
 </RelativeLayout>
