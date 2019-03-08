@@ -55,26 +55,47 @@ public class ButtonUI {
     }
 
     // Create and return layout parameters for a Sudokucell
-    GridLayout.LayoutParams CreateSudokuCellButtonParameters(int indexI, int indexJ){
+    private GridLayout.LayoutParams CreateSudokuCellButtonParameters(int indexI, int indexJ){
         GridLayout.LayoutParams layoutParameters = new GridLayout.LayoutParams();
 
-        layoutParameters.width = sScreenWidth/13;
-        layoutParameters.height = sScreenWidth/13;
-        layoutParameters.setMargins(sScreenWidth / 72,sScreenHeight / 128,sScreenWidth / 72,sScreenHeight / 128);
-        if (indexI==3 || indexI==6){
-            layoutParameters.setMargins(layoutParameters.leftMargin,sScreenHeight / 77,layoutParameters.rightMargin,layoutParameters.bottomMargin);
-        }
-        if (indexJ==3 || indexJ==6){
-            layoutParameters.setMargins(sScreenWidth / 43,layoutParameters.topMargin,layoutParameters.rightMargin,layoutParameters.bottomMargin);
-        }
+            // In portrait mode
+            if (sScreenHeight > sScreenWidth) {
+                layoutParameters.width = sScreenWidth / 10;
+                layoutParameters.height = sScreenWidth / 10;
+
+                layoutParameters.setMargins(0,0, 0, 0);
+                if (indexI==3 || indexI==6){
+                    layoutParameters.setMargins(layoutParameters.leftMargin,sScreenHeight / 77,layoutParameters.rightMargin,layoutParameters.bottomMargin);
+                }
+                if (indexJ==3 || indexJ==6){
+                    layoutParameters.setMargins(sScreenWidth / 43,layoutParameters.topMargin,layoutParameters.rightMargin,layoutParameters.bottomMargin);
+                }
+
+            } else { // In landscape mode
+                layoutParameters.width = sScreenHeight / 11;
+                layoutParameters.height = sScreenHeight / 11;
+
+                layoutParameters.setMargins(0,0,0,0);
+                if (indexI==3 || indexI==6){
+                    layoutParameters.setMargins(layoutParameters.leftMargin,sScreenHeight / 200,layoutParameters.rightMargin,layoutParameters.bottomMargin);
+                }
+                if (indexJ==3 || indexJ==6){
+                    layoutParameters.setMargins(sScreenWidth / 75,layoutParameters.topMargin,layoutParameters.rightMargin,layoutParameters.bottomMargin);
+                }
+            }
 
         return layoutParameters;
     }
     // Creates and returns layout parameters for a Popup button
     public GridLayout.LayoutParams CreatePopUpButtonParameters(){
         GridLayout.LayoutParams layoutParameters = new GridLayout.LayoutParams();//(GridLayout.LayoutParams.WRAP_CONTENT, GridLayout.LayoutParams.WRAP_CONTENT);
-        layoutParameters.width = sScreenWidth/4;
-        layoutParameters.height = sScreenHeight/13;
+        if (sScreenHeight > sScreenWidth) {
+            layoutParameters.width = sScreenWidth / 4;
+            layoutParameters.height = sScreenHeight / 13;
+        } else {
+            layoutParameters.width = sScreenWidth / 10;
+            layoutParameters.height = sScreenHeight / 13;
+        }
         layoutParameters.bottomMargin = 0;
         return layoutParameters;
     }
