@@ -1,8 +1,6 @@
 package com.bignerdranch.android.vocabularysudoku.controller;
 
-import android.animation.ObjectAnimator;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -12,16 +10,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridLayout;
-import android.widget.Toast;
 
 import com.bignerdranch.android.vocabularysudoku.model.Language;
 import com.bignerdranch.android.vocabularysudoku.R;
-import com.bignerdranch.android.vocabularysudoku.model.SudokuCell;
 import com.bignerdranch.android.vocabularysudoku.model.SudokuGrid;
 import com.bignerdranch.android.vocabularysudoku.view.ButtonUI;
 import com.bignerdranch.android.vocabularysudoku.view.GridLayoutUI;
 
-
+import java.util.ArrayList;
 import java.util.Random;
 
 
@@ -36,24 +32,19 @@ public class SudokuActivity extends AppCompatActivity {
 
     Resources res;// = getResources();
 
-    // Holds location of incorrect cells
-    boolean[] mWrong = new boolean[81];
-    int mScreenWidth, mScreenHeight;
     DisplayMetrics mDisplayMetrics = new DisplayMetrics();
-    SudokuCell[] mSudokuCells = new SudokuCell[81];
     ButtonUI[] mPopUpButtons = new ButtonUI[9];
     //    Button[]        mPopUpButtons = new Button[9];
-    int[] mSudokuValues = new int[81];
     Button mClearButton;  // unimplemented
     Button mToggleButton; // unimplemented
     Button mHintButton;   // unimplemented
 
 
     public static int sSize = 9;
-    static int sCorrectCellCount;
     static boolean sPopUpOnScreen = false;// for pop-up-screen
     public static int sCurrentCell;
     public static int sScreenWidth, sScreenHeight;
+    public int mSavedPuzzleNumber;
 
     public static boolean sIsMode1 = true;//mode1 is Language1 puzzle with Language2 filled in, determines whether the first mode is the toggled mode not
     public static Language sLanguage1 = new Language("English", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine");
@@ -75,18 +66,62 @@ public class SudokuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sudoku);
         res = getResources();
-        Random rand = new Random();
-        int randInt = rand.nextInt(75);
-        String answerKey = res.getStringArray(R.array.answ)[randInt];
-        String initialValues = res.getStringArray(R.array.puzz)[randInt];
-        mSudokuGrid = new SudokuGrid(sSize, answerKey, initialValues);
-        //mSudokuGrid.sendModelToView();
-
         Log.d("Test", "SudokuLayoutUI");
-        GridLayout gridLayout = findViewById(R.id.sudoku_grid);
-        mSudokuLayout = new GridLayoutUI(gridLayout);
-        mSudokuGrid.setSudokuLayout(mSudokuLayout);
+        if (savedInstanceState == null) { // First time opening the app
+            Random rand = new Random();
+            int randInt = rand.nextInt(75);
+            mSavedPuzzleNumber = randInt;
+            String answerKey = res.getStringArray(R.array.answ)[randInt];
+            String initialValues = res.getStringArray(R.array.puzz)[randInt];
+            mSudokuGrid = new SudokuGrid(sSize, answerKey, initialValues);
 
+            GridLayout gridLayout = findViewById(R.id.sudoku_grid);
+            mSudokuLayout = new GridLayoutUI(gridLayout);
+            mSudokuGrid.setSudokuLayout(mSudokuLayout);
+            //mSudokuGrid.sendModelToView();
+        } else { // Restore all saved values
+            int randInt = savedInstanceState.getInt("SUDOKU_PUZZLE_NUMBER");
+            String answerKey = res.getStringArray(R.array.answ)[randInt];
+            String initialValues = res.getStringArray(R.array.puzz)[randInt];
+            mSudokuGrid = new SudokuGrid(sSize, answerKey, initialValues);
+
+            GridLayout gridLayout = findViewById(R.id.sudoku_grid);
+            mSudokuLayout = new GridLayoutUI(gridLayout);
+            mSudokuGrid.setSudokuLayout(mSudokuLayout);
+
+            for (int i = 0; i < sSize * sSize; i++) {
+                mSudokuGrid.getSudokuCell(i).setValue(savedInstanceState.getIntegerArrayList("SUDOKU_GRID_VALUES").get(i));
+                if (savedInstanceState.getIntegerArrayList("SUDOKU_GRID_LOCKS").get(i) == 1) {
+                    mSudokuGrid.getSudokuCell(i).setLock(true);
+                } else {
+                    mSudokuGrid.getSudokuCell(i).setLock(false);
+                }
+                if (savedInstanceState.getIntegerArrayList("SUDOKU_GRID_CONFLICTS").get(i) == 1) {
+                    mSudokuGrid.getSudokuCell(i).setConflicting(true);
+                } else {
+                    mSudokuGrid.getSudokuCell(i).setConflicting(false);
+                }
+                if (i < 9) {
+
+                    if (savedInstanceState.getIntegerArrayList("SUDOKU_GRID_WRONG_ROWS").get(i) == 1) {
+                        mSudokuGrid.setWrongRows(i, true);
+                    } else {
+                        mSudokuGrid.setWrongRows(i, false);
+                    }
+                    if (savedInstanceState.getIntegerArrayList("SUDOKU_GRID_WRONG_COLS").get(i) == 1) {
+                        mSudokuGrid.setWrongCols(i, true);
+                    } else {
+                        mSudokuGrid.setWrongCols(i, false);
+                    }
+                    if (savedInstanceState.getIntegerArrayList("SUDOKU_GRID_WRONG_BOXES").get(i) == 1) {
+                        mSudokuGrid.setWrongBoxes(i, true);
+                    } else {
+                        mSudokuGrid.setWrongBoxes(i, false);
+                    }
+                }
+            }
+//            mSudokuGrid.sendModelToView();
+        }
         // Get width and height of screen
         getWindowManager().getDefaultDisplay().getMetrics(mDisplayMetrics);
         sScreenHeight = mDisplayMetrics.heightPixels;
@@ -96,8 +131,11 @@ public class SudokuActivity extends AppCompatActivity {
         Log.d("Test", "popUpGrid");
         GridLayout popUpGrid = findViewById(R.id.pop_up_layout);
         mPopupMenu = new GridLayoutUI(popUpGrid);
-        mPopupMenu.getLayout().setTranslationY(sScreenHeight);
-
+        if (sScreenHeight > sScreenWidth) {
+            mPopupMenu.getLayout().setTranslationY(sScreenHeight);
+        } else {
+            mPopupMenu.getLayout().setTranslationX(sScreenWidth);
+        }
 
         Log.d("Test", "Create Popup Buttons");
         // Create Popup Buttons
@@ -130,7 +168,7 @@ public class SudokuActivity extends AppCompatActivity {
             for (int j = 0; j < sSize; j++) {
                 int index = i * sSize + j;
                 final int ii = index;
-                // Initalize new sudoku cell, give it a button, and add it to SudokuCells
+                // Initialize new sudoku cell, give it a button, and add it to SudokuCells
                 Button button = new Button(this);
                 ButtonUI buttonUI = new ButtonUI(button, mSudokuLayout.getLayout(), i, j);
                 mSudokuLayout.addButtonUI(buttonUI, index);
@@ -197,15 +235,59 @@ public class SudokuActivity extends AppCompatActivity {
             }
         });
         //initially hide the buttons
-        mClearButtonUI.getButton().setTranslationX(sScreenHeight / 5f);
-        mToggleButtonUI.getButton().setTranslationX(sScreenHeight / 5f);
-        mHintButtonUI.getButton().setTranslationX(sScreenHeight / 5f);
-
+        if (sScreenHeight > sScreenWidth) {
+            mClearButtonUI.getButton().setTranslationX(sScreenHeight / 5f);
+            mToggleButtonUI.getButton().setTranslationX(sScreenHeight / 5f);
+            mHintButtonUI.getButton().setTranslationX(sScreenHeight / 5f);
+        } else {
+            mClearButtonUI.getButton().setTranslationX(sScreenWidth / 5f);
+            mToggleButtonUI.getButton().setTranslationX(sScreenWidth / 5f);
+            mHintButtonUI.getButton().setTranslationX(sScreenWidth / 5f);
+        }
 
         //Log.d("Test","");
         mSudokuGrid.sendModelToView();
     }
     //end of onCreate
+
+    // When the app state changes (screen rotation), save all of the values of the app
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        ArrayList<Integer> mSavedCellValues = new ArrayList<>();
+        ArrayList<Integer> mSavedCellLocks = new ArrayList<>();
+        ArrayList<Integer> mSavedCellConflicts = new ArrayList<>();
+
+        for (int i = 0; i < sSize * sSize; i++) {
+            mSavedCellValues.add(mSudokuGrid.getSudokuCell(i).getValue());
+            if (mSudokuGrid.getSudokuCell(i).isLock()) mSavedCellLocks.add(1);
+            else mSavedCellLocks.add(0);
+            if (mSudokuGrid.getSudokuCell(i).isConflicting()) mSavedCellConflicts.add(1);
+            else mSavedCellConflicts.add(0);
+        }
+
+        ArrayList<Integer> mSavedWrongRows = new ArrayList<>();
+        ArrayList<Integer> mSavedWrongCols = new ArrayList<>();
+        ArrayList<Integer> mSavedWrongBoxes = new ArrayList<>();
+        for (int i = 0; i < sSize; i++) {
+            if (mSudokuGrid.getWrongRow(i)) mSavedWrongRows.add(1);
+            else mSavedWrongRows.add(0);
+            if (mSudokuGrid.getWrongCol(i)) mSavedWrongCols.add(1);
+            else mSavedWrongCols.add(0);
+            if (mSudokuGrid.getWrongBox(i)) mSavedWrongBoxes.add(1);
+            else mSavedWrongBoxes.add(0);
+        }
+
+        outState.putIntegerArrayList("SUDOKU_GRID_VALUES", mSavedCellValues);
+        outState.putIntegerArrayList("SUDOKU_GRID_LOCKS", mSavedCellLocks);
+        outState.putIntegerArrayList("SUDOKU_GRID_CONFLICTS", mSavedCellConflicts);
+        outState.putIntegerArrayList("SUDOKU_GRID_WRONG_ROWS", mSavedWrongRows);
+        outState.putIntegerArrayList("SUDOKU_GRID_WRONG_COLS", mSavedWrongCols);
+        outState.putIntegerArrayList("SUDOKU_GRID_WRONG_BOXES", mSavedWrongBoxes);
+        outState.putInt("SUDOKU_PUZZLE_NUMBER", mSavedPuzzleNumber);
+
+        // call superclass to save any view hierarchy
+        super.onSaveInstanceState(outState);
+    }
 
     // METHODS
 
@@ -255,39 +337,79 @@ public class SudokuActivity extends AppCompatActivity {
     // Zooms in on the selected button
     private void OnClickZoom(View sudoku_view, Button button) {
         float zoom_scale = 3;
-        // Move Offscreen
-        if (sPopUpOnScreen) {
-            // Pan to middle of sudoku
-            mSudokuLayout.Animate("translationX", 0f, 500);
-            mSudokuLayout.Animate("translationY", 0f, 500);
-            // Move pop up view offscreen
-            mPopupMenu.Animate("translationY", sScreenHeight / 13 * 3f, 500);
-            // Move buttons off screen
-            mClearButtonUI.Animate("translationX", sScreenHeight / 5f, 300);
-            mToggleButtonUI.Animate("translationX", sScreenHeight / 5f, 400);
-            mHintButtonUI.Animate("translationX", sScreenHeight / 5f, 500);
-            // Zoom out
-            mSudokuLayout.Animate("scaleX", 1f, 500);
-            mSudokuLayout.Animate("scaleY", 1f, 500);
-            sPopUpOnScreen = false;
-        }
-        // Move Onscreen
-        else {
-            // Pan to the selected button
-            mSudokuLayout.Animate("translationX", sudoku_view.getWidth() * 1f - button.getX() * (sudoku_view.getWidth() * 2 / (sScreenWidth * 71 / 80f)), 500);
-            mSudokuLayout.Animate("translationY", sudoku_view.getHeight() * 1f - button.getY() * ((sudoku_view.getHeight() + sScreenWidth * 6 / 12) / (sScreenWidth * 71 / 80f)), 500);
-            // Move the pop up view on screen
-            mPopupMenu.Animate("translationY", 0f, 500);
-            // Zoom in
-            mSudokuLayout.Animate("scaleX", zoom_scale, 500);
-            mSudokuLayout.Animate("scaleY", zoom_scale, 500);
-            // Move buttons on screen
+        // Portrait Mode
+        if (sScreenHeight > sScreenWidth) {
+            // Move Offscreen
+            if (sPopUpOnScreen) {
+                // Pan to middle of sudoku
+                mSudokuLayout.Animate("translationX", 0f, 500);
+                mSudokuLayout.Animate("translationY", 0f, 500);
+                // Move pop up view offscreen
+                mPopupMenu.Animate("translationY", sScreenHeight / 13 * 3f, 500);
+                // Move buttons off screen
+                mClearButtonUI.Animate("translationX", sScreenHeight / 5f, 300);
+                mToggleButtonUI.Animate("translationX", sScreenHeight / 5f, 400);
+                mHintButtonUI.Animate("translationX", sScreenHeight / 5f, 500);
+                // Zoom out
+                mSudokuLayout.Animate("scaleX", 1f, 500);
+                mSudokuLayout.Animate("scaleY", 1f, 500);
 
-            mClearButtonUI.Animate("translationX", 0f, 300);
-            mToggleButtonUI.Animate("translationX", 0f, 400);
-            mHintButtonUI.Animate("translationX", 0f, 500);
+                sPopUpOnScreen = false;
+            }
+            // Move Onscreen
+            else {
+                // Pan to the selected button
+                mSudokuLayout.Animate("translationX", sudoku_view.getWidth() * 1f - button.getX() * (sudoku_view.getWidth() * 2 / (sScreenWidth * 71 / 80f)), 500);
+                mSudokuLayout.Animate("translationY", sudoku_view.getHeight() * 1f - button.getY() * ((sudoku_view.getHeight() + sScreenWidth * 6 / 12) / (sScreenWidth * 71 / 80f)), 500);
+                // Move the pop up view on screen
+                mPopupMenu.Animate("translationY", 0f, 500);
+                // Zoom in
+                mSudokuLayout.Animate("scaleX", zoom_scale, 500);
+                mSudokuLayout.Animate("scaleY", zoom_scale, 500);
+                // Move buttons on screen
 
-            sPopUpOnScreen = true;
+                mClearButtonUI.Animate("translationX", 0f, 300);
+                mToggleButtonUI.Animate("translationX", 0f, 400);
+                mHintButtonUI.Animate("translationX", 0f, 500);
+
+                sPopUpOnScreen = true;
+            }
+        // Landscape Mode
+        } else {
+            // Move Offscreen
+            if (sPopUpOnScreen) {
+                // Pan to middle of sudoku
+                mSudokuLayout.Animate("translationX", 0f, 500);
+                mSudokuLayout.Animate("translationY", 0f, 500);
+                // Move pop up view offscreen
+                mPopupMenu.Animate("translationX", sScreenHeight / 13 * 3f, 500);
+                // Move buttons off screen
+                mClearButtonUI.Animate("translationX", sScreenWidth / 5f, 300);
+                mToggleButtonUI.Animate("translationX", sScreenWidth / 5f, 400);
+                mHintButtonUI.Animate("translationX", sScreenWidth / 5f, 500);
+                // Zoom out
+                mSudokuLayout.Animate("scaleX", 1f, 500);
+                mSudokuLayout.Animate("scaleY", 1f, 500);
+                sPopUpOnScreen = false;
+            }
+            // Move Onscreen
+            else {
+                // Pan to the selected button
+                mSudokuLayout.Animate("translationX", sudoku_view.getWidth() * 1f - button.getX() * (sudoku_view.getWidth() * 2 / (sScreenWidth * 71 / 80f)), 500);
+                mSudokuLayout.Animate("translationY", sudoku_view.getHeight() * 1f - button.getY() * ((sudoku_view.getHeight() + sScreenWidth * 6 / 12) / (sScreenWidth * 71 / 80f)), 500);
+                // Move the pop up view on screen
+                mPopupMenu.Animate("translationX", 0f, 500);
+                // Zoom in
+                mSudokuLayout.Animate("scaleX", zoom_scale, 500);
+                mSudokuLayout.Animate("scaleY", zoom_scale, 500);
+                // Move buttons on screen
+
+                mClearButtonUI.Animate("translationX", 0f, 300);
+                mToggleButtonUI.Animate("translationX", 0f, 400);
+                mHintButtonUI.Animate("translationX", 0f, 500);
+
+                sPopUpOnScreen = true;
+            }
         }
     }
 

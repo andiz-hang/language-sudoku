@@ -108,6 +108,14 @@ public class SudokuGrid {
         setCellConflicting(index, value);
     }
 
+    public int getAnswers(int index){
+        return mAnswers[index];
+    }
+
+    public void setAnswers(int index, int answer) {
+        mAnswers[index] = answer;
+    }
+
     private int convertIndexToBoxNum(int index){
         int boxColumn = (index % sSize) / 3;    // 0~2
         int boxRow = (index / sSize) / 3;       // 0~2
@@ -136,7 +144,7 @@ public class SudokuGrid {
         return mIsZoomed;
     }
 
-    public void setSudokuLayout(GridLayoutUI layoutUI){
+    public void setSudokuLayout(GridLayoutUI layoutUI) {
         mSudokuLayout = layoutUI;
     }
 
