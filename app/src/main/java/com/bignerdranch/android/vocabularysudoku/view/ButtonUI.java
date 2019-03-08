@@ -92,9 +92,6 @@ public class ButtonUI {
         if (sScreenHeight > sScreenWidth) {
             layoutParameters.width = sScreenWidth / 4;
             layoutParameters.height = sScreenHeight / 13;
-        } else {
-            layoutParameters.width = sScreenWidth / 10;
-            layoutParameters.height = sScreenHeight / 13;
         }
         layoutParameters.bottomMargin = 0;
         return layoutParameters;
