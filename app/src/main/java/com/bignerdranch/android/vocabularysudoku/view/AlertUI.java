@@ -10,13 +10,13 @@ import com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity;
 
 public class AlertUI {
 
-    AlertDialog.Builder mBuilder;
-    View mView;
-    EditText mInput1;
-    EditText mInput2;
-    Button mEnter;
-    Button mCancel;
-    AlertDialog mDialog;
+    private AlertDialog.Builder mBuilder;
+    private View mView;
+    private EditText mInput1;
+    private EditText mInput2;
+    private Button mEnter;
+    private Button mCancel;
+    private AlertDialog mDialog;
 
     public AlertUI(AlertDialog.Builder builder,View view, EditText input1, EditText input2,  Button enter, Button cancel) {
         mBuilder = builder;
