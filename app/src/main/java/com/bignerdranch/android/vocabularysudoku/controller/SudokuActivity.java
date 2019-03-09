@@ -68,6 +68,7 @@ public class SudokuActivity extends AppCompatActivity {
     //public static Language sLanguage3 = new Language("French","un", "deux","trois","quatre","cinq","six","sept","huit","neuf");
     SudokuGrid mSudokuGrid;
     boolean mIsLanguage1 = false; // determines whether the first language is the toggled language or not
+    boolean mWordListImported = false;
 
     GridLayoutUI mSudokuLayout;
     GridLayoutUI mPopupMenu;
@@ -98,7 +99,7 @@ public class SudokuActivity extends AppCompatActivity {
             GridLayout gridLayout = findViewById(R.id.sudoku_grid);
             mSudokuLayout = new GridLayoutUI(gridLayout);
             mSudokuGrid.setSudokuLayout(mSudokuLayout);
-            //mSudokuGrid.sendModelToView();
+//            mSudokuGrid.sendModelToView();
         } else { // Restore all saved values
             restoreGridState(savedInstanceState);
         }
@@ -110,6 +111,7 @@ public class SudokuActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String tmp = intent.getStringExtra("uri_key");
         if (tmp != null) {
+            mWordListImported = true;
             try {
                 csvUri = Uri.parse(tmp);
                 readWordPairs(csvUri);
@@ -149,7 +151,8 @@ public class SudokuActivity extends AppCompatActivity {
                     onClickZoom(findViewById(R.id.sudoku_grid), mPopUpButtons[ii].getButton());
                     // Change Cell text and check if puzzle is finished.
                     mSudokuGrid.updateSudokuModel(ii + 1);
-                    mSudokuGrid.sendModelToView(sLanguage2);
+                    if (mWordListImported) mSudokuGrid.sendModelToView(sLanguage2);
+                    else mSudokuGrid.sendModelToView();
                 }
             });
             // Create and set parameters for button, then add button with parameters to Popup Grid
@@ -198,7 +201,8 @@ public class SudokuActivity extends AppCompatActivity {
                     mSudokuLayout.getButtonUI(sCurrentCell).setText("");
                     mSudokuGrid.getSudokuCell(sCurrentCell).setValue(0);
                     mSudokuGrid.updateSudokuModel(0);
-                    mSudokuGrid.sendModelToView(sLanguage2);
+                    if (mWordListImported) mSudokuGrid.sendModelToView(sLanguage2);
+                    else mSudokuGrid.sendModelToView();
                     onClickZoom(findViewById(R.id.sudoku_grid), mSudokuLayout.getButtonUI(0).getButton());
                 }
                 //needs be figure out~~~~~~~~~~
@@ -245,7 +249,8 @@ public class SudokuActivity extends AppCompatActivity {
         }
 
         //Log.d("Test","");
-        mSudokuGrid.sendModelToView(sLanguage2);
+        if (mWordListImported) mSudokuGrid.sendModelToView(sLanguage2);
+        else mSudokuGrid.sendModelToView();
     } //end of onCreate
 
     private void restoreGridState(Bundle savedInstanceState) {
@@ -291,8 +296,9 @@ public class SudokuActivity extends AppCompatActivity {
         }
 //            KNOWN BUG: NOT ALL THE WRONG CELLS ARE HIGHLIGHTED RED
 //
-//             mSudokuGrid.updateSudokuModel(0);
-//             mSudokuGrid.sendModelToView();
+//            mSudokuGrid.updateSudokuModel(0);
+//            if (mWordListImported) mSudokuGrid.sendModelToView(sLanguage2);
+//            else mSudokuGrid.sendModelToView();
     } // end of restoreGridState
 
     // When the app state changes (screen rotation), save all of the values of the app
