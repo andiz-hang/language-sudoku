@@ -352,23 +352,23 @@ public class SudokuActivity extends AppCompatActivity {
         mIsLanguage1 = !mIsLanguage1;
     }
 
-    // Create an action bar button
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_button, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    // Called when a Menu Button is clicked
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        // When "INPUT WORD" is clicked, allow the user to input a word for the word pair thing
-        if (id == R.id.input_word_button) {
-            createAlertDialog();
-        }
-        return super.onOptionsItemSelected(item);
-    }
+//    // Create an action bar button
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu_button, menu);
+//        return super.onCreateOptionsMenu(menu);
+//    }
+//
+//    // Called when a Menu Button is clicked
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        int id = item.getItemId();
+//        // When "INPUT WORD" is clicked, allow the user to input a word for the word pair thing
+//        if (id == R.id.input_word_button) {
+//            createAlertDialog();
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
 
     private void createAlertDialog() {
         // Create a dialog box popup
