@@ -19,4 +19,5 @@ public class Language {
     }
 
     public String getWord(int index) { return mWords[index]; }
+    public String getName() { return mName; }
 }
