@@ -63,27 +63,27 @@ public class ButtonUI {
 
             // In portrait mode
             if (sScreenHeight > sScreenWidth) {
-                layoutParameters.width = sScreenWidth / 10;
-                layoutParameters.height = sScreenWidth / 10;
+                layoutParameters.width = sScreenWidth / 11;
+                layoutParameters.height = sScreenWidth / 11;
 
-                layoutParameters.setMargins(15,15, 15, 15);
+                layoutParameters.setMargins(5,5, 5, 5);
                 if (indexI==3 || indexI==6){
-                    layoutParameters.setMargins(layoutParameters.leftMargin,sScreenHeight / 77,layoutParameters.rightMargin,layoutParameters.bottomMargin);
+                    layoutParameters.setMargins(layoutParameters.leftMargin,15,layoutParameters.rightMargin,layoutParameters.bottomMargin);
                 }
                 if (indexJ==3 || indexJ==6){
-                    layoutParameters.setMargins(sScreenWidth / 43,layoutParameters.topMargin,layoutParameters.rightMargin,layoutParameters.bottomMargin);
+                    layoutParameters.setMargins(15,layoutParameters.topMargin,layoutParameters.rightMargin,layoutParameters.bottomMargin);
                 }
 
             } else { // In landscape mode
-                layoutParameters.width = sScreenHeight / 11;
-                layoutParameters.height = sScreenHeight / 11;
+                layoutParameters.width = sScreenHeight / 14;
+                layoutParameters.height = sScreenHeight / 14;
 
-                layoutParameters.setMargins(15,15, 15, 15);
+                layoutParameters.setMargins(5,5, 5, 5);
                 if (indexI==3 || indexI==6){
-                    layoutParameters.setMargins(layoutParameters.leftMargin,sScreenHeight / 200,layoutParameters.rightMargin,layoutParameters.bottomMargin);
+                    layoutParameters.setMargins(layoutParameters.leftMargin,15,layoutParameters.rightMargin,layoutParameters.bottomMargin);
                 }
                 if (indexJ==3 || indexJ==6){
-                    layoutParameters.setMargins(sScreenWidth / 75,layoutParameters.topMargin,layoutParameters.rightMargin,layoutParameters.bottomMargin);
+                    layoutParameters.setMargins(15,layoutParameters.topMargin,layoutParameters.rightMargin,layoutParameters.bottomMargin);
                 }
             }
 
