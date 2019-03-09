@@ -109,19 +109,19 @@ public class SudokuActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         String tmp = intent.getStringExtra("uri_key");
-        csvUri = Uri.parse(tmp);
-
-        try {
-            readWordPairs(csvUri);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+        if (tmp != null) {
+            try {
+                csvUri = Uri.parse(tmp);
+                readWordPairs(csvUri);
+                for (int i = 1; i < 10; i++) {
+                    WordPair wordPair = getRandomWordPair();
+                    sLanguage1.setWord(wordPair.getWord1(), i);
+                    sLanguage2.setWord(wordPair.getWord2(), i);
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
         }
-        for (int i = 1; i < 10; i++) {
-            WordPair wordPair = getRandomWordPair();
-            sLanguage1.setWord(wordPair.getWord1(), i);
-            sLanguage2.setWord(wordPair.getWord2(), i);
-        }
-
 
         // Get popup layout
         Log.d("Test", "popUpGrid");
@@ -149,7 +149,7 @@ public class SudokuActivity extends AppCompatActivity {
                     onClickZoom(findViewById(R.id.sudoku_grid), mPopUpButtons[ii].getButton());
                     // Change Cell text and check if puzzle is finished.
                     mSudokuGrid.updateSudokuModel(ii + 1);
-                    mSudokuGrid.sendModelToView();
+                    mSudokuGrid.sendModelToView(sLanguage2);
                 }
             });
             // Create and set parameters for button, then add button with parameters to Popup Grid
@@ -198,7 +198,7 @@ public class SudokuActivity extends AppCompatActivity {
                     mSudokuLayout.getButtonUI(sCurrentCell).setText("");
                     mSudokuGrid.getSudokuCell(sCurrentCell).setValue(0);
                     mSudokuGrid.updateSudokuModel(0);
-                    mSudokuGrid.sendModelToView();
+                    mSudokuGrid.sendModelToView(sLanguage2);
                     onClickZoom(findViewById(R.id.sudoku_grid), mSudokuLayout.getButtonUI(0).getButton());
                 }
                 //needs be figure out~~~~~~~~~~
@@ -245,7 +245,7 @@ public class SudokuActivity extends AppCompatActivity {
         }
 
         //Log.d("Test","");
-        mSudokuGrid.sendModelToView();
+        mSudokuGrid.sendModelToView(sLanguage2);
     } //end of onCreate
 
     private void restoreGridState(Bundle savedInstanceState) {

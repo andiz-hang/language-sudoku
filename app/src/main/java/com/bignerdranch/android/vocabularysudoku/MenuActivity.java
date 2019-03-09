@@ -58,7 +58,7 @@ public class MenuActivity extends AppCompatActivity {
     public void performFileSearch() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("text/plain");
+        intent.setType("text/comma-separated-values");
         startActivityForResult(intent, READ_REQUEST_CODE);
     }
 

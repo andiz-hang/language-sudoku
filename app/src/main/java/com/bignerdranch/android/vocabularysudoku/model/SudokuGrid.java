@@ -221,7 +221,7 @@ public class SudokuGrid {
         else return 1;
     }
 
-    public void sendModelToView(){
+    public void sendModelToView(Language language2){
         // Colour Columns
         for(int i = 0; i < sSize; i++){
             if(getWrongRow(i)) mSudokuLayout.SetRowCellsRed(i);
@@ -234,7 +234,8 @@ public class SudokuGrid {
                 if (mGrid[i][j].isConflicting()){
                     mSudokuLayout.getButtonUI(i,j).getButton().setBackgroundResource(R.drawable.bg_btn_ex_red);
                 }
-                mSudokuLayout.getButtonUI(i, j).setText(String.valueOf(mGrid[i][j].getValue()));
+                mSudokuLayout.getButtonUI(i, j).setText(language2.getWord(mGrid[i][j].getValue()));
+//                mSudokuLayout.getButtonUI(i, j).setText(String.valueOf(mGrid[i][j].getValue()));
                 if (mGrid[i][j].getValue()==0) mSudokuLayout.getButtonUI(i, j).setText(" ");
             }
         }
