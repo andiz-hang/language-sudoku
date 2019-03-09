@@ -18,6 +18,29 @@ public class Language {
         mWords[9] = word9;
     }
 
+    public Language(String name) {
+        mName = name;
+        mWords[0] = "";
+        mWords[1] = "";
+        mWords[2] = "";
+        mWords[3] = "";
+        mWords[4] = "";
+        mWords[5] = "";
+        mWords[6] = "";
+        mWords[7] = "";
+        mWords[8] = "";
+        mWords[9] = "";
+    }
+
     public String getWord(int index) { return mWords[index]; }
+
+    public void setWord(String word, int index) {
+        mWords[index] = word;
+    }
     public String getName() { return mName; }
+
+    // Replace the last n words with words from the list of word_pairs
+    public void getNRandomWords(int n, int seed) {
+
+    }
 }
