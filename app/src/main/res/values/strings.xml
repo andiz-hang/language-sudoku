@@ -17,7 +17,7 @@
     <string name="cancel">Cancel</string>
 
     <string name="start">Start Game</string>
-    <string name="word_list">Word List</string>
+    <string name="word_list">Current Word List</string>
     <string name="upload_list">Upload Your List </string>
 
 </resources>

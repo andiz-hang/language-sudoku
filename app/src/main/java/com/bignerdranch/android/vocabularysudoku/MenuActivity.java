@@ -25,5 +25,9 @@ public class MenuActivity extends AppCompatActivity {
 //        Intent intent = new Intent(MenuActivity.this, WordListActivity.class);
 //        startActivity(intent);
     }
+    protected void UploadYourList(View view) {
+//        Intent intent = new Intent(MenuActivity.this, WordListActivity.class);
+//        startActivity(intent);
+    }
 
 }
