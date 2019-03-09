@@ -15,4 +15,9 @@
     <string name="enter_word_2_here">Enter word in second language here</string>
     <string name="enter">Enter</string>
     <string name="cancel">Cancel</string>
+
+    <string name="start">Start Game</string>
+    <string name="word_list">Current Word List</string>
+    <string name="upload_list">Upload Your List </string>
+
 </resources>
