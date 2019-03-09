@@ -19,5 +19,12 @@
     <string name="start">Start Game</string>
     <string name="word_list">Current Word List</string>
     <string name="upload_list">Upload Your List </string>
+    <string name="okay">Okay</string>
+    <string name="notice_string_1">To upload your own word list, please store a .csv file in the downloads file.</string>
+    <string name="notice_string_2">Your file should be formatted like this: "word in main language", "word in secondary language". For example:</string>
+    <string name="notice_string_3">apple, 苹果</string>
+    <string name="notice_string_4">cow, 牛</string>
+    <string name="notice_string_5">sky, 天</string>
+    <string name="notice_string_6">etc.</string>
 
 </resources>
