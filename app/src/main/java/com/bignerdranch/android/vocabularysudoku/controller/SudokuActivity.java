@@ -1,6 +1,9 @@
 package com.bignerdranch.android.vocabularysudoku.controller;
 
+import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -17,11 +20,21 @@ import android.widget.Toast;
 import com.bignerdranch.android.vocabularysudoku.model.Language;
 import com.bignerdranch.android.vocabularysudoku.R;
 import com.bignerdranch.android.vocabularysudoku.model.SudokuGrid;
+import com.bignerdranch.android.vocabularysudoku.model.WordPair;
 import com.bignerdranch.android.vocabularysudoku.view.ButtonUI;
 import com.bignerdranch.android.vocabularysudoku.view.GridLayoutUI;
 import com.bignerdranch.android.vocabularysudoku.view.AlertUI;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 
@@ -43,7 +56,6 @@ public class SudokuActivity extends AppCompatActivity {
     Button mToggleButton;
     Button mHintButton;   // unimplemented
 
-
     public static int sSize = 9;
     static boolean sPopUpOnScreen = false;// for pop-up-screen
     public static int sCurrentCell;
@@ -51,8 +63,8 @@ public class SudokuActivity extends AppCompatActivity {
     public int mSavedPuzzleNumber;
 
     public static boolean sIsMode1 = true;//mode1 is Language1 puzzle with Language2 filled in, determines whether the first mode is the toggled mode not
-    public static Language sLanguage1 = new Language("English", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine");
-    public static Language sLanguage2 = new Language("Mandarin", "一", "二", "三", "四", "五", "六", "七", "八", "九");
+    public static Language sLanguage1 = new Language( "English", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine");
+    public static Language sLanguage2 = new Language( "Mandarin", "一", "二", "三", "四", "五", "六", "七", "八", "九");
     //public static Language sLanguage3 = new Language("French","un", "deux","trois","quatre","cinq","six","sept","huit","neuf");
     SudokuGrid mSudokuGrid;
     boolean mIsLanguage1 = false; // determines whether the first language is the toggled language or not
@@ -62,8 +74,10 @@ public class SudokuActivity extends AppCompatActivity {
     ButtonUI mClearButtonUI;
     ButtonUI mToggleButtonUI;
     ButtonUI mHintButtonUI;   // unimplemented
-
     AlertUI mAlert;
+
+    List<WordPair> mWordPairs = new ArrayList<>();
+    Uri csvUri;
 
     // On clicking a square we show a screen with buttons with word choices
     // Pressing one of those buttons hides that screen and fills in that square
@@ -86,55 +100,28 @@ public class SudokuActivity extends AppCompatActivity {
             mSudokuGrid.setSudokuLayout(mSudokuLayout);
             //mSudokuGrid.sendModelToView();
         } else { // Restore all saved values
-            int randInt = savedInstanceState.getInt("SUDOKU_PUZZLE_NUMBER");
-            String answerKey = res.getStringArray(R.array.answ)[randInt];
-            String initialValues = res.getStringArray(R.array.puzz)[randInt];
-            mSudokuGrid = new SudokuGrid(sSize, answerKey, initialValues);
-
-            GridLayout gridLayout = findViewById(R.id.sudoku_grid);
-            mSudokuLayout = new GridLayoutUI(gridLayout);
-            mSudokuGrid.setSudokuLayout(mSudokuLayout);
-
-            for (int i = 0; i < sSize * sSize; i++) {
-                mSudokuGrid.getSudokuCell(i).setValue(savedInstanceState.getIntegerArrayList("SUDOKU_GRID_VALUES").get(i));
-                if (savedInstanceState.getIntegerArrayList("SUDOKU_GRID_LOCKS").get(i) == 1) {
-                    mSudokuGrid.getSudokuCell(i).setLock(true);
-                } else {
-                    mSudokuGrid.getSudokuCell(i).setLock(false);
-                }
-                if (savedInstanceState.getIntegerArrayList("SUDOKU_GRID_CONFLICTS").get(i) == 1) {
-                    mSudokuGrid.getSudokuCell(i).setConflicting(true);
-                } else {
-                    mSudokuGrid.getSudokuCell(i).setConflicting(false);
-                }
-                if (i < 9) {
-
-                    if (savedInstanceState.getIntegerArrayList("SUDOKU_GRID_WRONG_ROWS").get(i) == 1) {
-                        mSudokuGrid.setWrongRows(i, true);
-                    } else {
-                        mSudokuGrid.setWrongRows(i, false);
-                    }
-                    if (savedInstanceState.getIntegerArrayList("SUDOKU_GRID_WRONG_COLS").get(i) == 1) {
-                        mSudokuGrid.setWrongCols(i, true);
-                    } else {
-                        mSudokuGrid.setWrongCols(i, false);
-                    }
-                    if (savedInstanceState.getIntegerArrayList("SUDOKU_GRID_WRONG_BOXES").get(i) == 1) {
-                        mSudokuGrid.setWrongBoxes(i, true);
-                    } else {
-                        mSudokuGrid.setWrongBoxes(i, false);
-                    }
-                }
-            }
-//            KNOWN BUG: NOT ALL THE WRONG CELLS ARE HIGHLIGHTED RED
-//
-//             mSudokuGrid.updateSudokuModel(0);
-//             mSudokuGrid.sendModelToView();
+            restoreGridState(savedInstanceState);
         }
         // Get width and height of screen
         getWindowManager().getDefaultDisplay().getMetrics(mDisplayMetrics);
         sScreenHeight = mDisplayMetrics.heightPixels;
         sScreenWidth = mDisplayMetrics.widthPixels;
+
+        Intent intent = getIntent();
+        String tmp = intent.getStringExtra("uri_key");
+        csvUri = Uri.parse(tmp);
+
+        try {
+            readWordPairs(csvUri);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        for (int i = 1; i < 10; i++) {
+            WordPair wordPair = getRandomWordPair();
+            sLanguage1.setWord(wordPair.getWord1(), i);
+            sLanguage2.setWord(wordPair.getWord2(), i);
+        }
+
 
         // Get popup layout
         Log.d("Test", "popUpGrid");
@@ -259,8 +246,54 @@ public class SudokuActivity extends AppCompatActivity {
 
         //Log.d("Test","");
         mSudokuGrid.sendModelToView();
-    }
-    //end of onCreate
+    } //end of onCreate
+
+    private void restoreGridState(Bundle savedInstanceState) {
+        int randInt = savedInstanceState.getInt("SUDOKU_PUZZLE_NUMBER");
+        String answerKey = res.getStringArray(R.array.answ)[randInt];
+        String initialValues = res.getStringArray(R.array.puzz)[randInt];
+        mSudokuGrid = new SudokuGrid(sSize, answerKey, initialValues);
+
+        GridLayout gridLayout = findViewById(R.id.sudoku_grid);
+        mSudokuLayout = new GridLayoutUI(gridLayout);
+        mSudokuGrid.setSudokuLayout(mSudokuLayout);
+
+        for (int i = 0; i < sSize * sSize; i++) {
+            mSudokuGrid.getSudokuCell(i).setValue(savedInstanceState.getIntegerArrayList("SUDOKU_GRID_VALUES").get(i));
+            if (savedInstanceState.getIntegerArrayList("SUDOKU_GRID_LOCKS").get(i) == 1) {
+                mSudokuGrid.getSudokuCell(i).setLock(true);
+            } else {
+                mSudokuGrid.getSudokuCell(i).setLock(false);
+            }
+            if (savedInstanceState.getIntegerArrayList("SUDOKU_GRID_CONFLICTS").get(i) == 1) {
+                mSudokuGrid.getSudokuCell(i).setConflicting(true);
+            } else {
+                mSudokuGrid.getSudokuCell(i).setConflicting(false);
+            }
+            if (i < 9) {
+
+                if (savedInstanceState.getIntegerArrayList("SUDOKU_GRID_WRONG_ROWS").get(i) == 1) {
+                    mSudokuGrid.setWrongRows(i, true);
+                } else {
+                    mSudokuGrid.setWrongRows(i, false);
+                }
+                if (savedInstanceState.getIntegerArrayList("SUDOKU_GRID_WRONG_COLS").get(i) == 1) {
+                    mSudokuGrid.setWrongCols(i, true);
+                } else {
+                    mSudokuGrid.setWrongCols(i, false);
+                }
+                if (savedInstanceState.getIntegerArrayList("SUDOKU_GRID_WRONG_BOXES").get(i) == 1) {
+                    mSudokuGrid.setWrongBoxes(i, true);
+                } else {
+                    mSudokuGrid.setWrongBoxes(i, false);
+                }
+            }
+        }
+//            KNOWN BUG: NOT ALL THE WRONG CELLS ARE HIGHLIGHTED RED
+//
+//             mSudokuGrid.updateSudokuModel(0);
+//             mSudokuGrid.sendModelToView();
+    } // end of restoreGridState
 
     // When the app state changes (screen rotation), save all of the values of the app
     @Override
@@ -323,51 +356,48 @@ public class SudokuActivity extends AppCompatActivity {
     // Called when a Menu Button is clicked
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         int id = item.getItemId();
         // When "INPUT WORD" is clicked, allow the user to input a word for the word pair thing
         if (id == R.id.input_word_button) {
-
-            // Create a dialog box popup
-            AlertDialog.Builder builder = new AlertDialog.Builder(SudokuActivity.this);
-            View view = getLayoutInflater().inflate(R.layout.word_input_dialog, null);
-            final EditText input1 = view.findViewById(R.id.et_input1);
-            final EditText input2 = view.findViewById(R.id.et_input2);
-
-            Button enter = view.findViewById(R.id.enter_button);
-            Button cancel = view.findViewById(R.id.cancel_button);
-
-            mAlert = new AlertUI(builder, view, input1, input2, enter, cancel);
-
-            // Enter button functionality
-            mAlert.getEnter().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (!mAlert.getInput1().getText().toString().isEmpty() && !mAlert.getInput2().getText().toString().isEmpty()) {
-//                        if (/* Word is valid */) {
-                            Toast.makeText(SudokuActivity.this, "Word Pair Accepted", Toast.LENGTH_SHORT).show();
-                            /* To store the inputted word string, use line below */
-//                            input1.getText().toString();
-//                            input2.getText().toString();
-                            mAlert.dismiss();
-//                        } else {
-//                            Toast.makeText(SudokuActivity.this, "Sorry, that word is invalid", Toast.LENGTH_SHORT).show();
-//                        }
-                    } else {
-                        Toast.makeText(SudokuActivity.this, "Please enter a word", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
-
-            mAlert.getCancel().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mAlert.dismiss();
-                }
-            });
-
+            createAlertDialog();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void createAlertDialog() {
+        // Create a dialog box popup
+        AlertDialog.Builder builder = new AlertDialog.Builder(SudokuActivity.this);
+        View view = getLayoutInflater().inflate(R.layout.word_input_dialog, null);
+        final EditText input1 = view.findViewById(R.id.et_input1);
+        final EditText input2 = view.findViewById(R.id.et_input2);
+
+        Button enter = view.findViewById(R.id.enter_button);
+        Button cancel = view.findViewById(R.id.cancel_button);
+
+        mAlert = new AlertUI(builder, view, input1, input2, enter, cancel);
+
+        // Enter button functionality
+        mAlert.getEnter().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!mAlert.getInput1().getText().toString().isEmpty() && !mAlert.getInput2().getText().toString().isEmpty()) {
+                    Toast.makeText(SudokuActivity.this, "Word Pair Accepted", Toast.LENGTH_SHORT).show();
+//                            String word1 = input1.getText().toString();
+//                            String word2 = input2.getText().toString();
+//                            addWordPair(word1, word2);
+                    mAlert.dismiss();
+                } else {
+                    Toast.makeText(SudokuActivity.this, "Please enter a word", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        mAlert.getCancel().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mAlert.dismiss();
+            }
+        });
     }
 
 
@@ -458,6 +488,76 @@ public class SudokuActivity extends AppCompatActivity {
             }
         }
     }
+
+//    private void readWordPairs() {
+//        InputStream is = getResources().openRawResource(R.raw.word_pairs);
+//        BufferedReader reader = new BufferedReader(
+//                new InputStreamReader(is, Charset.forName("UTF-8"))
+//        );
+//
+//        String line = "";
+//        try {
+//            while ((line = reader.readLine()) != null) {
+//
+//                String [] tokens = line.split(",");
+//
+//                WordPair words = new WordPair(tokens[0], tokens[1]);
+//                mWordPairs.add(words);
+//            }
+//        } catch (IOException e) {
+//            Log.wtf("MyActivity", "Error reading csv file on line" + line, e);
+//            e.printStackTrace();
+//        }
+//    }
+
+    private void readWordPairs(Uri uri) throws FileNotFoundException {
+        InputStream inputStream = getContentResolver().openInputStream(uri);
+        BufferedReader reader = new BufferedReader(
+                new InputStreamReader(inputStream, Charset.forName("UTF-8"))
+        );
+
+        String line;
+        try {
+            while ((line = reader.readLine()) != null) {
+                String [] tokens = line.split(",");
+
+                WordPair words = new WordPair(tokens[0], tokens[1]);
+                mWordPairs.add(words);
+            }
+        } catch(FileNotFoundException e) {
+            e.printStackTrace();
+        } catch(IOException ie) {
+            ie.printStackTrace();
+        }
+//        fileInputStream.close();
+//        parcelFileDescriptor.close();
+    }
+
+    private WordPair getRandomWordPair() {
+        Random rand = new Random();
+        int randInt = rand.nextInt(mWordPairs.size());
+
+        WordPair wordPair = mWordPairs.get(randInt);
+        mWordPairs.remove(randInt);
+
+        return wordPair;
+    }
+
+//    private void addWordPair(String word1, String word2) {
+//        String FILENAME = "word_pairs.csv";
+//        FileOutputStream outputStream;
+//
+//        String line = word1 + "," + word2 + ", false\n";
+//
+//        try {
+//            outputStream = openFileOutput(FILENAME, Context.MODE_PRIVATE);
+//            outputStream.write(line.getBytes());
+//            outputStream.close();
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 }
 
 
