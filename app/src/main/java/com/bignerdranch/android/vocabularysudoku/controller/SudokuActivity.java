@@ -65,7 +65,7 @@ public class SudokuActivity extends AppCompatActivity {
     public static boolean sIsMode1 = true;//mode1 is Language1 puzzle with Language2 filled in, determines whether the first mode is the toggled mode not
     public static Language sLanguage1 = new Language( "English", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine");
     public static Language sLanguage2 = new Language( "Mandarin", "一", "二", "三", "四", "五", "六", "七", "八", "九");
-    //public static Language sLanguage3 = new Language("French","un", "deux","trois","quatre","cinq","six","sept","huit","neuf");
+    public static Language sPinyin = new Language("Pinyin","", "", "", "", "", "", "", "", "");
     SudokuGrid mSudokuGrid;
     boolean mIsLanguage1 = false; // determines whether the first language is the toggled language or not
     boolean mWordListImported = false;
@@ -119,6 +119,7 @@ public class SudokuActivity extends AppCompatActivity {
                     WordPair wordPair = getRandomWordPair();
                     sLanguage1.setWord(wordPair.getWord1(), i);
                     sLanguage2.setWord(wordPair.getWord2(), i);
+                    sPinyin.setWord(wordPair.getPinyin(), i);
                 }
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -527,7 +528,7 @@ public class SudokuActivity extends AppCompatActivity {
             while ((line = reader.readLine()) != null) {
                 String [] tokens = line.split(",");
 
-                WordPair words = new WordPair(tokens[0], tokens[1]);
+                WordPair words = new WordPair(tokens[0], tokens[1], tokens[2]);
                 mWordPairs.add(words);
             }
         } catch(FileNotFoundException e) {
