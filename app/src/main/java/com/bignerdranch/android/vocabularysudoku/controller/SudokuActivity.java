@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
+import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -16,6 +17,7 @@ import android.widget.EditText;
 import android.widget.GridLayout;
 import android.support.v7.app.AlertDialog;
 import android.widget.Toast;
+import android.widget.EditText;
 
 import com.bignerdranch.android.vocabularysudoku.model.Language;
 import com.bignerdranch.android.vocabularysudoku.R;
@@ -35,6 +37,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 
@@ -51,7 +54,7 @@ public class SudokuActivity extends AppCompatActivity {
 
     DisplayMetrics mDisplayMetrics = new DisplayMetrics();
     ButtonUI[] mPopUpButtons = new ButtonUI[9];
-    //    Button[]        mPopUpButtons = new Button[9];
+
     Button mClearButton;
     Button mToggleButton;
     Button mHintButton;   // unimplemented
@@ -61,6 +64,7 @@ public class SudokuActivity extends AppCompatActivity {
     public static int sCurrentCell;
     public static int sScreenWidth, sScreenHeight;
     public int mSavedPuzzleNumber;
+    public static Mode sGameMode = Mode.PLAY;
 
     public static boolean sIsMode1 = true;//mode1 is Language1 puzzle with Language2 filled in, determines whether the first mode is the toggled mode not
     public static Language sLanguage1 = new Language( "English", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine");
@@ -77,6 +81,9 @@ public class SudokuActivity extends AppCompatActivity {
     ButtonUI mHintButtonUI;   // unimplemented
     AlertUI mAlert;
 
+    TextToSpeech t1;
+    TextToSpeech t2;
+
     List<WordPair> mWordPairs = new ArrayList<>();
     Uri csvUri;
 
@@ -86,6 +93,29 @@ public class SudokuActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sudoku);
+
+        t1=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+
+                if(status != TextToSpeech.ERROR) {
+                    Log.d("Test","LANGUAGE RECOGNIZED");
+                    t1.setLanguage(Locale.SIMPLIFIED_CHINESE);
+                }
+            }
+        });
+
+        t2=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+
+                if(status != TextToSpeech.ERROR) {
+                    Log.d("Test","LANGUAGE RECOGNIZED");
+                    t2.setLanguage(Locale.TRADITIONAL_CHINESE);
+                }
+            }
+        });
+
         res = getResources();
         Log.d("Test", "SudokuLayoutUI");
         if (savedInstanceState == null) { // First time opening the app
@@ -148,6 +178,11 @@ public class SudokuActivity extends AppCompatActivity {
             mPopUpButtons[i].getButton().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if(sGameMode==Mode.LISTEN){
+                        String toSpeak = sLanguage2.getWord(ii+1);
+                        Log.d("Test","Word: "+toSpeak);
+                        t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
+                    }
                     // Zoom out once a word is selected from popup menu
                     onClickZoom(findViewById(R.id.sudoku_grid), mPopUpButtons[ii].getButton());
                     // Change Cell text and check if puzzle is finished.
@@ -180,12 +215,20 @@ public class SudokuActivity extends AppCompatActivity {
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        if(sGameMode==Mode.LISTEN){
+                            String toSpeak = sLanguage2.getWord(mSudokuGrid.getSudokuCell(ii).getValue()); //sLanguage2.getWord(ii+1);
+                            Log.d("Test","Word: "+toSpeak);
+                            t2.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
+                        }
                         onClickZoom(findViewById(R.id.sudoku_grid), mSudokuLayout.getButtonUI(ii).getButton());
                         sCurrentCell = ii;
                     }
                 });
             }
         }
+
+
+
 
         // Menu Button Actions
         Button clearButton = findViewById(R.id.clear_button);//clean the filled in word
@@ -353,23 +396,35 @@ public class SudokuActivity extends AppCompatActivity {
         mIsLanguage1 = !mIsLanguage1;
     }
 
-//    // Create an action bar button
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.menu_button, menu);
-//        return super.onCreateOptionsMenu(menu);
-//    }
-//
-//    // Called when a Menu Button is clicked
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        int id = item.getItemId();
-//        // When "INPUT WORD" is clicked, allow the user to input a word for the word pair thing
-//        if (id == R.id.input_word_button) {
-//            createAlertDialog();
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
+    // Create an action bar button
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_button, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    // Called when a Menu Button is clicked
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        // When "Listen Mode" is clicked, allow the user to input a word for the word pair thing
+        if (id == R.id.listen_mode_button) {
+            if(sGameMode==Mode.PLAY) {
+                sGameMode = Mode.LISTEN;
+                mSudokuLayout.ToNumbers();
+            }
+            else if(sGameMode==Mode.LISTEN) {
+                sGameMode = Mode.PLAY;
+                mSudokuLayout.ToWords();
+            }
+
+            //String toSpeak = "Test";//.toString();
+            //Toast.makeText(getApplicationContext(), toSpeak,Toast.LENGTH_SHORT).show();
+            //t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
+            //createAlertDialog();
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     private void createAlertDialog() {
         // Create a dialog box popup
@@ -550,6 +605,14 @@ public class SudokuActivity extends AppCompatActivity {
         return wordPair;
     }
 
+    public void onPause(){
+        if(t1 !=null){
+            t1.stop();
+            t1.shutdown();
+        }
+        super.onPause();
+    }
+
 //    private void addWordPair(String word1, String word2) {
 //        String FILENAME = "word_pairs.csv";
 //        FileOutputStream outputStream;
@@ -565,6 +628,11 @@ public class SudokuActivity extends AppCompatActivity {
 //            e.printStackTrace();
 //        }
 //    }
+}
+
+enum Mode {
+    PLAY,
+    LISTEN
 }
 
 
