@@ -158,10 +158,10 @@ public class SudokuGrid {
         }
     }
 
-    public void updateSudokuModel(int value){
+    public void updateSudokuModel(int value, int CurrentCell){
         // If a cell isn't locked, set its text to the chosen word and show any conflicts
-        if(!getSudokuCell(sCurrentCell).isLock()){
-            getSudokuCell(sCurrentCell).setValue(value);
+        if(!getSudokuCell(CurrentCell).isLock()){
+            getSudokuCell(CurrentCell).setValue(value);
 
             int count=0,correct;
             for(int i = 0; i < 81; i++){

@@ -20,7 +20,6 @@ public class GridLayoutUI {
 
 
     public GridLayoutUI(GridLayout layout) {
-        Log.d("Test", "GridLayoutUI Created");
         mLayout = layout;
         mButtonUIs = new ButtonUI[9][9];
         for (int i = 0; i < 9; i++) {
