@@ -26,7 +26,6 @@ public class SudokuGrid {
     // Methods
 
     public SudokuGrid(int N, String answerKey, String initialValues) {
-        Log.d("Test", "SudokuGrid getting initialized");
         mGrid = new SudokuCell[N][N];
         mWrongRows = new boolean[N];
         mWrongCols = new boolean[N];
@@ -38,9 +37,6 @@ public class SudokuGrid {
 
     // Initialize both the grid and the answer array
     private void initializePuzzle(String answerKey, String initialValues) {
-        Random rand = new Random();
-        int randInt = rand.nextInt(75);
-
         // Initialize the Answer Array
         //String answerKey = mRes.getStringArray(R.array.answ)[randInt];
         for(int i = 0; i < 81; i++) {
@@ -142,6 +138,10 @@ public class SudokuGrid {
 
     public boolean IsZoomed() {
         return mIsZoomed;
+    }
+
+    public void SetZoomed(boolean zoom) {
+        mIsZoomed=zoom;
     }
 
     public void setSudokuLayout(GridLayoutUI layoutUI) {
