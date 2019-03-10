@@ -28,7 +28,6 @@ public class SudokuGrid {
     // Methods
 
     public SudokuGrid(int N, String answerKey, String initialValues) {
-        Log.d("Test", "SudokuGrid getting initialized");
         mGrid = new SudokuCell[N][N];
         mWrongRows = new boolean[N];
         mWrongCols = new boolean[N];
@@ -40,9 +39,6 @@ public class SudokuGrid {
 
     // Initialize both the grid and the answer array
     private void initializePuzzle(String answerKey, String initialValues) {
-        Random rand = new Random();
-        int randInt = rand.nextInt(75);
-
         // Initialize the Answer Array
         //String answerKey = mRes.getStringArray(R.array.answ)[randInt];
         for(int i = 0; i < 81; i++) {
@@ -146,6 +142,10 @@ public class SudokuGrid {
         return mIsZoomed;
     }
 
+    public void SetZoomed(boolean zoom) {
+        mIsZoomed=zoom;
+    }
+
     public void setSudokuLayout(GridLayoutUI layoutUI) {
         mSudokuLayout = layoutUI;
     }
@@ -160,10 +160,10 @@ public class SudokuGrid {
         }
     }
 
-    public void updateSudokuModel(int value){
+    public void updateSudokuModel(int value, int CurrentCell){
         // If a cell isn't locked, set its text to the chosen word and show any conflicts
-        if(!getSudokuCell(sCurrentCell).isLock()){
-            getSudokuCell(sCurrentCell).setValue(value);
+        if(!getSudokuCell(CurrentCell).isLock()){
+            getSudokuCell(CurrentCell).setValue(value);
 
             int count=0,correct;
             for(int i = 0; i < 81; i++){
