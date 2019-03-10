@@ -150,7 +150,7 @@ public class SudokuGrid {
 
     private void setButtonValue(int value){
         // Fills current cell's button with input value
-        mSudokuLayout.getButtonUI(sCurrentCell).setButton(mSudokuLayout.FillLockedCellByMode(sCurrentCell, value+1));
+        mSudokuLayout.getButtonUI(sCurrentCell).setButton(mSudokuLayout.FillLockedCellByMode(sCurrentCell, value));
     }
     private void resetButtonImage(){
         for (int y=0;y<81;y++) {

@@ -5,7 +5,7 @@
     <string name="sudoku_grid">sudoku_grid</string>
     <string name="pop_up_layout">pop_up_layout</string>
 
-    <string name="change_mode">Input Word</string>
+    <string name="change_mode">Listen Mode</string>
 
     <string name="clear">clear</string>
     <string name="toggle">toggle</string>

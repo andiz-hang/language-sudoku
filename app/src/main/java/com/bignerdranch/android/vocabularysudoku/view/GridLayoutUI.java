@@ -23,8 +23,8 @@ public class GridLayoutUI {
         Log.d("Test", "GridLayoutUI Created");
         mLayout = layout;
         mButtonUIs = new ButtonUI[9][9];
-        for(int i = 0; i < 9; i++){
-            for(int j = 0; j < 9; j++){
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
                 mButtonUIs[i][j] = new ButtonUI();
             }
         }
@@ -37,41 +37,43 @@ public class GridLayoutUI {
         animation.start();
     }
 
-    public ButtonUI[][] getButtonUIs(){
+    public ButtonUI[][] getButtonUIs() {
         return mButtonUIs;
     }
 
-    public void addButtonUI(ButtonUI button, int index){
+    public void addButtonUI(ButtonUI button, int index) {
         int y = index / sSize;
         int x = index % sSize;
         mButtonUIs[y][x] = button;
     }
 
-    public void addButtonUI(ButtonUI button, int yIndex, int xIndex){
+    public void addButtonUI(ButtonUI button, int yIndex, int xIndex) {
         mButtonUIs[yIndex][xIndex] = button;
     }
 
-    public ButtonUI getButtonUI(int index){
+    public ButtonUI getButtonUI(int index) {
         int y = index / sSize;
         int x = index % sSize;
         return mButtonUIs[y][x];
     }
-    public ButtonUI getButtonUI(int yIndex, int xIndex){
+
+    public ButtonUI getButtonUI(int yIndex, int xIndex) {
         return mButtonUIs[yIndex][xIndex];
     }
 
-    public GridLayout getLayout(){
+    public GridLayout getLayout() {
         return mLayout;
     }
 
     // Return a button with its text updated
-    public Button FillLockedCellByMode(int index, int newValue){
+    public Button FillLockedCellByMode(int index, int newValue) {
         Button button = getButtonUI(index).getButton();
         if (sIsMode1) button.setText(sLanguage2.getWord(newValue));
         else button.setText(sLanguage1.getWord(newValue));
         button.setTextColor(Color.BLUE);
         return button;
     }
+
     // Returns a SudokuCell array with possibly conflicting cells highlighted red
     public void SetRowCellsRed(int rowNum) {
         for (int i = 0; i < 9; i++) {
@@ -80,19 +82,47 @@ public class GridLayoutUI {
             getButtonUI(rowNum * 9 + i).getButton().setBackgroundResource(R.drawable.bg_btn_red);
         }
     }
+
     public void SetColumnCellsRed(int colNum) {
         for (int i = 0; i < 9; i++) {
-            Log.d("Test", "Column: " + i);
+            //Log.d("Test", "Column: " + i);
             //if (getButtonUI(cellIndex % 9 + i * 9).getButton().getBackground().getConstantState() == res.getDrawable(R.drawable.bg_btn).getConstantState())
             //getButtonUI(cellIndex % 9 + i * 9).getButton().setBackgroundResource(R.drawable.bg_btn_red);
             getButtonUI(colNum + i * 9).getButton().setBackgroundResource(R.drawable.bg_btn_red);
         }
     }
+
     public void SetBoxCellsRed(int boxNum) {
         for (int i = 0; i < 9; i++) {
             //if (getButtonUI(cellIndex / 9 /3*27 + cellIndex%9/3*3 + i%3 + i/3*9).getButton().getBackground().getConstantState() == res.getDrawable(R.drawable.bg_btn).getConstantState())
             //getButtonUI(cellIndex / 9 /3*27 + cellIndex%9/3*3 + i%3 + i/3*9).getButton().setBackgroundResource(R.drawable.bg_btn_red);
-            getButtonUI((boxNum/3)*27 + (boxNum%3)*3 + i%3 + i/3*9).getButton().setBackgroundResource(R.drawable.bg_btn_red);
+            getButtonUI((boxNum / 3) * 27 + (boxNum % 3) * 3 + i % 3 + i / 3 * 9).getButton().setBackgroundResource(R.drawable.bg_btn_red);
+        }
+    }
+
+    public void ToNumbers() {
+        for(int i = 0;i < 9; i++){
+            for(int j = 0; j < 9; j++){
+                String buttonText = getButtonUI(j,i).getText();
+                for(int k = 1; k <= 9; k++){
+                    if ((buttonText == sLanguage1.getWord(k)) || (buttonText == sLanguage2.getWord(k))){
+                        getButtonUI(j,i).setText(Integer.toString(k));
+                    }
+                }
+            }
+        }
+    }
+
+    public void ToWords() {
+        for(int i = 0;i < 9; i++){
+            for(int j = 0; j < 9; j++){
+                String buttonText = getButtonUI(j,i).getText();
+                for(int k = 1; k <= 9; k++){
+                    if (buttonText == Integer.toString(k)){
+                        getButtonUI(j,i).setText(sLanguage1.getWord(k));
+                    }
+                }
+            }
         }
     }
 }
