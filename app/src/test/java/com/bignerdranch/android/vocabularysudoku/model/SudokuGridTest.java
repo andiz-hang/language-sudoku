@@ -250,11 +250,44 @@ public class SudokuGridTest {
 
     @Test
     public void updateSudokuModel() {
+        String initialValues="";
+        for(int i = 0; i < 81; i++) {
+            if (i/27*3 + i%9/3==0){
+                initialValues=initialValues.concat(String.valueOf(i/9*3+i%3+1));
+            }
+            else if (i/9==3){
+                initialValues=initialValues.concat(String.valueOf(i%9+1));
+            }
+            else if (i%9==3){
+                initialValues=initialValues.concat(String.valueOf(i/9+1));
+            }
+            else {
+                Random rand = new Random();
+                initialValues = initialValues.concat(String.valueOf(rand.nextInt(9)));
+            }
+        }
+        SudokuGrid grid = new SudokuGrid(9,initialValues, initialValues);
+        grid.updateSudokuModel(1,3);
+        assertFalse(grid.getWrongRow(3));
+
+        grid.updateSudokuModel(2,27);
+        assertTrue(grid.getWrongRow(3));
+
+        grid.FindConflictAtIndex(27);
+        assertFalse(grid.getWrongCol(3));
+
+        grid.updateSudokuModel(2,9);
+        assertTrue(grid.getWrongCol(3));
+
+        grid.FindConflictAtIndex(0);
+        assertFalse(grid.getWrongBox(0));
+
+        grid.updateSudokuModel(2,0);
+        assertTrue(grid.getWrongBox(0));
     }
 
     @Test
     public void findConflictAtIndex() {
-        boolean test;
         String initialValues="";
         for(int i = 0; i < 81; i++) {
             if (i/27*3 + i%9/3==0){

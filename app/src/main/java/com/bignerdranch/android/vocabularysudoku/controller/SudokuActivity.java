@@ -69,7 +69,7 @@ public class SudokuActivity extends AppCompatActivity {
     public static boolean sIsMode1 = true;//mode1 is Language1 puzzle with Language2 filled in, determines whether the first mode is the toggled mode not
     public static Language sLanguage1 = new Language( "English", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine");
     public static Language sLanguage2 = new Language( "Mandarin", "一", "二", "三", "四", "五", "六", "七", "八", "九");
-    public static Language sPinyin = new Language("Pinyin","", "", "", "", "", "", "", "", "");
+    public static Language sPinyin = new Language("Pinyin","yi", "er", "san", "si", "wu", "liu", "qi", "ba", "jiu");
     SudokuGrid mSudokuGrid;
     boolean mIsLanguage1 = false; // determines whether the first language is the toggled language or not
     boolean mWordListImported = false;
@@ -179,14 +179,14 @@ public class SudokuActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     if(sGameMode==Mode.LISTEN){
-                        String toSpeak = sLanguage2.getWord(ii+1);
+                        String toSpeak = sPinyin.getWord(ii+1);
                         Log.d("Test","Word: "+toSpeak);
                         t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
                     }
                     // Zoom out once a word is selected from popup menu
                     onClickZoom(findViewById(R.id.sudoku_grid), mPopUpButtons[ii].getButton());
                     // Change Cell text and check if puzzle is finished.
-                    mSudokuGrid.updateSudokuModel(ii + 1);
+                    mSudokuGrid.updateSudokuModel(ii + 1,sCurrentCell);
                     if (mWordListImported) mSudokuGrid.sendModelToView(sLanguage2);
                     else mSudokuGrid.sendModelToView();
                 }
@@ -216,7 +216,7 @@ public class SudokuActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         if(sGameMode==Mode.LISTEN){
-                            String toSpeak = sLanguage2.getWord(mSudokuGrid.getSudokuCell(ii).getValue()); //sLanguage2.getWord(ii+1);
+                            String toSpeak = sPinyin.getWord(mSudokuGrid.getSudokuCell(ii).getValue()); //sLanguage2.getWord(ii+1);
                             Log.d("Test","Word: "+toSpeak);
                             t2.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
                         }
@@ -244,7 +244,7 @@ public class SudokuActivity extends AppCompatActivity {
                 if (!mSudokuGrid.getSudokuCell(sCurrentCell).isLock()) {
                     mSudokuLayout.getButtonUI(sCurrentCell).setText("");
                     mSudokuGrid.getSudokuCell(sCurrentCell).setValue(0);
-                    mSudokuGrid.updateSudokuModel(0);
+                    mSudokuGrid.updateSudokuModel(0,sCurrentCell);
                     if (mWordListImported) mSudokuGrid.sendModelToView(sLanguage2);
                     else mSudokuGrid.sendModelToView();
                     onClickZoom(findViewById(R.id.sudoku_grid), mSudokuLayout.getButtonUI(0).getButton());
@@ -412,10 +412,12 @@ public class SudokuActivity extends AppCompatActivity {
             if(sGameMode==Mode.PLAY) {
                 sGameMode = Mode.LISTEN;
                 mSudokuLayout.ToNumbers();
+                Toast.makeText(getApplicationContext(), "Listen Mode",Toast.LENGTH_SHORT).show();
             }
             else if(sGameMode==Mode.LISTEN) {
                 sGameMode = Mode.PLAY;
                 mSudokuLayout.ToWords();
+                Toast.makeText(getApplicationContext(), "Play Mode",Toast.LENGTH_SHORT).show();
             }
 
             //String toSpeak = "Test";//.toString();
