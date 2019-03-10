@@ -237,9 +237,7 @@ public class SudokuGrid {
                     mSudokuLayout.getButtonUI(i,j).getButton().setBackgroundResource(R.drawable.bg_btn_ex_red);
                 }
                 if (mGrid[i][j].isLock()) mSudokuLayout.getButtonUI(i, j).setText(sLanguage1.getWord(mGrid[i][j].getValue()));
-                else mSudokuLayout.getButtonUI(i, j).setText(sPinyin.getWord(mGrid[i][j].getValue()));
-                //mSudokuLayout.getButtonUI(i, j).setText(language2.getWord(mGrid[i][j].getValue()));
-//                mSudokuLayout.getButtonUI(i, j).setText(String.valueOf(mGrid[i][j].getValue()));
+                else mSudokuLayout.getButtonUI(i, j).setText(language2.getWord(mGrid[i][j].getValue()));
                 if (mGrid[i][j].getValue()==0) mSudokuLayout.getButtonUI(i, j).setText(" ");
             }
         }
@@ -259,8 +257,7 @@ public class SudokuGrid {
                     mSudokuLayout.getButtonUI(i,j).getButton().setBackgroundResource(R.drawable.bg_btn_ex_red);
                 }
                 if (mGrid[i][j].isLock()) mSudokuLayout.getButtonUI(i, j).setText(sLanguage1.getWord(mGrid[i][j].getValue()));
-                else mSudokuLayout.getButtonUI(i, j).setText(sPinyin.getWord(mGrid[i][j].getValue()));
-                //mSudokuLayout.getButtonUI(i, j).setText(String.valueOf(mGrid[i][j].getValue()));
+                mSudokuLayout.getButtonUI(i, j).setText(String.valueOf(mGrid[i][j].getValue()));
                 if (mGrid[i][j].getValue()==0) mSudokuLayout.getButtonUI(i, j).setText(" ");
             }
         }
