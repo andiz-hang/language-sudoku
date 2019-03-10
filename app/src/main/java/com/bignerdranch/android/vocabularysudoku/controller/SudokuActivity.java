@@ -426,41 +426,41 @@ public class SudokuActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void createAlertDialog() {
-        // Create a dialog box popup
-        AlertDialog.Builder builder = new AlertDialog.Builder(SudokuActivity.this);
-        View view = getLayoutInflater().inflate(R.layout.word_input_dialog, null);
-        final EditText input1 = view.findViewById(R.id.et_input1);
-        final EditText input2 = view.findViewById(R.id.et_input2);
-
-        Button enter = view.findViewById(R.id.enter_button);
-        Button cancel = view.findViewById(R.id.cancel_button);
-
-        mAlert = new AlertUI(builder, view, input1, input2, enter, cancel);
-
-        // Enter button functionality
-        mAlert.getEnter().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!mAlert.getInput1().getText().toString().isEmpty() && !mAlert.getInput2().getText().toString().isEmpty()) {
-                    Toast.makeText(SudokuActivity.this, "Word Pair Accepted", Toast.LENGTH_SHORT).show();
-//                            String word1 = input1.getText().toString();
-//                            String word2 = input2.getText().toString();
-//                            addWordPair(word1, word2);
-                    mAlert.dismiss();
-                } else {
-                    Toast.makeText(SudokuActivity.this, "Please enter a word", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-        mAlert.getCancel().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mAlert.dismiss();
-            }
-        });
-    }
+//    private void createAlertDialog() {
+//        // Create a dialog box popup
+//        AlertDialog.Builder builder = new AlertDialog.Builder(SudokuActivity.this);
+//        View view = getLayoutInflater().inflate(R.layout.word_input_dialog, null);
+//        final EditText input1 = view.findViewById(R.id.et_input1);
+//        final EditText input2 = view.findViewById(R.id.et_input2);
+//
+//        Button enter = view.findViewById(R.id.enter_button);
+//        Button cancel = view.findViewById(R.id.cancel_button);
+//
+//        mAlert = new AlertUI(builder, view, input1, input2, enter, cancel);
+//
+//        // Enter button functionality
+//        mAlert.getEnter().setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (!mAlert.getInput1().getText().toString().isEmpty() && !mAlert.getInput2().getText().toString().isEmpty()) {
+//                    Toast.makeText(SudokuActivity.this, "Word Pair Accepted", Toast.LENGTH_SHORT).show();
+////                            String word1 = input1.getText().toString();
+////                            String word2 = input2.getText().toString();
+////                            addWordPair(word1, word2);
+//                    mAlert.dismiss();
+//                } else {
+//                    Toast.makeText(SudokuActivity.this, "Please enter a word", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        });
+//
+//        mAlert.getCancel().setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                mAlert.dismiss();
+//            }
+//        });
+//    }
 
 
     // When a button is pressed this pulls up or pushes down the Pop Up Button
