@@ -5,7 +5,7 @@
     <string name="sudoku_grid">sudoku_grid</string>
     <string name="pop_up_layout">pop_up_layout</string>
 
-    <string name="change_mode">Input Word</string>
+    <string name="change_mode">Listen Mode</string>
 
     <string name="clear">clear</string>
     <string name="toggle">toggle</string>
@@ -21,10 +21,10 @@
     <string name="upload_list">Upload Your List </string>
     <string name="okay">Okay</string>
     <string name="notice_string_1">To upload your own word list, please store a .csv file in the downloads file.</string>
-    <string name="notice_string_2">Your file should be formatted like this: "word in main language", "word in secondary language". For example:</string>
-    <string name="notice_string_3">apple, 苹果</string>
-    <string name="notice_string_4">cow, 牛</string>
-    <string name="notice_string_5">sky, 天</string>
+    <string name="notice_string_2">Your file should be formatted like this: "word in English", "word in Chinese", and "word pinyin". For example:</string>
+    <string name="notice_string_3">apple, 苹果, pingguo</string>
+    <string name="notice_string_4">cow, 牛, niu</string>
+    <string name="notice_string_5">sky, 天, tian</string>
     <string name="notice_string_6">etc.</string>
 
 </resources>

@@ -53,6 +53,10 @@ public class ButtonUI {
         mButton.setText(text);
     }
 
+    public String getText(){
+        return mButton.getText().toString();
+    }
+
     private void initializeButton(){
 
     }
