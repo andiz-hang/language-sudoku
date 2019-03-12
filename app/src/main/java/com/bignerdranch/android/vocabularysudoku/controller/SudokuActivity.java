@@ -69,7 +69,7 @@ public class SudokuActivity extends AppCompatActivity {
     public static boolean sIsMode1 = true;//mode1 is Language1 puzzle with Language2 filled in, determines whether the first mode is the toggled mode not
     public static Language sLanguage1 = new Language( "English", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine");
     public static Language sLanguage2 = new Language( "Mandarin", "一", "二", "三", "四", "五", "六", "七", "八", "九");
-    public static Language sPinyin = new Language("Pinyin","yi", "er", "san", "si", "wu", "liu", "qi", "ba", "jiu");
+    public static Language sPinyin = new Language("Pinyin","yī", "Èr", "san", "si", "wǔ", "liu", "qi", "ba", "jiu");
     SudokuGrid mSudokuGrid;
     boolean mIsLanguage1 = false; // determines whether the first language is the toggled language or not
     boolean mWordListImported = false;
@@ -100,7 +100,7 @@ public class SudokuActivity extends AppCompatActivity {
 
                 if(status != TextToSpeech.ERROR) {
                     Log.d("Test","LANGUAGE RECOGNIZED");
-                    t1.setLanguage(Locale.SIMPLIFIED_CHINESE);
+                    t1.setLanguage(Locale.TRADITIONAL_CHINESE);//"zh","HK"));
                 }
             }
         });
@@ -111,7 +111,7 @@ public class SudokuActivity extends AppCompatActivity {
 
                 if(status != TextToSpeech.ERROR) {
                     Log.d("Test","LANGUAGE RECOGNIZED");
-                    t2.setLanguage(Locale.TRADITIONAL_CHINESE);
+                    t2.setLanguage(new Locale("zh","HK"));
                 }
             }
         });
@@ -179,7 +179,7 @@ public class SudokuActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     if(sGameMode==Mode.LISTEN){
-                        String toSpeak = sPinyin.getWord(ii+1);
+                        String toSpeak = sLanguage2.getWord(ii+1);
                         Log.d("Test","Word: "+toSpeak);
                         t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
                     }
@@ -216,7 +216,7 @@ public class SudokuActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         if(sGameMode==Mode.LISTEN){
-                            String toSpeak = sPinyin.getWord(mSudokuGrid.getSudokuCell(ii).getValue()); //sLanguage2.getWord(ii+1);
+                            String toSpeak = sLanguage2.getWord(mSudokuGrid.getSudokuCell(ii).getValue()); //sLanguage2.getWord(ii+1);
                             Log.d("Test","Word: "+toSpeak);
                             t2.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
                         }
