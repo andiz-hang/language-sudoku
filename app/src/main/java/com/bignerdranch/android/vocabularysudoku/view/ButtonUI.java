@@ -24,7 +24,7 @@ public class ButtonUI {
 
     public ButtonUI(Button button, GridLayout grid, int x, int y) {
         mButton = button;
-        mButton.setTextSize(12);
+        mButton.setTextSize(10);
         //mButton.setMinHeight(0);
         //mButton.setMinWidth(0);
         //mButton.setIncludeFontPadding(false);

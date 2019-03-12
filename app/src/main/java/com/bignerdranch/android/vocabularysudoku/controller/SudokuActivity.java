@@ -416,7 +416,7 @@ public class SudokuActivity extends AppCompatActivity {
             }
             else if(sGameMode==Mode.LISTEN) {
                 sGameMode = Mode.PLAY;
-                mSudokuLayout.ToWords();
+                mSudokuLayout.ToWords(mSudokuGrid);
                 Toast.makeText(getApplicationContext(), "Play Mode",Toast.LENGTH_SHORT).show();
             }
 

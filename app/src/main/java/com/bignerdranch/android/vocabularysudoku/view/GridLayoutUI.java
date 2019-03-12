@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.GridLayout;
 
 import com.bignerdranch.android.vocabularysudoku.R;
+import com.bignerdranch.android.vocabularysudoku.model.SudokuGrid;
 
 //import static android.support.v4.graphics.drawable.IconCompat.getResources;
 import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sIsMode1;
@@ -112,13 +113,14 @@ public class GridLayoutUI {
         }
     }
 
-    public void ToWords() {
+    public void ToWords(SudokuGrid grid) {
         for(int i = 0;i < 9; i++){
             for(int j = 0; j < 9; j++){
                 String buttonText = getButtonUI(j,i).getText();
                 for(int k = 1; k <= 9; k++){
                     if (buttonText == Integer.toString(k)){
-                        getButtonUI(j,i).setText(sLanguage1.getWord(k));
+                        if (grid.getSudokuCell(i,j).isLock()) getButtonUI(j,i).setText(sLanguage1.getWord(k));
+                        else getButtonUI(j,i).setText(sLanguage2.getWord(k));
                     }
                 }
             }
