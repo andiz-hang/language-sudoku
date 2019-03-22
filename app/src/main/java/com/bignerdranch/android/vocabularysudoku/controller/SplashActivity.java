@@ -1,4 +1,4 @@
-package com.bignerdranch.android.vocabularysudoku;
+package com.bignerdranch.android.vocabularysudoku.controller;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;

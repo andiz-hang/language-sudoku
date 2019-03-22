@@ -1,4 +1,4 @@
-package com.bignerdranch.android.vocabularysudoku;
+package com.bignerdranch.android.vocabularysudoku.controller;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -6,13 +6,9 @@ import android.net.Uri;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
-import com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity;
-import com.bignerdranch.android.vocabularysudoku.view.ButtonUI;
 import com.bignerdranch.android.vocabularysudoku.view.NoticeUI;
 
 public class MenuActivity extends AppCompatActivity {
