@@ -249,7 +249,7 @@ public class SudokuGridTest {
     }
 
     @Test
-    public void updateSudokuModel() {
+    public void testUpdateSudokuModel() {
         String initialValues="";
         for(int i = 0; i < 81; i++) {
             if (i/27*3 + i%9/3==0){
@@ -267,19 +267,22 @@ public class SudokuGridTest {
             }
         }
         SudokuGrid grid = new SudokuGrid(9,initialValues, initialValues);
-        grid.updateSudokuModel(1,3);
+        grid.getSudokuCell(27).setLock(false);
+        grid.updateSudokuModel(1,27);
         assertFalse(grid.getWrongRow(3));
 
         grid.updateSudokuModel(2,27);
         assertTrue(grid.getWrongRow(3));
 
-        grid.FindConflictAtIndex(27);
+        grid.getSudokuCell(3).setLock(false);
+        grid.updateSudokuModel(1,3);
         assertFalse(grid.getWrongCol(3));
 
-        grid.updateSudokuModel(2,9);
+        grid.updateSudokuModel(2,3);
         assertTrue(grid.getWrongCol(3));
 
-        grid.FindConflictAtIndex(0);
+        grid.getSudokuCell(0).setLock(false);
+        grid.updateSudokuModel(1,0);
         assertFalse(grid.getWrongBox(0));
 
         grid.updateSudokuModel(2,0);

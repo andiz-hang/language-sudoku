@@ -151,15 +151,6 @@ public class SudokuGrid {
         mSudokuLayout = layoutUI;
     }
 
-    private void setButtonValue(int value){
-        // Fills current cell's button with input value
-        mSudokuLayout.getButtonUI(sCurrentCell).setButton(mSudokuLayout.FillLockedCellByMode(sCurrentCell, value));
-    }
-    private void resetButtonImage(){
-        for (int y=0;y<81;y++) {
-            mSudokuLayout.getButtonUI(y).getButton().setBackgroundResource(R.drawable.bg_btn);
-        }
-    }
 
     public void updateSudokuModel(int value, int CurrentCell){
         // If a cell isn't locked, set its text to the chosen word and show any conflicts
@@ -179,8 +170,8 @@ public class SudokuGrid {
             }
 //            if (count==81)
 //                Toast.makeText(getApplicationContext(),"Congrats! You win!",Toast.LENGTH_SHORT).show();
-            if (value != 0) setButtonValue(value);
-            resetButtonImage();
+            //if (value != 0) setButtonValue(value);
+            //resetButtonImage();
         }
     }
 
@@ -225,43 +216,14 @@ public class SudokuGrid {
     }
 
     public void sendModelToView(Language language2) {
-        // Colour Columns
-        for(int i = 0; i < sSize; i++){
-            if(getWrongRow(i)) mSudokuLayout.SetRowCellsRed(i);
-            if(getWrongCol(i)) mSudokuLayout.SetColumnCellsRed(i);
-            if(getWrongBox(i)) mSudokuLayout.SetBoxCellsRed(i);
-        }
-        // Colour Conflicting Buttons
-        for(int i = 0; i < sSize; i++){
-            for(int j = 0; j < sSize; j++){
-                if (mGrid[i][j].isConflicting()){
-                    mSudokuLayout.getButtonUI(i,j).getButton().setBackgroundResource(R.drawable.bg_btn_ex_red);
-                }
-                if (mGrid[i][j].isLock()) mSudokuLayout.getButtonUI(i, j).setText(sLanguage1.getWord(mGrid[i][j].getValue()));
-                else mSudokuLayout.getButtonUI(i, j).setText(language2.getWord(mGrid[i][j].getValue()));
-                if (mGrid[i][j].getValue()==0) mSudokuLayout.getButtonUI(i, j).setText(" ");
-            }
-        }
+        mSudokuLayout.defaultButtonColors();
+        mSudokuLayout.highlightWrongCells(mGrid,mWrongRows,mWrongCols,mWrongBoxes,language2);
+
     }
 
     public void sendModelToView() {
-        // Colour Columns
-        for(int i = 0; i < sSize; i++){
-            if(getWrongRow(i)) mSudokuLayout.SetRowCellsRed(i);
-            if(getWrongCol(i)) mSudokuLayout.SetColumnCellsRed(i);
-            if(getWrongBox(i)) mSudokuLayout.SetBoxCellsRed(i);
-        }
-        // Colour Conflicting Buttons
-        for(int i = 0; i < sSize; i++){
-            for(int j = 0; j < sSize; j++){
-                if (mGrid[i][j].isConflicting()){
-                    mSudokuLayout.getButtonUI(i,j).getButton().setBackgroundResource(R.drawable.bg_btn_ex_red);
-                }
-                if (mGrid[i][j].isLock()) mSudokuLayout.getButtonUI(i, j).setText(sLanguage1.getWord(mGrid[i][j].getValue()));
-                else mSudokuLayout.getButtonUI(i, j).setText(sLanguage2.getWord(mGrid[i][j].getValue()));
-                if (mGrid[i][j].getValue()==0) mSudokuLayout.getButtonUI(i, j).setText(" ");
-            }
-        }
+        mSudokuLayout.defaultButtonColors();
+        mSudokuLayout.highlightWrongCells(mGrid, mWrongRows, mWrongCols, mWrongBoxes);
     }
 }
 
