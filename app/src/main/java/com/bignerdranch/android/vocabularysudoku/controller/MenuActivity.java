@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import com.bignerdranch.android.vocabularysudoku.R;
 
 import com.bignerdranch.android.vocabularysudoku.view.NoticeUI;
 
