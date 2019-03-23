@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridLayout;
 import android.support.v7.app.AlertDialog;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 import android.widget.EditText;
 
@@ -63,6 +64,8 @@ public class SudokuActivity extends AppCompatActivity {
     static boolean sPopUpOnScreen = false;// for pop-up-screen
     public static int sCurrentCell;
     public static int sScreenWidth, sScreenHeight;
+    public static float sScreenXDPI, sScreenYDPI;
+    public static boolean mIsPortraitMode;
     public int mSavedPuzzleNumber;
     public static Mode sGameMode = Mode.PLAY;
 
@@ -137,6 +140,12 @@ public class SudokuActivity extends AppCompatActivity {
         getWindowManager().getDefaultDisplay().getMetrics(mDisplayMetrics);
         sScreenHeight = mDisplayMetrics.heightPixels;
         sScreenWidth = mDisplayMetrics.widthPixels;
+        sScreenXDPI = mDisplayMetrics.xdpi;
+        sScreenYDPI = mDisplayMetrics.ydpi;
+
+        mIsPortraitMode = (sScreenHeight > sScreenWidth);
+        // Hides the action bar in Landscape mode
+        if (!mIsPortraitMode) getSupportActionBar().hide();
 
         Intent intent = getIntent();
         String tmp = intent.getStringExtra("uri_key");
@@ -160,7 +169,7 @@ public class SudokuActivity extends AppCompatActivity {
         Log.d("Test", "popUpGrid");
         GridLayout popUpGrid = findViewById(R.id.pop_up_layout);
         mPopupMenu = new GridLayoutUI(popUpGrid);
-        if (sScreenHeight > sScreenWidth) {
+        if (mIsPortraitMode) {
             mPopupMenu.getLayout().setTranslationY(sScreenHeight);
         } else {
             mPopupMenu.getLayout().setTranslationX(sScreenWidth);
@@ -175,6 +184,15 @@ public class SudokuActivity extends AppCompatActivity {
             mPopUpButtons[i] = new ButtonUI(new Button(this));
             mPopUpButtons[i].setButton(new Button(this));
             mPopUpButtons[i].setText(sLanguage2.getWord(i + 1));
+            // Set the text size of the buttons
+            if (mIsPortraitMode) {
+                float screenWidthInches = sScreenWidth / sScreenXDPI;
+                mPopUpButtons[i].getButton().setTextSize((screenWidthInches * 4));
+            }
+            else {
+                float screenHeightInches = sScreenHeight / sScreenYDPI;
+                mPopUpButtons[i].getButton().setTextSize((screenHeightInches * 4));
+            }
             mPopUpButtons[i].getButton().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -192,7 +210,7 @@ public class SudokuActivity extends AppCompatActivity {
                 }
             });
             // Create and set parameters for button, then add button with parameters to Popup Grid
-            if (sScreenHeight > sScreenWidth) {
+            if (mIsPortraitMode) {
                 GridLayout.LayoutParams layoutParams = mPopUpButtons[i].CreatePopUpButtonParameters();
                 mPopupMenu.getLayout().addView(mPopUpButtons[i].getButton(), layoutParams);
             } else {
@@ -210,6 +228,14 @@ public class SudokuActivity extends AppCompatActivity {
                 // Initialize new sudoku cell, give it a button, and add it to SudokuCells
                 Button button = new Button(this);
                 ButtonUI buttonUI = new ButtonUI(button, mSudokuLayout.getLayout(), i, j);
+                // Set the button text size based on screen width in inches
+                if (mIsPortraitMode) {
+                    float screenWidthInches = sScreenWidth / sScreenXDPI;
+                    buttonUI.getButton().setTextSize((float)(screenWidthInches * 3.2));
+                } else {
+                    float screenHeightInches = sScreenHeight / sScreenYDPI;
+                    buttonUI.getButton().setTextSize((float)(screenHeightInches * 3.2));
+                }
                 mSudokuLayout.addButtonUI(buttonUI, index);
                 // Create Listener for Button
                 button.setOnClickListener(new View.OnClickListener() {
@@ -227,11 +253,23 @@ public class SudokuActivity extends AppCompatActivity {
             }
         }
 
-
-
-
         // Menu Button Actions
+
+        // Create a Menu LayoutParameters to resize the menu
+        if (mIsPortraitMode) {
+            RelativeLayout optionsMenu = findViewById(R.id.options_layout);
+            android.view.ViewGroup.LayoutParams layoutParams = optionsMenu.getLayoutParams();
+            layoutParams.width = sScreenWidth / 4;
+            layoutParams.height = 3 * sScreenHeight / 13;
+            optionsMenu.setLayoutParams(layoutParams);
+        }
+
         Button clearButton = findViewById(R.id.clear_button);//clean the filled in word
+        if (mIsPortraitMode) {
+            clearButton.setHeight(sScreenHeight / 13); // Set the button's height
+            float screenWidthInches = sScreenWidth / sScreenXDPI;
+            clearButton.setTextSize(screenWidthInches * 4);
+        }
         mClearButtonUI = new ButtonUI(clearButton);
 
         mClearButtonUI.getButton().setOnClickListener(new View.OnClickListener() {
@@ -266,6 +304,11 @@ public class SudokuActivity extends AppCompatActivity {
 
         // Setup toggleButton
         Button toggleButton = findViewById(R.id.toggle_button);//only toggle pop up buttons' language
+        if (mIsPortraitMode) {
+            float screenWidthInches = sScreenWidth / sScreenXDPI;
+            toggleButton.setHeight(sScreenHeight / 13); // Set the button's height
+            toggleButton.setTextSize(screenWidthInches * 4);
+        }
         mToggleButtonUI = new ButtonUI(toggleButton);
         mToggleButtonUI.getButton().setOnClickListener(new View.OnClickListener() {
             @Override
@@ -276,6 +319,11 @@ public class SudokuActivity extends AppCompatActivity {
 
         // Setup hintButton
         Button hintButton = findViewById(R.id.hint_button);// highlight right answer of pop up buttons
+        if (mIsPortraitMode) {
+            float screenWidthInches = sScreenWidth / sScreenXDPI;
+            hintButton.setHeight(sScreenHeight / 13); // Set the button's height
+            hintButton.setTextSize(screenWidthInches * 4);
+        }
         mHintButtonUI = new ButtonUI(hintButton);
         mHintButtonUI.getButton().setOnClickListener(new View.OnClickListener() {
             @Override
@@ -286,7 +334,7 @@ public class SudokuActivity extends AppCompatActivity {
             }
         });
         //initially hide the buttons if in Portrait mode
-        if (sScreenHeight > sScreenWidth) {
+        if (mIsPortraitMode) {
             mClearButtonUI.getButton().setTranslationX(sScreenHeight / 5f);
             mToggleButtonUI.getButton().setTranslationX(sScreenHeight / 5f);
             mHintButtonUI.getButton().setTranslationX(sScreenHeight / 5f);
@@ -470,7 +518,7 @@ public class SudokuActivity extends AppCompatActivity {
     private void onClickZoom(View sudoku_view, Button button) {
         float zoom_scale = 3;
         // Portrait Mode
-        if (sScreenHeight > sScreenWidth) {
+        if (mIsPortraitMode) {
             // Move Offscreen
             if (sPopUpOnScreen) {
                 // Pan to middle of sudoku
@@ -636,6 +684,3 @@ enum Mode {
     PLAY,
     LISTEN
 }
-
-
-
