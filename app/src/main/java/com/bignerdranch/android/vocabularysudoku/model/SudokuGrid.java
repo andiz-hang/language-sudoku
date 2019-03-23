@@ -217,7 +217,7 @@ public class SudokuGrid {
 
     public void sendModelToView(Language language2) {
         mSudokuLayout.defaultButtonColors();
-        mSudokuLayout.highlightWrongCells(mGrid,mWrongRows,mWrongCols,mWrongBoxes,language2);
+        mSudokuLayout.highlightWrongCells(mGrid, mWrongRows, mWrongCols, mWrongBoxes, language2);
 
     }
 

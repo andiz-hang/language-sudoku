@@ -68,6 +68,7 @@ public class GridLayoutUI {
         return mLayout;
     }
 
+    /*
     // Return a button with its text updated
     public Button FillLockedCellByMode(int index, int newValue) {
         Button button = getButtonUI(index).getButton();
@@ -76,6 +77,7 @@ public class GridLayoutUI {
         button.setTextColor(Color.BLUE);
         return button;
     }
+    */
 
     // Returns a SudokuCell array with possibly conflicting cells highlighted red
     public void SetRowCellsRed(int rowNum) {
@@ -164,9 +166,15 @@ public class GridLayoutUI {
                     getButtonUI(i, j).getButton().setBackgroundResource(R.drawable.bg_btn_ex_red);
                 if (mGrid[i][j].isLock())
                     getButtonUI(i, j).setText(sLanguage1.getWord(mGrid[i][j].getValue()));
-                else
+                else {
+                    getButtonUI(i, j).getButton().setTextColor(Color.BLUE);
                     getButtonUI(i, j).setText(sLanguage2.getWord(mGrid[i][j].getValue()));
-                if (mGrid[i][j].getValue() == 0) getButtonUI(i, j).setText(" ");
+                }
+                if (mGrid[i][j].getValue() == 0){
+                    getButtonUI(i, j).getButton().setTextColor(Color.BLUE);
+                    getButtonUI(i, j).setText(" ");
+
+                }
             }
         }
     }
