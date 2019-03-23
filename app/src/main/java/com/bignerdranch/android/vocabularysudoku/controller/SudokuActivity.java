@@ -87,6 +87,8 @@ public class SudokuActivity extends AppCompatActivity {
     TextToSpeech t1;
     TextToSpeech t2;
 
+    public int sHint;
+
     List<WordPair> mWordPairs = new ArrayList<>();
     Uri csvUri;
 
@@ -328,6 +330,8 @@ public class SudokuActivity extends AppCompatActivity {
         mHintButtonUI.getButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), sLanguage1.getWord(mSudokuGrid.getAnswers(sCurrentCell)),Toast.LENGTH_SHORT).show();
+                sHint+=1;
                 //need CHANGE !
 //                int valueForPopUpHint = Character.getNumericValue((fullAnsw.charAt(sCurrentCell)));
 //                mPopUpButtons[valueForPopUpHint].setBackgroundResource(R.drawable.bg_btn_yellow);
