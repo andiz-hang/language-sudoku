@@ -57,10 +57,6 @@ public class SudokuActivity extends AppCompatActivity {
     DisplayMetrics mDisplayMetrics = new DisplayMetrics();
     ButtonUI[] mPopUpButtons = new ButtonUI[9];
 
-    Button mClearButton;
-    Button mToggleButton;
-    Button mHintButton;   // unimplemented
-
     public static int sSize = 9;
     static boolean sPopUpOnScreen = false;// for pop-up-screen
     public static int sCurrentCell;

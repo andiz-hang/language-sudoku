@@ -88,9 +88,12 @@ public class ButtonUI {
     // Creates and returns layout parameters for a Popup button
     public GridLayout.LayoutParams CreatePopUpButtonParameters(){
         GridLayout.LayoutParams layoutParameters = new GridLayout.LayoutParams();//(GridLayout.LayoutParams.WRAP_CONTENT, GridLayout.LayoutParams.WRAP_CONTENT);
-        if (sScreenHeight > sScreenWidth) {
+        if (mIsPortraitMode) {
             layoutParameters.width = sScreenWidth / 4;
             layoutParameters.height = sScreenHeight / 13;
+        } else {
+            layoutParameters.width = sScreenWidth / 8;
+            layoutParameters.height = sScreenHeight / 6;
         }
         layoutParameters.bottomMargin = 0;
         return layoutParameters;
@@ -99,7 +102,7 @@ public class ButtonUI {
     // Creates and returns layout parameters for a Popup button
     public GridLayout.LayoutParams CreatePopUpMenuButtonParameters(){
         GridLayout.LayoutParams layoutParameters = new GridLayout.LayoutParams();//(GridLayout.LayoutParams.WRAP_CONTENT, GridLayout.LayoutParams.WRAP_CONTENT);
-        if (sScreenHeight > sScreenWidth) {
+        if (mIsPortraitMode) {
             layoutParameters.width = sScreenWidth / 4;
             layoutParameters.height = sScreenHeight / 13;
         }
