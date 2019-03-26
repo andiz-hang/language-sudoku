@@ -25,7 +25,7 @@
         <GridLayout
             android:id="@+id/pop_up_layout"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_alignParentEnd="true"
             android:layout_gravity="center_vertical|end"
             android:background="@color/colorPrimaryDark"
