@@ -155,23 +155,8 @@ public class SudokuActivity extends AppCompatActivity {
             }
         }
 
-        Intent intent = getIntent();
-        String tmp = intent.getStringExtra("uri_key");
-        if (tmp != null) {
-            mWordListImported = true;
-            try {
-                csvUri = Uri.parse(tmp);
-                readWordPairs(csvUri);
-                for (int i = 1; i < 10; i++) {
-                    WordPair wordPair = getRandomWordPair();
-                    sLanguage1.setWord(wordPair.getWord1(), i);
-                    sLanguage2.setWord(wordPair.getWord2(), i);
-                    sPinyin.setWord(wordPair.getPinyin(), i);
-                }
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
+        // Get the words from the imported file, if there is a file
+        importWordsFromFile();
 
         // Get popup layout
         Log.d("Test", "popUpGrid");
@@ -452,6 +437,26 @@ public class SudokuActivity extends AppCompatActivity {
                 mPopUpButtons[i].setText(sLanguage1.getWord(i + 1));
         }
         mIsLanguage1 = !mIsLanguage1;
+    }
+
+    void importWordsFromFile() {
+        Intent intent = getIntent();
+        String tmp = intent.getStringExtra("uri_key");
+        if (tmp != null) {
+            mWordListImported = true;
+            try {
+                csvUri = Uri.parse(tmp);
+                readWordPairs(csvUri);
+                for (int i = 1; i < 10; i++) {
+                    WordPair wordPair = getRandomWordPair();
+                    sLanguage1.setWord(wordPair.getWord1(), i);
+                    sLanguage2.setWord(wordPair.getWord2(), i);
+                    sPinyin.setWord(wordPair.getPinyin(), i);
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     // Create an action bar button

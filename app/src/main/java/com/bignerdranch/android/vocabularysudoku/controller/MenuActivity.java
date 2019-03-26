@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
+
 import com.bignerdranch.android.vocabularysudoku.R;
 
 import com.bignerdranch.android.vocabularysudoku.view.NoticeUI;
@@ -68,6 +70,8 @@ public class MenuActivity extends AppCompatActivity {
                 uri = tmp.toString();
 //                Log.i(TAG, "Uri: " + uri.toString());
             }
+
+            Toast.makeText(getApplicationContext(),"Import Successful!",Toast.LENGTH_SHORT).show();
         }
     }
 
