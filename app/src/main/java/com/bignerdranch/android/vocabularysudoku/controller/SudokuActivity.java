@@ -147,7 +147,13 @@ public class SudokuActivity extends AppCompatActivity {
 
         mIsPortraitMode = (sScreenHeight > sScreenWidth);
         // Hides the action bar in Landscape mode
-        if (!mIsPortraitMode) getSupportActionBar().hide();
+        if (!mIsPortraitMode) {
+            if (getActionBar() != null) {
+                getActionBar().hide();
+            } else if (getSupportActionBar() != null) {
+                getSupportActionBar().hide();
+            }
+        }
 
         Intent intent = getIntent();
         String tmp = intent.getStringExtra("uri_key");
