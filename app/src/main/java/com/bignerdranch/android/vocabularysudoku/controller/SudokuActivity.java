@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridLayout;
 import android.support.v7.app.AlertDialog;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 import android.widget.EditText;
@@ -135,9 +136,9 @@ public class SudokuActivity extends AppCompatActivity {
             mSudokuLayout = new GridLayoutUI(gridLayout);
             mSudokuGrid.setSudokuLayout(mSudokuLayout);
 //            mSudokuGrid.sendModelToView();
-        } else { // Restore all saved values
+        } else // Restore all saved values
             restoreGridState(savedInstanceState);
-        }
+
         // Get width and height of screen
         getWindowManager().getDefaultDisplay().getMetrics(mDisplayMetrics);
         sScreenHeight = mDisplayMetrics.heightPixels;
@@ -146,8 +147,11 @@ public class SudokuActivity extends AppCompatActivity {
         sScreenYDPI = mDisplayMetrics.ydpi;
 
         mIsPortraitMode = (sScreenHeight > sScreenWidth);
-        // Hides the action bar in Landscape mode
-        if (!mIsPortraitMode) hideActivityBar();
+
+        // Changes the name of the action bar to the app name in Portrait mode
+        // Hide the action bar in Landscape mode
+        if (mIsPortraitMode) setActionBarName(getString(R.string.app_name));
+        else hideActionBar();
 
         // Get the words from the imported file, if there is a file
         importWordsFromFile();
@@ -175,9 +179,10 @@ public class SudokuActivity extends AppCompatActivity {
             if (mIsPortraitMode) {
                 float screenWidthInches = sScreenWidth / sScreenXDPI;
                 mPopUpButtons[i].getButton().setTextSize((screenWidthInches * 4));
-            }
-            else {
+            } else {
                 float screenHeightInches = sScreenHeight / sScreenYDPI;
+                mPopUpButtons[i].getButton().setWidth(sScreenWidth / 8);
+                mPopUpButtons[i].getButton().setHeight(sScreenHeight / 6);
                 mPopUpButtons[i].getButton().setTextSize((screenHeightInches * 4));
             }
             mPopUpButtons[i].getButton().setOnClickListener(new View.OnClickListener() {
@@ -252,11 +257,9 @@ public class SudokuActivity extends AppCompatActivity {
         }
 
         Button clearButton = findViewById(R.id.clear_button);//clean the filled in word
-        if (mIsPortraitMode) {
-            clearButton.setHeight(sScreenHeight / 13); // Set the button's height
-            float screenWidthInches = sScreenWidth / sScreenXDPI;
-            clearButton.setTextSize(screenWidthInches * 4);
-        }
+
+        fixMenuButtons(clearButton); // Set the size and font size of the clear button
+
         mClearButtonUI = new ButtonUI(clearButton);
 
         mClearButtonUI.getButton().setOnClickListener(new View.OnClickListener() {
@@ -291,11 +294,8 @@ public class SudokuActivity extends AppCompatActivity {
 
         // Setup toggleButton
         Button toggleButton = findViewById(R.id.toggle_button);//only toggle pop up buttons' language
-        if (mIsPortraitMode) {
-            float screenWidthInches = sScreenWidth / sScreenXDPI;
-            toggleButton.setHeight(sScreenHeight / 13); // Set the button's height
-            toggleButton.setTextSize(screenWidthInches * 4);
-        }
+
+        fixMenuButtons(toggleButton); // Set the size and font size of the toggle button
         mToggleButtonUI = new ButtonUI(toggleButton);
         mToggleButtonUI.getButton().setOnClickListener(new View.OnClickListener() {
             @Override
@@ -306,11 +306,8 @@ public class SudokuActivity extends AppCompatActivity {
 
         // Setup hintButton
         Button hintButton = findViewById(R.id.hint_button);// highlight right answer of pop up buttons
-        if (mIsPortraitMode) {
-            float screenWidthInches = sScreenWidth / sScreenXDPI;
-            hintButton.setHeight(sScreenHeight / 13); // Set the button's height
-            hintButton.setTextSize(screenWidthInches * 4);
-        }
+
+        fixMenuButtons(hintButton); // Set the size and font size of the hint button
         mHintButtonUI = new ButtonUI(hintButton);
         mHintButtonUI.getButton().setOnClickListener(new View.OnClickListener() {
             @Override
@@ -453,11 +450,33 @@ public class SudokuActivity extends AppCompatActivity {
         }
     }
 
-    void hideActivityBar() {
+    void hideActionBar() {
         if (getActionBar() != null) {
             getActionBar().hide();
         } else if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
+        }
+    }
+
+    // Sets the size and font size of the popup menu buttons
+    void fixMenuButtons(Button button) {
+        if (mIsPortraitMode) {
+            button.setHeight(sScreenHeight / 13); // Set the button's height
+            float screenWidthInches = sScreenWidth / sScreenXDPI;
+            button.setTextSize(screenWidthInches * 4);
+        } else {
+            float screenHeightInches = sScreenHeight / sScreenYDPI;
+            button.setWidth(sScreenWidth / 8);
+            button.setHeight(sScreenHeight / 6); // Set the button's height
+            button.setTextSize(screenHeightInches * 4);
+        }
+    }
+
+    void setActionBarName(String name) {
+        if (getActionBar() != null) {
+            getActionBar().setTitle(name);
+        } else if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(name);
         }
     }
 

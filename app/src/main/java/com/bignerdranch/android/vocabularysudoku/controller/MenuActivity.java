@@ -23,7 +23,7 @@ public class MenuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
 
-        hideActivityBar();
+        hideActionBar();
     }
 
     protected void StartGame(View view) {
@@ -69,7 +69,7 @@ public class MenuActivity extends AppCompatActivity {
         if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             if (resultData != null) {
                 Uri tmp = resultData.getData();
-                uri = tmp.toString();
+                if (tmp != null) uri = tmp.toString();
 //                Log.i(TAG, "Uri: " + uri.toString());
             }
 
@@ -78,7 +78,7 @@ public class MenuActivity extends AppCompatActivity {
     }
 
     // Hide the activity bar
-    void hideActivityBar() {
+    void hideActionBar() {
         if (getActionBar() != null) {
             getActionBar().hide();
         } else if (getSupportActionBar() != null) {
