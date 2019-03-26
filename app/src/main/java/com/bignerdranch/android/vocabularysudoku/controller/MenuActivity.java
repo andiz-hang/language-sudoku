@@ -22,6 +22,8 @@ public class MenuActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
+
+        hideActivityBar();
     }
 
     protected void StartGame(View view) {
@@ -75,4 +77,12 @@ public class MenuActivity extends AppCompatActivity {
         }
     }
 
+    // Hide the activity bar
+    void hideActivityBar() {
+        if (getActionBar() != null) {
+            getActionBar().hide();
+        } else if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
+    }
 }

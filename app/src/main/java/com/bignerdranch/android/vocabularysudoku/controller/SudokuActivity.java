@@ -147,13 +147,7 @@ public class SudokuActivity extends AppCompatActivity {
 
         mIsPortraitMode = (sScreenHeight > sScreenWidth);
         // Hides the action bar in Landscape mode
-        if (!mIsPortraitMode) {
-            if (getActionBar() != null) {
-                getActionBar().hide();
-            } else if (getSupportActionBar() != null) {
-                getSupportActionBar().hide();
-            }
-        }
+        if (!mIsPortraitMode) hideActivityBar();
 
         // Get the words from the imported file, if there is a file
         importWordsFromFile();
@@ -456,6 +450,14 @@ public class SudokuActivity extends AppCompatActivity {
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    void hideActivityBar() {
+        if (getActionBar() != null) {
+            getActionBar().hide();
+        } else if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
         }
     }
 
