@@ -605,27 +605,6 @@ public class SudokuActivity extends AppCompatActivity {
         }
     }
 
-//    private void readWordPairs() {
-//        InputStream is = getResources().openRawResource(R.raw.word_pairs);
-//        BufferedReader reader = new BufferedReader(
-//                new InputStreamReader(is, Charset.forName("UTF-8"))
-//        );
-//
-//        String line = "";
-//        try {
-//            while ((line = reader.readLine()) != null) {
-//
-//                String [] tokens = line.split(",");
-//
-//                WordPair words = new WordPair(tokens[0], tokens[1]);
-//                mWordPairs.add(words);
-//            }
-//        } catch (IOException e) {
-//            Log.wtf("MyActivity", "Error reading csv file on line" + line, e);
-//            e.printStackTrace();
-//        }
-//    }
-
     private void readWordPairs(Uri uri) throws FileNotFoundException {
         InputStream inputStream = getContentResolver().openInputStream(uri);
         BufferedReader reader = new BufferedReader(
