@@ -1,5 +1,6 @@
 package com.bignerdranch.android.vocabularysudoku.controller;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridLayout;
@@ -154,7 +156,7 @@ public class SudokuActivity extends AppCompatActivity {
 
         // Get popup layout
         Log.d("Test", "popUpGrid");
-        GridLayout popUpGrid = findViewById(R.id.pop_up_layout);
+        final GridLayout popUpGrid = findViewById(R.id.pop_up_layout);
         mPopupMenu = new GridLayoutUI(popUpGrid);
         if (mIsPortraitMode) {
             mPopupMenu.getLayout().setTranslationY(sScreenHeight);
@@ -176,9 +178,15 @@ public class SudokuActivity extends AppCompatActivity {
                 float screenWidthInches = sScreenWidth / sScreenXDPI;
                 mPopUpButtons[i].getButton().setTextSize((screenWidthInches * 4));
             } else {
-                float screenHeightInches = sScreenHeight / sScreenYDPI;
+                View decorView = getWindow().getDecorView();
+
+                int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
+                decorView.setSystemUiVisibility(uiOptions);
+
                 mPopUpButtons[i].getButton().setWidth(sScreenWidth / 8);
                 mPopUpButtons[i].getButton().setHeight(sScreenHeight / 6);
+
+                float screenHeightInches = sScreenHeight / sScreenYDPI;
                 mPopUpButtons[i].getButton().setTextSize((screenHeightInches * 4));
             }
             mPopUpButtons[i].getButton().setOnClickListener(new View.OnClickListener() {
