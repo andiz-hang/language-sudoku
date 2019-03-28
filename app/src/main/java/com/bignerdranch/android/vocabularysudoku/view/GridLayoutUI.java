@@ -34,7 +34,7 @@ public class GridLayoutUI {
     }
 
     // Change the object's property to value over duration frames
-    public void Animate(String property, Float value, int duration) {
+    public void animate(String property, Float value, int duration) {
         ObjectAnimator animation = ObjectAnimator.ofFloat(mLayout, property, value);
         animation.setDuration(duration);
         animation.start();
@@ -80,7 +80,7 @@ public class GridLayoutUI {
     */
 
     // Returns a SudokuCell array with possibly conflicting cells highlighted red
-    public void SetRowCellsRed(int rowNum) {
+    public void setRowCellsRed(int rowNum) {
         for (int i = 0; i < 9; i++) {
             //if (getButtonUI(cellIndex / 9 * 9 + i).getButton().getBackground().getConstantState() == res.getDrawable(R.drawable.bg_btn).getConstantState())
             //getButtonUI(cellIndex / 9 * 9 + i).getButton().setBackgroundResource(R.drawable.bg_btn_red);
@@ -88,7 +88,7 @@ public class GridLayoutUI {
         }
     }
 
-    public void SetColumnCellsRed(int colNum) {
+    public void setColumnCellsRed(int colNum) {
         for (int i = 0; i < 9; i++) {
             //Log.d("Test", "Column: " + i);
             //if (getButtonUI(cellIndex % 9 + i * 9).getButton().getBackground().getConstantState() == res.getDrawable(R.drawable.bg_btn).getConstantState())
@@ -97,7 +97,7 @@ public class GridLayoutUI {
         }
     }
 
-    public void SetBoxCellsRed(int boxNum) {
+    public void setBoxCellsRed(int boxNum) {
         for (int i = 0; i < 9; i++) {
             //if (getButtonUI(cellIndex / 9 /3*27 + cellIndex%9/3*3 + i%3 + i/3*9).getButton().getBackground().getConstantState() == res.getDrawable(R.drawable.bg_btn).getConstantState())
             //getButtonUI(cellIndex / 9 /3*27 + cellIndex%9/3*3 + i%3 + i/3*9).getButton().setBackgroundResource(R.drawable.bg_btn_red);
@@ -105,7 +105,7 @@ public class GridLayoutUI {
         }
     }
 
-    public void ToNumbers() {
+    public void toNumbers() {
         for(int i = 0;i < 9; i++){
             for(int j = 0; j < 9; j++){
                 String buttonText = getButtonUI(j,i).getText();
@@ -118,7 +118,7 @@ public class GridLayoutUI {
         }
     }
 
-    public void ToWords(SudokuGrid grid) {
+    public void toWords(SudokuGrid grid) {
         for(int i = 0;i < 9; i++){
             for(int j = 0; j < 9; j++){
                 String buttonText = getButtonUI(j,i).getText();
@@ -138,9 +138,9 @@ public class GridLayoutUI {
     }
     public void highlightWrongCells(SudokuCell mGrid[][], boolean mWrongRows[], boolean mWrongCols[], boolean mWrongBoxes[], Language language2){
         for(int i = 0; i < sSize; i++){
-            if(mWrongRows[i]) SetRowCellsRed(i);
-            if(mWrongCols[i]) SetColumnCellsRed(i);
-            if(mWrongBoxes[i]) SetBoxCellsRed(i);
+            if(mWrongRows[i]) setRowCellsRed(i);
+            if(mWrongCols[i]) setColumnCellsRed(i);
+            if(mWrongBoxes[i]) setBoxCellsRed(i);
         }
         for (int i = 0; i < sSize; i++) {
             for (int j = 0; j < sSize; j++) {
@@ -156,9 +156,9 @@ public class GridLayoutUI {
     }
     public void highlightWrongCells(SudokuCell mGrid[][], boolean mWrongRows[], boolean mWrongCols[], boolean mWrongBoxes[]){
         for(int i = 0; i < sSize; i++){
-            if(mWrongRows[i]) SetRowCellsRed(i);
-            if(mWrongCols[i]) SetColumnCellsRed(i);
-            if(mWrongBoxes[i]) SetBoxCellsRed(i);
+            if(mWrongRows[i]) setRowCellsRed(i);
+            if(mWrongCols[i]) setColumnCellsRed(i);
+            if(mWrongBoxes[i]) setBoxCellsRed(i);
         }
         for (int i = 0; i < sSize; i++) {
             for (int j = 0; j < sSize; j++) {

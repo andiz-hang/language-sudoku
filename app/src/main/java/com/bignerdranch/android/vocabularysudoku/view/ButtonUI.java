@@ -31,7 +31,7 @@ public class ButtonUI {
         //mButton.setIncludeFontPadding(false);
         mButton.setPadding(0,0,0,0);
         mButton.setBackgroundResource(R.drawable.bg_btn);
-        GridLayout.LayoutParams buttonUIParams = CreateSudokuCellButtonParameters(x,y);
+        GridLayout.LayoutParams buttonUIParams = createSudokuCellButtonParameters(x,y);
         grid.addView(button,buttonUIParams);
     }
 
@@ -44,7 +44,7 @@ public class ButtonUI {
     }
 
     // Change the object's property to value over duration frames
-    public void Animate(String property, Float value, int duration) {
+    public void animate(String property, Float value, int duration) {
         ObjectAnimator animation = ObjectAnimator.ofFloat(mButton, property, value);
         animation.setDuration(duration);
         animation.start();
@@ -63,7 +63,7 @@ public class ButtonUI {
     }
 
     // Create and return layout parameters for a Sudokucell
-    private GridLayout.LayoutParams CreateSudokuCellButtonParameters(int indexI, int indexJ){
+    private GridLayout.LayoutParams createSudokuCellButtonParameters(int indexI, int indexJ){
         GridLayout.LayoutParams layoutParameters = new GridLayout.LayoutParams();
 
         // In portrait mode
@@ -86,7 +86,7 @@ public class ButtonUI {
     }
 
     // Creates and returns layout parameters for a Popup button
-    public GridLayout.LayoutParams CreatePopUpButtonParameters(){
+    public GridLayout.LayoutParams createPopUpButtonParameters(){
         GridLayout.LayoutParams layoutParameters = new GridLayout.LayoutParams();//(GridLayout.LayoutParams.WRAP_CONTENT, GridLayout.LayoutParams.WRAP_CONTENT);
         if (mIsPortraitMode) {
             layoutParameters.width = sScreenWidth / 4;
@@ -100,7 +100,7 @@ public class ButtonUI {
     }
 
     // Creates and returns layout parameters for a Popup button
-    public GridLayout.LayoutParams CreatePopUpMenuButtonParameters(){
+    public GridLayout.LayoutParams createPopUpMenuButtonParameters(){
         GridLayout.LayoutParams layoutParameters = new GridLayout.LayoutParams();//(GridLayout.LayoutParams.WRAP_CONTENT, GridLayout.LayoutParams.WRAP_CONTENT);
         if (mIsPortraitMode) {
             layoutParameters.width = sScreenWidth / 4;

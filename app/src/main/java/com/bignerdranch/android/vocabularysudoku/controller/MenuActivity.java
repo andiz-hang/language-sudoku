@@ -26,18 +26,18 @@ public class MenuActivity extends AppCompatActivity {
         hideActionBar();
     }
 
-    protected void StartGame(View view) {
+    protected void startGame(View view) {
         Intent intent = new Intent(MenuActivity.this, SudokuActivity.class);
         intent.putExtra("uri_key", uri);
         startActivity(intent);
     }
 
 
-    protected void WordList(View view) {
+    protected void wordList(View view) {
 //        Intent intent = new Intent(MenuActivity.this, WordListActivity.class);
 //        startActivity(intent);
     }
-    protected void UploadYourList(View mView) {
+    protected void uploadYourList(View mView) {
 //        Intent intent = new Intent(MenuActivity.this, WordListActivity.class);
 //        startActivity(intent);
         // Create a dialog box popup

@@ -37,10 +37,10 @@ public class SudokuGridTest {
         }
         SudokuGrid grid = new SudokuGrid(9,initialValues, initialValues);
         for(int j = 0; j < 9; j++) {
-            assertFalse(grid.CellConflictInColumn(0, 0, j));
+            assertFalse(grid.cellConflictInColumn(0, 0, j));
         }
         for(int j = 0; j < 9; j++) {
-            if(grid.CellConflictInColumn(9, 0, j))test=true;
+            if(grid.cellConflictInColumn(9, 0, j))test=true;
         }
         assertTrue(test);
     }
@@ -61,10 +61,10 @@ public class SudokuGridTest {
         }
         SudokuGrid grid = new SudokuGrid(9,initialValues, initialValues);
         for(int j = 0; j < 9; j++) {
-            assertFalse(grid.CellConflictInRow(0, 0, j));
+            assertFalse(grid.cellConflictInRow(0, 0, j));
         }
         for(int j = 0; j < 9; j++) {
-            if(grid.CellConflictInRow(1, 0, j))test=true;
+            if(grid.cellConflictInRow(1, 0, j))test=true;
         }
         assertTrue(test);
     }
@@ -85,10 +85,10 @@ public class SudokuGridTest {
         }
         SudokuGrid grid = new SudokuGrid(9,initialValues, initialValues);
         for(int j = 0; j < 9; j++) {
-            assertFalse(grid.CellConflictInBox(0, 0, j));
+            assertFalse(grid.cellConflictInBox(0, 0, j));
         }
         for(int j = 0; j < 9; j++) {
-            if(grid.CellConflictInBox(1, 0, j))test=true;
+            if(grid.cellConflictInBox(1, 0, j))test=true;
         }
         assertTrue(test);
     }
@@ -214,10 +214,10 @@ public class SudokuGridTest {
             initialValues=initialValues.concat(String.valueOf(rand.nextInt(9)));
         }
         SudokuGrid grid = new SudokuGrid(9,initialValues, initialValues);
-        grid.SetZoomed(true);
-        assertTrue(grid.IsZoomed());
-        grid.SetZoomed(false);
-        assertFalse(grid.IsZoomed());
+        grid.setZoomed(true);
+        assertTrue(grid.isZoomed());
+        grid.setZoomed(false);
+        assertFalse(grid.isZoomed());
     }
 
     @Test
@@ -228,10 +228,10 @@ public class SudokuGridTest {
             initialValues=initialValues.concat(String.valueOf(rand.nextInt(9)));
         }
         SudokuGrid grid = new SudokuGrid(9,initialValues, initialValues);
-        grid.SetZoomed(true);
-        assertTrue(grid.IsZoomed());
-        grid.SetZoomed(false);
-        assertFalse(grid.IsZoomed());
+        grid.setZoomed(true);
+        assertTrue(grid.isZoomed());
+        grid.setZoomed(false);
+        assertFalse(grid.isZoomed());
     }
 
     @Test
@@ -308,28 +308,28 @@ public class SudokuGridTest {
             }
         }
         SudokuGrid grid = new SudokuGrid(9,initialValues, initialValues);
-        grid.FindConflictAtIndex(3);
+        grid.findConflictAtIndex(3);
         assertFalse(grid.getWrongRow(3));
 
         initialValues=initialValues.substring(0,27)+"2"+initialValues.substring(28,81);
         grid = new SudokuGrid(9,initialValues, initialValues);
-        grid.FindConflictAtIndex(27);
+        grid.findConflictAtIndex(27);
         assertTrue(grid.getWrongRow(3));
 
-        grid.FindConflictAtIndex(27);
+        grid.findConflictAtIndex(27);
         assertFalse(grid.getWrongCol(3));
 
         initialValues=initialValues.substring(0,3)+"2"+initialValues.substring(4,81);
         grid = new SudokuGrid(9,initialValues, initialValues);
-        grid.FindConflictAtIndex(3);
+        grid.findConflictAtIndex(3);
         assertTrue(grid.getWrongCol(3));
 
-        grid.FindConflictAtIndex(0);
+        grid.findConflictAtIndex(0);
         assertFalse(grid.getWrongBox(0));
 
         initialValues="2"+initialValues.substring(1,81);
         grid = new SudokuGrid(9,initialValues, initialValues);
-        grid.FindConflictAtIndex(0);
+        grid.findConflictAtIndex(0);
         assertTrue(grid.getWrongBox(0));
     }
 

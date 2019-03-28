@@ -207,7 +207,7 @@ public class SudokuActivity extends AppCompatActivity {
             });
             // Create and set parameters for button, then add button with parameters to Popup Grid
             if (mIsPortraitMode) {
-                GridLayout.LayoutParams layoutParams = mPopUpButtons[i].CreatePopUpButtonParameters();
+                GridLayout.LayoutParams layoutParams = mPopUpButtons[i].createPopUpButtonParameters();
                 mPopupMenu.getLayout().addView(mPopUpButtons[i].getButton(), layoutParams);
             } else {
                 mPopupMenu.getLayout().addView(mPopUpButtons[i].getButton(), i);
@@ -499,12 +499,12 @@ public class SudokuActivity extends AppCompatActivity {
         if (id == R.id.listen_mode_button) {
             if(sGameMode==Mode.PLAY) {
                 sGameMode = Mode.LISTEN;
-                mSudokuLayout.ToNumbers();
+                mSudokuLayout.toNumbers();
                 Toast.makeText(getApplicationContext(), "Listen Mode",Toast.LENGTH_SHORT).show();
             }
             else if(sGameMode==Mode.LISTEN) {
                 sGameMode = Mode.PLAY;
-                mSudokuLayout.ToWords(mSudokuGrid);
+                mSudokuLayout.toWords(mSudokuGrid);
                 Toast.makeText(getApplicationContext(), "Play Mode",Toast.LENGTH_SHORT).show();
             }
 
@@ -562,35 +562,35 @@ public class SudokuActivity extends AppCompatActivity {
             // Move Offscreen
             if (sPopUpOnScreen) {
                 // Pan to middle of sudoku
-                mSudokuLayout.Animate("translationX", 0f, 500);
-                mSudokuLayout.Animate("translationY", 0f, 500);
+                mSudokuLayout.animate("translationX", 0f, 500);
+                mSudokuLayout.animate("translationY", 0f, 500);
                 // Move pop up view offscreen
-                mPopupMenu.Animate("translationY", sScreenHeight / 13 * 3f, 500);
+                mPopupMenu.animate("translationY", sScreenHeight / 13 * 3f, 500);
                 // Move buttons off screen
-                mClearButtonUI.Animate("translationX", sScreenHeight / 5f, 300);
-                mToggleButtonUI.Animate("translationX", sScreenHeight / 5f, 400);
-                mHintButtonUI.Animate("translationX", sScreenHeight / 5f, 500);
+                mClearButtonUI.animate("translationX", sScreenHeight / 5f, 300);
+                mToggleButtonUI.animate("translationX", sScreenHeight / 5f, 400);
+                mHintButtonUI.animate("translationX", sScreenHeight / 5f, 500);
                 // Zoom out
-                mSudokuLayout.Animate("scaleX", 1f, 500);
-                mSudokuLayout.Animate("scaleY", 1f, 500);
+                mSudokuLayout.animate("scaleX", 1f, 500);
+                mSudokuLayout.animate("scaleY", 1f, 500);
 
                 sPopUpOnScreen = false;
             }
             // Move Onscreen
             else {
                 // Pan to the selected button
-                mSudokuLayout.Animate("translationX", sudoku_view.getWidth() * 1f - button.getX() * (sudoku_view.getWidth() * 2 / (sScreenWidth * 71 / 80f)), 500);
-                mSudokuLayout.Animate("translationY", sudoku_view.getHeight() * 1f - button.getY() * ((sudoku_view.getHeight() + sScreenWidth * 6 / 12) / (sScreenWidth * 71 / 80f)), 500);
+                mSudokuLayout.animate("translationX", sudoku_view.getWidth() * 1f - button.getX() * (sudoku_view.getWidth() * 2 / (sScreenWidth * 71 / 80f)), 500);
+                mSudokuLayout.animate("translationY", sudoku_view.getHeight() * 1f - button.getY() * ((sudoku_view.getHeight() + sScreenWidth * 6 / 12) / (sScreenWidth * 71 / 80f)), 500);
                 // Move the pop up view on screen
-                mPopupMenu.Animate("translationY", 0f, 500);
+                mPopupMenu.animate("translationY", 0f, 500);
                 // Zoom in
-                mSudokuLayout.Animate("scaleX", zoom_scale, 500);
-                mSudokuLayout.Animate("scaleY", zoom_scale, 500);
+                mSudokuLayout.animate("scaleX", zoom_scale, 500);
+                mSudokuLayout.animate("scaleY", zoom_scale, 500);
                 // Move buttons on screen
 
-                mClearButtonUI.Animate("translationX", 0f, 300);
-                mToggleButtonUI.Animate("translationX", 0f, 400);
-                mHintButtonUI.Animate("translationX", 0f, 500);
+                mClearButtonUI.animate("translationX", 0f, 300);
+                mToggleButtonUI.animate("translationX", 0f, 400);
+                mHintButtonUI.animate("translationX", 0f, 500);
 
                 sPopUpOnScreen = true;
             }
@@ -599,17 +599,17 @@ public class SudokuActivity extends AppCompatActivity {
             // Move Offscreen
             if (sPopUpOnScreen) {
                 // Pan to middle of sudoku
-                mSudokuLayout.Animate("translationX", 0f, 500);
-                mSudokuLayout.Animate("translationY", 0f, 500);
+                mSudokuLayout.animate("translationX", 0f, 500);
+                mSudokuLayout.animate("translationY", 0f, 500);
                 // Move pop up view offscreen
-                mPopupMenu.Animate("translationX", sScreenWidth / 10 * 3f, 500);
+                mPopupMenu.animate("translationX", sScreenWidth / 10 * 3f, 500);
                 // Move buttons off screen
-                mClearButtonUI.Animate("translationX", sScreenWidth / 5f, 300);
-                mToggleButtonUI.Animate("translationX", sScreenWidth / 5f, 400);
-                mHintButtonUI.Animate("translationX", sScreenWidth / 5f, 500);
+                mClearButtonUI.animate("translationX", sScreenWidth / 5f, 300);
+                mToggleButtonUI.animate("translationX", sScreenWidth / 5f, 400);
+                mHintButtonUI.animate("translationX", sScreenWidth / 5f, 500);
                 // Zoom out
-                mSudokuLayout.Animate("scaleX", 1f, 500);
-                mSudokuLayout.Animate("scaleY", 1f, 500);
+                mSudokuLayout.animate("scaleX", 1f, 500);
+                mSudokuLayout.animate("scaleY", 1f, 500);
                 sPopUpOnScreen = false;
             }
             // Move Onscreen
@@ -623,18 +623,18 @@ public class SudokuActivity extends AppCompatActivity {
                 Log.d("Test", "Derived X" + (sudoku_view.getHeight() * 1f - button.getX() * (sudoku_view.getHeight() * 2 / (sScreenHeight * 71 / 80f))));
                 Log.d("Test", "Derived Y" + (sudoku_view.getWidth() * 1f - button.getY() * ((sudoku_view.getWidth() + sScreenHeight * 6 / 12) / (sScreenHeight * 71 / 80f))));
 
-                mSudokuLayout.Animate("translationX", sudoku_view.getHeight() * 1f - button.getX() * (sudoku_view.getHeight() * 2.7f / (sScreenHeight * 71 / 80f)), 500);
-                mSudokuLayout.Animate("translationY", sudoku_view.getWidth() * 1f - button.getY() * (1.5f*(sudoku_view.getWidth() + sScreenHeight * 6 / 12) / (sScreenHeight * 71 / 80f)), 500);
+                mSudokuLayout.animate("translationX", sudoku_view.getHeight() * 1f - button.getX() * (sudoku_view.getHeight() * 2.7f / (sScreenHeight * 71 / 80f)), 500);
+                mSudokuLayout.animate("translationY", sudoku_view.getWidth() * 1f - button.getY() * (1.5f*(sudoku_view.getWidth() + sScreenHeight * 6 / 12) / (sScreenHeight * 71 / 80f)), 500);
                 // Move the pop up view on screen
-                mPopupMenu.Animate("translationX", 0f, 500);
+                mPopupMenu.animate("translationX", 0f, 500);
                 // Zoom in
-                mSudokuLayout.Animate("scaleX", zoom_scale, 500);
-                mSudokuLayout.Animate("scaleY", zoom_scale, 500);
+                mSudokuLayout.animate("scaleX", zoom_scale, 500);
+                mSudokuLayout.animate("scaleY", zoom_scale, 500);
                 // Move buttons on screen
 
-                mClearButtonUI.Animate("translationX", 0f, 300);
-                mToggleButtonUI.Animate("translationX", 0f, 400);
-                mHintButtonUI.Animate("translationX", 0f, 500);
+                mClearButtonUI.animate("translationX", 0f, 300);
+                mToggleButtonUI.animate("translationX", 0f, 400);
+                mHintButtonUI.animate("translationX", 0f, 500);
 
                 sPopUpOnScreen = true;
             }
