@@ -1,5 +1,7 @@
 package com.bignerdranch.android.vocabularysudoku.model;
 
+import android.content.Context;
+import android.content.res.Resources;
 import android.util.Log;
 
 import com.bignerdranch.android.vocabularysudoku.R;
@@ -25,19 +27,31 @@ public class SudokuGrid {
     private int[] mAnswers;
     //private Resources mRes;
     private GridLayoutUI mSudokuLayout;
+    private String mInitialValues;
+    private String mAnswerKey;
+    private int mSavedPuzzleNumber;
 
     // Methods
 
-    public SudokuGrid(int N, String answerKey, String initialValues) {
+    public SudokuGrid(Context context, int N, int puzzleNum) {
+
         mGrid = new SudokuCell[N][N];
         mWrongRows = new boolean[N];
         mWrongCols = new boolean[N];
         mWrongBoxes = new boolean[N];
         mAnswers = new int[N * N];
+
+        Resources res = context.getResources();
+
+        mSavedPuzzleNumber = puzzleNum;
+        mAnswerKey = res.getStringArray(R.array.answ)[puzzleNum];
+        mInitialValues = res.getStringArray(R.array.puzz)[puzzleNum];
         //mRes = res;
-        initializePuzzle(answerKey, initialValues);
+        initializePuzzle(mAnswerKey, mInitialValues);
     }
 
+
+    public int getPuzzleNum(){ return mSavedPuzzleNumber;}
     // Initialize both the grid and the answer array
     private void initializePuzzle(String answerKey, String initialValues) {
         // Initialize the Answer Array

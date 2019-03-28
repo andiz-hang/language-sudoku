@@ -125,10 +125,7 @@ public class SudokuActivity extends AppCompatActivity {
         if (savedInstanceState == null) { // First time opening the app
             Random rand = new Random();
             int randInt = rand.nextInt(75);
-            mSavedPuzzleNumber = randInt;
-            String answerKey = res.getStringArray(R.array.answ)[randInt];
-            String initialValues = res.getStringArray(R.array.puzz)[randInt];
-            mSudokuGrid = new SudokuGrid(sSize, answerKey, initialValues);
+            mSudokuGrid = new SudokuGrid(this, sSize, randInt);
 
             GridLayout gridLayout = findViewById(R.id.sudoku_grid);
             mSudokuLayout = new GridLayoutUI(gridLayout);
@@ -336,10 +333,10 @@ public class SudokuActivity extends AppCompatActivity {
     } //end of onCreate
 
     private void restoreGridState(Bundle savedInstanceState) {
-        int randInt = savedInstanceState.getInt("SUDOKU_PUZZLE_NUMBER");
-        String answerKey = res.getStringArray(R.array.answ)[randInt];
-        String initialValues = res.getStringArray(R.array.puzz)[randInt];
-        mSudokuGrid = new SudokuGrid(sSize, answerKey, initialValues);
+        int puzzleNum = savedInstanceState.getInt("SUDOKU_PUZZLE_NUMBER");
+        //String answerKey = res.getStringArray(R.array.answ)[randInt];
+        //String initialValues = res.getStringArray(R.array.puzz)[randInt];
+        mSudokuGrid = new SudokuGrid(this, sSize, puzzleNum);
 
         GridLayout gridLayout = findViewById(R.id.sudoku_grid);
         mSudokuLayout = new GridLayoutUI(gridLayout);
@@ -416,7 +413,7 @@ public class SudokuActivity extends AppCompatActivity {
         outState.putIntegerArrayList("SUDOKU_GRID_WRONG_ROWS", mSavedWrongRows);
         outState.putIntegerArrayList("SUDOKU_GRID_WRONG_COLS", mSavedWrongCols);
         outState.putIntegerArrayList("SUDOKU_GRID_WRONG_BOXES", mSavedWrongBoxes);
-        outState.putInt("SUDOKU_PUZZLE_NUMBER", mSavedPuzzleNumber);
+        outState.putInt("SUDOKU_PUZZLE_NUMBER", mSudokuGrid.getPuzzleNum());
 
         // call superclass to save any view hierarchy
         super.onSaveInstanceState(outState);
