@@ -60,7 +60,7 @@ public class GridLayoutUI {
         return mButtonUIs[y][x];
     }
 
-    public ButtonUI getButtonUI(int yIndex, int xIndex) {
+    private ButtonUI getButtonUI(int yIndex, int xIndex) {
         return mButtonUIs[yIndex][xIndex];
     }
 
@@ -80,7 +80,7 @@ public class GridLayoutUI {
     */
 
     // Returns a SudokuCell array with possibly conflicting cells highlighted red
-    public void setRowCellsRed(int rowNum) {
+    private void setRowCellsRed(int rowNum) {
         for (int i = 0; i < 9; i++) {
             //if (getButtonUI(cellIndex / 9 * 9 + i).getButton().getBackground().getConstantState() == res.getDrawable(R.drawable.bg_btn).getConstantState())
             //getButtonUI(cellIndex / 9 * 9 + i).getButton().setBackgroundResource(R.drawable.bg_btn_red);
@@ -88,7 +88,7 @@ public class GridLayoutUI {
         }
     }
 
-    public void setColumnCellsRed(int colNum) {
+    private void setColumnCellsRed(int colNum) {
         for (int i = 0; i < 9; i++) {
             //Log.d("Test", "Column: " + i);
             //if (getButtonUI(cellIndex % 9 + i * 9).getButton().getBackground().getConstantState() == res.getDrawable(R.drawable.bg_btn).getConstantState())
@@ -97,7 +97,7 @@ public class GridLayoutUI {
         }
     }
 
-    public void setBoxCellsRed(int boxNum) {
+    private void setBoxCellsRed(int boxNum) {
         for (int i = 0; i < 9; i++) {
             //if (getButtonUI(cellIndex / 9 /3*27 + cellIndex%9/3*3 + i%3 + i/3*9).getButton().getBackground().getConstantState() == res.getDrawable(R.drawable.bg_btn).getConstantState())
             //getButtonUI(cellIndex / 9 /3*27 + cellIndex%9/3*3 + i%3 + i/3*9).getButton().setBackgroundResource(R.drawable.bg_btn_red);
@@ -110,7 +110,7 @@ public class GridLayoutUI {
             for(int j = 0; j < 9; j++){
                 String buttonText = getButtonUI(j,i).getText();
                 for(int k = 1; k <= 9; k++){
-                    if ((buttonText == sLanguage1.getWord(k)) || (buttonText == sLanguage2.getWord(k))){
+                    if ((buttonText.equals(sLanguage1.getWord(k))) || (buttonText.equals(sLanguage2.getWord(k)))){
                         getButtonUI(j,i).setText(Integer.toString(k));
                     }
                 }
@@ -123,7 +123,7 @@ public class GridLayoutUI {
             for(int j = 0; j < 9; j++){
                 String buttonText = getButtonUI(j,i).getText();
                 for(int k = 1; k <= 9; k++){
-                    if (buttonText == Integer.toString(k)){
+                    if (buttonText.equals(Integer.toString(k))){
                         if (grid.getSudokuCell(i,j).isLock()) getButtonUI(j,i).setText(sLanguage1.getWord(k));
                         else getButtonUI(j,i).setText(sLanguage2.getWord(k));
                     }

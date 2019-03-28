@@ -26,23 +26,24 @@ public class MenuActivity extends AppCompatActivity {
         hideActionBar();
     }
 
-    protected void startGame(View view) {
+    public void startGame(View view) {
         Intent intent = new Intent(MenuActivity.this, SudokuActivity.class);
         intent.putExtra("uri_key", uri);
         startActivity(intent);
     }
 
 
-    protected void wordList(View view) {
+    public void wordList(View view) {
 //        Intent intent = new Intent(MenuActivity.this, WordListActivity.class);
 //        startActivity(intent);
     }
-    protected void uploadYourList(View mView) {
+    public void uploadYourList(View mView) {
 //        Intent intent = new Intent(MenuActivity.this, WordListActivity.class);
 //        startActivity(intent);
         // Create a dialog box popup
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        View view = getLayoutInflater().inflate(R.layout.notice_alert, null);
+        //View view = getLayoutInflater().inflate(R.layout.notice_alert, null);
+        View view = View.inflate(this, R.layout.notice_alert, null);
 
         Button okay = view.findViewById(R.id.okay_button);
         final NoticeUI notice = new NoticeUI(builder, view, okay);

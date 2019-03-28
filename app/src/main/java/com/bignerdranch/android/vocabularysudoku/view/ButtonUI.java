@@ -15,7 +15,7 @@ public class ButtonUI {
     private int mIndexX;
     private int mIndexY;
 
-    public ButtonUI(){
+    ButtonUI(){
 
     }
 
