@@ -146,7 +146,10 @@ public class SudokuActivity extends AppCompatActivity {
         // Changes the name of the action bar to the app name in Portrait mode
         // Hide the action bar in Landscape mode
         if (mIsPortraitMode) setActionBarName(getString(R.string.app_name));
-        else hideActionBar();
+        else {
+            hideActionBar();
+            hideNoticeBar();
+        }
 
         // Get the words from the imported file, if there is a file
         importWordsFromFile();
@@ -175,10 +178,6 @@ public class SudokuActivity extends AppCompatActivity {
                 float screenWidthInches = sScreenWidth / sScreenXDPI;
                 mPopUpButtons[i].getButton().setTextSize((screenWidthInches * 4));
             } else {
-                View decorView = getWindow().getDecorView();
-
-                int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
-                decorView.setSystemUiVisibility(uiOptions);
 
                 mPopUpButtons[i].getButton().setWidth(sScreenWidth / 8);
                 mPopUpButtons[i].getButton().setHeight(sScreenHeight / 6);
@@ -457,6 +456,13 @@ public class SudokuActivity extends AppCompatActivity {
         } else if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
+    }
+
+    void hideNoticeBar() {
+        View decorView = getWindow().getDecorView();
+
+        int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
+        decorView.setSystemUiVisibility(uiOptions);
     }
 
     // Sets the size and font size of the popup menu buttons
