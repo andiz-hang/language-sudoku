@@ -65,6 +65,7 @@ public class SudokuActivity extends AppCompatActivity {
     public static int sScreenWidth, sScreenHeight;
     public static float sScreenXDPI, sScreenYDPI;
     public static boolean mIsPortraitMode;
+    public boolean mListenMode;
     public int mSavedPuzzleNumber;
     public static Mode sGameMode = Mode.PLAY;
 
@@ -437,7 +438,6 @@ public class SudokuActivity extends AppCompatActivity {
                 mSudokuGrid.getSudokuCell(i).setConflicting(false);
             }
             if (i < 9) {
-
                 if (savedInstanceState.getIntegerArrayList("SUDOKU_GRID_WRONG_ROWS").get(i) == 1) {
                     mSudokuGrid.setWrongRows(i, true);
                 } else {
@@ -475,6 +475,7 @@ public class SudokuActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String tmp = intent.getStringExtra("uri_key");
         boolean useSampleFile = intent.getBooleanExtra("use_sample_file", false);
+        mListenMode = intent.getBooleanExtra("listen_mode", false); // MOVE ME
         if (useSampleFile) {
             mWordListImported = true;
             try {

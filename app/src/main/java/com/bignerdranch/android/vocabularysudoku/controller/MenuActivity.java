@@ -19,6 +19,7 @@ public class MenuActivity extends AppCompatActivity {
     private static final int READ_REQUEST_CODE = 42;
     private String uri = null;
     private boolean useSampleFile = false;
+    private boolean mListenMode = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +33,7 @@ public class MenuActivity extends AppCompatActivity {
         Intent intent = new Intent(MenuActivity.this, SudokuActivity.class);
         intent.putExtra("uri_key", uri);
         intent.putExtra("use_sample_file", useSampleFile);
+        intent.putExtra("listen_mode", mListenMode);
         startActivity(intent);
     }
 
@@ -84,10 +86,20 @@ public class MenuActivity extends AppCompatActivity {
         });
     }
 
+    public void setListenMode(View mView) {
+        mListenMode = !mListenMode;
+        Button button = findViewById(R.id.listen_mode_button);
+        if (mListenMode){
+            button.setText("Listen Mode");
+        } else {
+            button.setText("Reading Mode");
+        }
+    }
+
     public void performFileSearch() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("text/comma-separated-values");
+        intent.setType("text/*");
         startActivityForResult(intent, READ_REQUEST_CODE);
     }
 
