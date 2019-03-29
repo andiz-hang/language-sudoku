@@ -70,9 +70,8 @@ public class SudokuActivity extends AppCompatActivity {
     public static Mode sGameMode = Mode.PLAY;
 
     public static boolean sIsMode1 = true;//mode1 is Language1 puzzle with Language2 filled in, determines whether the first mode is the toggled mode not
-    public static Language sLanguage1 = new Language( "English", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine");
-    public static Language sLanguage2 = new Language( "Mandarin", "一", "二", "三", "四", "五", "六", "七", "八", "九");
-    public static Language sPinyin = new Language("Pinyin","yī", "Èr", "san", "si", "wǔ", "liu", "qi", "ba", "jiu");
+    public static Language sLanguage1;
+    public static Language sLanguage2;
     SudokuGrid mSudokuGrid;
     boolean mIsLanguage1 = false; // determines whether the first language is the toggled language or not
     boolean mWordListImported = false;
@@ -152,6 +151,8 @@ public class SudokuActivity extends AppCompatActivity {
             hideNoticeBar();
         }
 
+        initializeLanguages();
+
         // Get the words from the imported file, if there is a file
         importWordsFromFile();
 
@@ -168,7 +169,7 @@ public class SudokuActivity extends AppCompatActivity {
         Log.d("Test", "Create Popup Buttons");
         // Create Popup Buttons
         // which fill in sudoku cells and show conflicts when pressed
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < 9; i++) { // CHANGE ME
             // Final index ii allows inner functions to access index i
             final int ii = i;//0~8
             mPopUpButtons[i] = new ButtonUI(new Button(this));
@@ -469,6 +470,11 @@ public class SudokuActivity extends AppCompatActivity {
         mIsLanguage1 = !mIsLanguage1;
     }
 
+    void initializeLanguages() {
+        sLanguage1 = new Language("English", sSize);
+        sLanguage2 = new Language("Mandarin", sSize);
+    }
+
     // Gets the word pairs from the imported file, or the sample file,
     // and stores them into the language classes
     void importWordsFromFile() {
@@ -478,17 +484,7 @@ public class SudokuActivity extends AppCompatActivity {
         mListenMode = intent.getBooleanExtra("listen_mode", false); // MOVE ME
         if (useSampleFile) {
             mWordListImported = true;
-            try {
-                readWordPairs();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            for (int i = 1; i < 10; i++) {
-                WordPair wordPair = getRandomWordPair();
-                sLanguage1.setWord(wordPair.getWord1(), i);
-                sLanguage2.setWord(wordPair.getWord2(), i);
-                sPinyin.setWord(wordPair.getPinyin(), i);
-            }
+            fileToLanguage(R.raw.word_pairs);
         } else  {
             if (tmp != null) {
                 mWordListImported = true;
@@ -496,15 +492,29 @@ public class SudokuActivity extends AppCompatActivity {
                     csvUri = Uri.parse(tmp);
                     readWordPairs(csvUri);
                     for (int i = 1; i < 10; i++) {
-                        WordPair wordPair = getRandomWordPair();
+                        WordPair wordPair = getRandomWordPair(sSize);
                         sLanguage1.setWord(wordPair.getWord1(), i);
                         sLanguage2.setWord(wordPair.getWord2(), i);
-                        sPinyin.setWord(wordPair.getPinyin(), i);
                     }
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
+            } else {
+                fileToLanguage(R.raw.default_values);
             }
+        }
+    }
+
+    void fileToLanguage(int id) {
+        try {
+            readWordPairs(id);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        for (int i = 1; i < 10; i++) {
+            WordPair wordPair = getRandomWordPair(sSize - i + 1);
+            sLanguage1.setWord(wordPair.getWord1(), i);
+            sLanguage2.setWord(wordPair.getWord2(), i);
         }
     }
 
@@ -648,7 +658,7 @@ public class SudokuActivity extends AppCompatActivity {
             while ((line = reader.readLine()) != null) {
                 String [] tokens = line.split(",");
 
-                WordPair words = new WordPair(tokens[0], tokens[1], tokens[2]);
+                WordPair words = new WordPair(tokens[0], tokens[1]);
                 mWordPairs.add(words);
             }
         } catch(FileNotFoundException e) {
@@ -661,8 +671,8 @@ public class SudokuActivity extends AppCompatActivity {
     }
 
     // Reads words from our sample word list file and stores them in mWordPairs
-    private void readWordPairs() throws IOException {
-        InputStream is = getResources().openRawResource(R.raw.word_pairs);
+    private void readWordPairs(int id) throws IOException {
+        InputStream is = getResources().openRawResource(id);
         BufferedReader reader = new BufferedReader(
                 new InputStreamReader(is, Charset.forName("UTF-8"))
         );
@@ -671,7 +681,7 @@ public class SudokuActivity extends AppCompatActivity {
         while ((line = reader.readLine()) != null) {
             String[] tokens = line.split(",");
 
-            WordPair words = new WordPair(tokens[0], tokens[1], tokens[2]);
+            WordPair words = new WordPair(tokens[0], tokens[1]);
             mWordPairs.add(words);
         }
 //        fileInputStream.close();
@@ -679,9 +689,9 @@ public class SudokuActivity extends AppCompatActivity {
     }
 
     // Returns a random word pair from mWordPairs
-    private WordPair getRandomWordPair() {
+    private WordPair getRandomWordPair(int max) {
         Random rand = new Random();
-        int randInt = rand.nextInt(mWordPairs.size());
+        int randInt = rand.nextInt(max);
 
         WordPair wordPair = mWordPairs.get(randInt);
         mWordPairs.remove(randInt);

@@ -12,7 +12,6 @@ import java.util.Random;
 import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sCurrentCell;
 import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sLanguage1;
 import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sLanguage2;
-import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sPinyin;
 import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sSize;
 
 public class SudokuGrid {
