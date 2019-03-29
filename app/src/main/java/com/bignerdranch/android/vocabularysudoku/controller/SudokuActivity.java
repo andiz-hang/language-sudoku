@@ -81,7 +81,7 @@ public class SudokuActivity extends AppCompatActivity {
     ButtonUI mClearButtonUI;
     ButtonUI mToggleButtonUI;
     ButtonUI mHintButtonUI;   // unimplemented
-    AlertUI mAlert;
+//    AlertUI mAlert;
 
     TextToSpeech t1;
     TextToSpeech t2;
@@ -329,8 +329,91 @@ public class SudokuActivity extends AppCompatActivity {
         //Log.d("Test","");
         if (mWordListImported) mSudokuGrid.sendModelToView(sLanguage2);
         else mSudokuGrid.sendModelToView();
-    } //end of onCreate
+    } // END OF ONCREATE()
 
+    // When the app state changes (screen rotation), save all of the values of the app
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        ArrayList<Integer> mSavedCellValues = new ArrayList<>();
+        ArrayList<Integer> mSavedCellLocks = new ArrayList<>();
+        ArrayList<Integer> mSavedCellConflicts = new ArrayList<>();
+
+        for (int i = 0; i < sSize * sSize; i++) {
+            mSavedCellValues.add(mSudokuGrid.getSudokuCell(i).getValue());
+            if (mSudokuGrid.getSudokuCell(i).isLock()) mSavedCellLocks.add(1);
+            else mSavedCellLocks.add(0);
+            if (mSudokuGrid.getSudokuCell(i).isConflicting()) mSavedCellConflicts.add(1);
+            else mSavedCellConflicts.add(0);
+        }
+
+        ArrayList<Integer> mSavedWrongRows = new ArrayList<>();
+        ArrayList<Integer> mSavedWrongCols = new ArrayList<>();
+        ArrayList<Integer> mSavedWrongBoxes = new ArrayList<>();
+        for (int i = 0; i < sSize; i++) {
+            if (mSudokuGrid.getWrongRow(i)) mSavedWrongRows.add(1);
+            else mSavedWrongRows.add(0);
+            if (mSudokuGrid.getWrongCol(i)) mSavedWrongCols.add(1);
+            else mSavedWrongCols.add(0);
+            if (mSudokuGrid.getWrongBox(i)) mSavedWrongBoxes.add(1);
+            else mSavedWrongBoxes.add(0);
+        }
+
+        outState.putIntegerArrayList("SUDOKU_GRID_VALUES", mSavedCellValues);
+        outState.putIntegerArrayList("SUDOKU_GRID_LOCKS", mSavedCellLocks);
+        outState.putIntegerArrayList("SUDOKU_GRID_CONFLICTS", mSavedCellConflicts);
+        outState.putIntegerArrayList("SUDOKU_GRID_WRONG_ROWS", mSavedWrongRows);
+        outState.putIntegerArrayList("SUDOKU_GRID_WRONG_COLS", mSavedWrongCols);
+        outState.putIntegerArrayList("SUDOKU_GRID_WRONG_BOXES", mSavedWrongBoxes);
+        outState.putInt("SUDOKU_PUZZLE_NUMBER", mSudokuGrid.getPuzzleNum());
+
+        // call superclass to save any view hierarchy
+        super.onSaveInstanceState(outState);
+    }
+
+    // Create an action bar button
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_button, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    // Called when a Menu Button is clicked
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        // When "Listen Mode" is clicked, allow the user to input a word for the word pair thing
+        if (id == R.id.listen_mode_button) {
+            if(sGameMode==Mode.PLAY) {
+                sGameMode = Mode.LISTEN;
+                mSudokuLayout.toNumbers();
+                Toast.makeText(getApplicationContext(), "Listen Mode",Toast.LENGTH_SHORT).show();
+            }
+            else if(sGameMode==Mode.LISTEN) {
+                sGameMode = Mode.PLAY;
+                mSudokuLayout.toWords(mSudokuGrid);
+                Toast.makeText(getApplicationContext(), "Play Mode",Toast.LENGTH_SHORT).show();
+            }
+
+            //String toSpeak = "Test";//.toString();
+            //Toast.makeText(getApplicationContext(), toSpeak,Toast.LENGTH_SHORT).show();
+            //t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
+            //createAlertDialog();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    // Called when the app is paused
+    public void onPause(){
+        if(t1 !=null){
+            t1.stop();
+            t1.shutdown();
+        }
+        super.onPause();
+    }
+
+    // METHODS
+
+    // Restore the attributes of the grid on rotation
     private void restoreGridState(Bundle savedInstanceState) {
         int puzzleNum = savedInstanceState.getInt("SUDOKU_PUZZLE_NUMBER");
         //String answerKey = res.getStringArray(R.array.answ)[randInt];
@@ -374,47 +457,8 @@ public class SudokuActivity extends AppCompatActivity {
         }
     } // end of restoreGridState
 
-    // When the app state changes (screen rotation), save all of the values of the app
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        ArrayList<Integer> mSavedCellValues = new ArrayList<>();
-        ArrayList<Integer> mSavedCellLocks = new ArrayList<>();
-        ArrayList<Integer> mSavedCellConflicts = new ArrayList<>();
-
-        for (int i = 0; i < sSize * sSize; i++) {
-            mSavedCellValues.add(mSudokuGrid.getSudokuCell(i).getValue());
-            if (mSudokuGrid.getSudokuCell(i).isLock()) mSavedCellLocks.add(1);
-            else mSavedCellLocks.add(0);
-            if (mSudokuGrid.getSudokuCell(i).isConflicting()) mSavedCellConflicts.add(1);
-            else mSavedCellConflicts.add(0);
-        }
-
-        ArrayList<Integer> mSavedWrongRows = new ArrayList<>();
-        ArrayList<Integer> mSavedWrongCols = new ArrayList<>();
-        ArrayList<Integer> mSavedWrongBoxes = new ArrayList<>();
-        for (int i = 0; i < sSize; i++) {
-            if (mSudokuGrid.getWrongRow(i)) mSavedWrongRows.add(1);
-            else mSavedWrongRows.add(0);
-            if (mSudokuGrid.getWrongCol(i)) mSavedWrongCols.add(1);
-            else mSavedWrongCols.add(0);
-            if (mSudokuGrid.getWrongBox(i)) mSavedWrongBoxes.add(1);
-            else mSavedWrongBoxes.add(0);
-        }
-
-        outState.putIntegerArrayList("SUDOKU_GRID_VALUES", mSavedCellValues);
-        outState.putIntegerArrayList("SUDOKU_GRID_LOCKS", mSavedCellLocks);
-        outState.putIntegerArrayList("SUDOKU_GRID_CONFLICTS", mSavedCellConflicts);
-        outState.putIntegerArrayList("SUDOKU_GRID_WRONG_ROWS", mSavedWrongRows);
-        outState.putIntegerArrayList("SUDOKU_GRID_WRONG_COLS", mSavedWrongCols);
-        outState.putIntegerArrayList("SUDOKU_GRID_WRONG_BOXES", mSavedWrongBoxes);
-        outState.putInt("SUDOKU_PUZZLE_NUMBER", mSudokuGrid.getPuzzleNum());
-
-        // call superclass to save any view hierarchy
-        super.onSaveInstanceState(outState);
-    }
-
-    // METHODS
-
+    // Toggles the language of the popup buttons and
+    // Flips the boolean mIsLanguage1!
     void flipLanguage() {
         for (int i = 0; i < 9; i++) {
             if (mIsLanguage1)
@@ -425,6 +469,8 @@ public class SudokuActivity extends AppCompatActivity {
         mIsLanguage1 = !mIsLanguage1;
     }
 
+    // Gets the word pairs from the imported file, or the sample file,
+    // and stores them into the language classes
     void importWordsFromFile() {
         Intent intent = getIntent();
         String tmp = intent.getStringExtra("uri_key");
@@ -461,6 +507,7 @@ public class SudokuActivity extends AppCompatActivity {
         }
     }
 
+    // Hides the action bar up top
     void hideActionBar() {
         if (getActionBar() != null) {
             getActionBar().hide();
@@ -469,6 +516,7 @@ public class SudokuActivity extends AppCompatActivity {
         }
     }
 
+    // Hides the notification bar
     void hideNoticeBar() {
         View decorView = getWindow().getDecorView();
 
@@ -476,7 +524,7 @@ public class SudokuActivity extends AppCompatActivity {
         decorView.setSystemUiVisibility(uiOptions);
     }
 
-    // Sets the size and font size of the popup menu buttons
+    // scales the size and font size of the popup menu buttons
     void fixMenuButtons(Button button) {
         if (mIsPortraitMode) {
             button.setHeight(sScreenHeight / 13); // Set the button's height
@@ -490,44 +538,13 @@ public class SudokuActivity extends AppCompatActivity {
         }
     }
 
+    // Set the title of the Action Bar
     void setActionBarName(String name) {
         if (getActionBar() != null) {
             getActionBar().setTitle(name);
         } else if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(name);
         }
-    }
-
-    // Create an action bar button
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_button, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    // Called when a Menu Button is clicked
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        // When "Listen Mode" is clicked, allow the user to input a word for the word pair thing
-        if (id == R.id.listen_mode_button) {
-            if(sGameMode==Mode.PLAY) {
-                sGameMode = Mode.LISTEN;
-                mSudokuLayout.toNumbers();
-                Toast.makeText(getApplicationContext(), "Listen Mode",Toast.LENGTH_SHORT).show();
-            }
-            else if(sGameMode==Mode.LISTEN) {
-                sGameMode = Mode.PLAY;
-                mSudokuLayout.toWords(mSudokuGrid);
-                Toast.makeText(getApplicationContext(), "Play Mode",Toast.LENGTH_SHORT).show();
-            }
-
-            //String toSpeak = "Test";//.toString();
-            //Toast.makeText(getApplicationContext(), toSpeak,Toast.LENGTH_SHORT).show();
-            //t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
-            //createAlertDialog();
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     // When a button is pressed this pulls up or pushes down the Pop Up Button
@@ -618,6 +635,7 @@ public class SudokuActivity extends AppCompatActivity {
         }
     }
 
+    // Reads words from an imported csv file and stores them in mWordPairs
     private void readWordPairs(Uri uri) throws FileNotFoundException {
         InputStream inputStream = getContentResolver().openInputStream(uri);
         BufferedReader reader = new BufferedReader(
@@ -641,6 +659,7 @@ public class SudokuActivity extends AppCompatActivity {
 //        parcelFileDescriptor.close();
     }
 
+    // Reads words from our sample word list file and stores them in mWordPairs
     private void readWordPairs() throws IOException {
         InputStream is = getResources().openRawResource(R.raw.word_pairs);
         BufferedReader reader = new BufferedReader(
@@ -658,6 +677,7 @@ public class SudokuActivity extends AppCompatActivity {
 //        parcelFileDescriptor.close();
     }
 
+    // Returns a random word pair from mWordPairs
     private WordPair getRandomWordPair() {
         Random rand = new Random();
         int randInt = rand.nextInt(mWordPairs.size());
@@ -666,14 +686,6 @@ public class SudokuActivity extends AppCompatActivity {
         mWordPairs.remove(randInt);
 
         return wordPair;
-    }
-
-    public void onPause(){
-        if(t1 !=null){
-            t1.stop();
-            t1.shutdown();
-        }
-        super.onPause();
     }
 
 //    private void addWordPair(String word1, String word2) {
