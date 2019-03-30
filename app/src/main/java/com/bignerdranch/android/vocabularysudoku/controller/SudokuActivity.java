@@ -60,7 +60,7 @@ public class SudokuActivity extends AppCompatActivity {
     DisplayMetrics mDisplayMetrics = new DisplayMetrics();
     ButtonUI[] mPopUpButtons;
 
-    public static int sSize = 9;
+    public static int sSize;
     static boolean sPopUpOnScreen = false;// for pop-up-screen
     public static int sCurrentCell;
     public static int sScreenWidth, sScreenHeight;
@@ -99,6 +99,7 @@ public class SudokuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sudoku);
 
+        // Get the size of the grid from main menu
         getSizeFromSpinner();
 
         //Text to Speech Initializing
@@ -123,10 +124,7 @@ public class SudokuActivity extends AppCompatActivity {
             }
         });
 
-        // Grid is a square if the size is 4 or 9
-        mIsSquare = (sSize == 4 || sSize == 9);
 
-        mPopUpButtons = new ButtonUI[sSize];
 
         // Generating SudokuGrid
         res = getResources();
@@ -161,6 +159,7 @@ public class SudokuActivity extends AppCompatActivity {
         importWordsFromFile();
 
         // Get popup layout
+        mPopUpButtons = new ButtonUI[sSize];
         Log.d("Test", "popUpGrid");
         final GridLayout popUpGrid = findViewById(R.id.pop_up_layout);
 
@@ -441,8 +440,6 @@ public class SudokuActivity extends AppCompatActivity {
     // Restore the attributes of the grid on rotation
     private void restoreGridState(Bundle savedInstanceState) {
         int puzzleNum = savedInstanceState.getInt("SUDOKU_PUZZLE_NUMBER");
-        //String answerKey = res.getStringArray(R.array.answ)[randInt];
-        //String initialValues = res.getStringArray(R.array.puzz)[randInt];
         mSudokuGrid = new SudokuGrid(this, sSize, puzzleNum);
 
         GridLayout gridLayout = findViewById(R.id.sudoku_grid);
@@ -499,10 +496,14 @@ public class SudokuActivity extends AppCompatActivity {
     }
 
     // Gets the user inputted value of the grid size.
+    // Determines if the grid is square or not
     // Default value is 9
     void getSizeFromSpinner() {
         Intent intent = getIntent();
         sSize = intent.getIntExtra("size", 9);
+
+        // Grid is a square if the size is 4 or 9
+        mIsSquare = (sSize == 4 || sSize == 9);
     }
 
     // Gets the word pairs from the imported file, or the sample file,
@@ -729,6 +730,17 @@ public class SudokuActivity extends AppCompatActivity {
 
         return wordPair;
     }
+}
+
+enum Mode {
+    PLAY,
+    LISTEN
+}
+
+
+//
+// Code for the "input word" alert
+//
 
 //    private void createAlertDialog() {
 //        // Create a dialog box popup
@@ -765,9 +777,3 @@ public class SudokuActivity extends AppCompatActivity {
 //            }
 //        });
 //    }
-}
-
-enum Mode {
-    PLAY,
-    LISTEN
-}
