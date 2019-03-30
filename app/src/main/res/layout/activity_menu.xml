@@ -48,7 +48,15 @@
             android:onClick="setListenMode"
             android:text="Reading Mode" />
 
-
+        <Spinner
+            android:id="@+id/size_choice_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_btn"
+            android:padding="10dp"
+            android:textAlignment="center"
+            android:entries="@array/spinner_strings">
+        </Spinner>
     </LinearLayout>
 
 </LinearLayout>

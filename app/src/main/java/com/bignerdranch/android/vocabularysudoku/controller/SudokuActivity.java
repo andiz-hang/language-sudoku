@@ -100,6 +100,8 @@ public class SudokuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sudoku);
 
+        getSizeFromSpinner();
+
         //Text to Speech Initializing
         t1=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
             @Override
@@ -497,6 +499,11 @@ public class SudokuActivity extends AppCompatActivity {
         sLanguage2 = new Language(L2, sSize);
     }
 
+    void getSizeFromSpinner() {
+        Intent intent = getIntent();
+        sSize = intent.getIntExtra("size", 9);
+    }
+
     // Gets the word pairs from the imported file, or the sample file,
     // and stores them into the language classes
     void importWordsFromFile() {
@@ -513,7 +520,7 @@ public class SudokuActivity extends AppCompatActivity {
                 try {
                     csvUri = Uri.parse(tmp);
                     readWordPairs(csvUri);
-                    for (int i = 1; i < 10; i++) {
+                    for (int i = 1; i < sSize + 1; i++) {
                         WordPair wordPair = getRandomWordPair(sSize - (i - 1));
                         sLanguage1.setWord(wordPair.getWord1(), i);
                         sLanguage2.setWord(wordPair.getWord2(), i);
@@ -553,7 +560,7 @@ public class SudokuActivity extends AppCompatActivity {
     void hideStatusBar() {
         View decorView = getWindow().getDecorView();
 
-        int uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+        int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
         decorView.setSystemUiVisibility(uiOptions);
     }
 

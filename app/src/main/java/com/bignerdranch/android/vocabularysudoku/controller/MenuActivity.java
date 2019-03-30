@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.bignerdranch.android.vocabularysudoku.R;
@@ -20,11 +21,14 @@ public class MenuActivity extends AppCompatActivity {
     private String uri = null;
     private boolean useSampleFile = false;
     private boolean mListenMode = false;
+    private Spinner mSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
+
+        mSpinner = findViewById(R.id.size_choice_spinner);
 
         hideActionBar();
     }
@@ -34,7 +38,15 @@ public class MenuActivity extends AppCompatActivity {
         intent.putExtra("uri_key", uri);
         intent.putExtra("use_sample_file", useSampleFile);
         intent.putExtra("listen_mode", mListenMode);
+        intent.putExtra("size", getSpinnerValue());
         startActivity(intent);
+    }
+
+    private int getSpinnerValue() {
+        int spinner_pos = mSpinner.getSelectedItemPosition();
+        String[] size_values = getResources().getStringArray(R.array.size_choices);
+        int size = Integer.valueOf(size_values[spinner_pos]);
+        return size;
     }
 
     // User wishes to use sample file
