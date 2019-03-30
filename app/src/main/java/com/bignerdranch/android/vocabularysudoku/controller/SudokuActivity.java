@@ -157,15 +157,13 @@ public class SudokuActivity extends AppCompatActivity {
         Log.d("Test", "Create Popup Buttons");
         // Create Popup Buttons
         // which fill in sudoku cells and show conflicts when pressed
-        for (int i = 0; i < sSize; i++) { // CHANGE ME
+        for (int i = 0; i < sSize; i++) {
             // Final index ii allows inner functions to access index i
             final int ii = i;//0~8
             mPopupButtons[i] = new ButtonUI(new Button(this));
-            mPopupButtons[i].setButton(new Button(this));
-            mPopupButtons[i].setText(sLanguage2.getWord(i + 1));
 
-            // Set the text size of the buttons
-            fixPopupButton(mPopupButtons[i].getButton());
+            // Set the ui of this button as a Popup Button
+            mPopupButtons[i].setupPopupButton(i);
 
             mPopupButtons[i].getButton().setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -203,9 +201,6 @@ public class SudokuActivity extends AppCompatActivity {
                 Button button = new Button(this);
                 ButtonUI buttonUI = new ButtonUI(button, mSudokuLayout.getLayout(), i, j);
 
-                // Set the button text size.
-                setButtonTextSize(buttonUI.getButton(), 24);
-
                 mSudokuLayout.addButtonUI(buttonUI, index);
                 // Create Listener for Button
                 button.setOnClickListener(new View.OnClickListener() {
@@ -227,17 +222,13 @@ public class SudokuActivity extends AppCompatActivity {
 
         // Create a Menu LayoutParameters to resize the menu
         if (mIsPortraitMode) {
-            RelativeLayout optionsMenu = findViewById(R.id.options_layout);
-            android.view.ViewGroup.LayoutParams layoutParams = optionsMenu.getLayoutParams();
-            layoutParams.width = sScreenWidth / 4;
-            layoutParams.height = 3 * sScreenHeight / 13;
-            optionsMenu.setLayoutParams(layoutParams);
+            fixMenu();
         }
 
         Button clearButton = findViewById(R.id.clear_button);//clean the filled in word
-        fixMenuButton(clearButton); // Set the size and font size of the clear button
 
         mClearButtonUI = new ButtonUI(clearButton);
+        mClearButtonUI.setupMenuButton();
         mClearButtonUI.getButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -270,9 +261,9 @@ public class SudokuActivity extends AppCompatActivity {
 
         // Setup toggleButton
         Button toggleButton = findViewById(R.id.toggle_button);//only toggle pop up buttons' language
-        fixMenuButton(toggleButton); // Set the size and font size of the toggle button
 
         mToggleButtonUI = new ButtonUI(toggleButton);
+        mToggleButtonUI.setupMenuButton();
         mToggleButtonUI.getButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -282,9 +273,9 @@ public class SudokuActivity extends AppCompatActivity {
 
         // Setup hintButton
         Button hintButton = findViewById(R.id.hint_button);// highlight right answer of pop up buttons
-        fixMenuButton(hintButton); // Set the size and font size of the hint button
 
         mHintButtonUI = new ButtonUI(hintButton);
+        mHintButtonUI.setupMenuButton();
         mHintButtonUI.getButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -550,48 +541,13 @@ public class SudokuActivity extends AppCompatActivity {
         decorView.setSystemUiVisibility(uiOptions);
     }
 
-    // Set the font size of the sudoku button. Scales with pixel density
-    void setButtonTextSize(Button button, float size) {
-
-        if (mIsPortraitMode) {
-            float screenWidthInches = sScreenWidth / sScreenXDPI;
-            button.setTextSize(screenWidthInches * (size / sSize));
-
-        } else {
-            float screenHeightInches = sScreenHeight / sScreenYDPI;
-            button.setTextSize(screenHeightInches * (size / sSize));
-        }
-    }
-
-    // Sets the width and height of the popup buttons in landscape mode
-    void setPopupButtonSizeLandscape(Button button) {
-        button.setWidth(sScreenWidth / 8);
-        button.setHeight(sScreenHeight / ((sSize + 3 + 1) / 2));
-    }
-
-    // Scales the size and font size of the popup buttons
-    void fixPopupButton(Button button) {
-        if (mIsPortraitMode) {
-            setButtonTextSize(button, 36);
-        } else {
-            float screenWidthInches = sScreenWidth / sScreenXDPI;
-            button.setTextSize(screenWidthInches * 4);
-            button.setWidth(sScreenWidth / 8);
-            button.setHeight(sScreenHeight / ((sSize + 3 + 1) / 2) - 2);
-        }
-    }
-
-    // Scales the size and font size of the popup menu buttons
-    void fixMenuButton(Button button) {
-        if (mIsPortraitMode) {
-            button.setHeight(sScreenHeight / 13); // Set the button's height
-            float screenWidthInches = sScreenWidth / sScreenXDPI;
-            button.setTextSize(screenWidthInches * 4);
-        } else {
-            setPopupButtonSizeLandscape(button);
-            float screenHeightInches = sScreenHeight / sScreenYDPI;
-            button.setTextSize(screenHeightInches * 4);
-        }
+    // Sets the width and height of the menu
+    void fixMenu() {
+        RelativeLayout optionsMenu = findViewById(R.id.options_layout);
+        android.view.ViewGroup.LayoutParams layoutParams = optionsMenu.getLayoutParams();
+        layoutParams.width = sScreenWidth / 4;
+        layoutParams.height = 3 * sScreenHeight / 13;
+        optionsMenu.setLayoutParams(layoutParams);
     }
 
     // Set the title of the Action Bar
