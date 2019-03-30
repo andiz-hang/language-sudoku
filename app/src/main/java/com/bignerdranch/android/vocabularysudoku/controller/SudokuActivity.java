@@ -58,10 +58,10 @@ public class SudokuActivity extends AppCompatActivity {
     Resources res;// = getResources();
 
     DisplayMetrics mDisplayMetrics = new DisplayMetrics();
-    ButtonUI[] mPopUpButtons;
+    ButtonUI[] mPopupButtons;
 
     public static int sSize;
-    static boolean sPopUpOnScreen = false;// for pop-up-screen
+    static boolean sPopupOnScreen = false;// for pop-up-screen
     public static int sCurrentCell;
     public static int sScreenWidth, sScreenHeight;
     public static float sScreenXDPI, sScreenYDPI;
@@ -159,23 +159,7 @@ public class SudokuActivity extends AppCompatActivity {
         importWordsFromFile();
 
         // Get popup layout
-        mPopUpButtons = new ButtonUI[sSize];
-        Log.d("Test", "popUpGrid");
-        final GridLayout popUpGrid = findViewById(R.id.pop_up_layout);
-
-        if (mIsPortraitMode) {
-            if (mIsSquare) {
-                mPopupMenu = new GridLayoutUI(popUpGrid, (int) sqrt(sSize));
-            } else if (sSize == 6) {
-                mPopupMenu = new GridLayoutUI(popUpGrid, 3, 2);
-            } else if (sSize == 12) {
-                mPopupMenu = new GridLayoutUI(popUpGrid, 3, 4);
-            }
-            mPopupMenu.getLayout().setTranslationY(sScreenHeight);
-        } else {
-            mPopupMenu = new GridLayoutUI(popUpGrid, 6, 2);
-            mPopupMenu.getLayout().setTranslationX(sScreenWidth);
-        }
+        initializePopupMenu();
 
         Log.d("Test", "Create Popup Buttons");
         // Create Popup Buttons
@@ -183,21 +167,20 @@ public class SudokuActivity extends AppCompatActivity {
         for (int i = 0; i < sSize; i++) { // CHANGE ME
             // Final index ii allows inner functions to access index i
             final int ii = i;//0~8
-            mPopUpButtons[i] = new ButtonUI(new Button(this));
-            mPopUpButtons[i].setButton(new Button(this));
-            mPopUpButtons[i].setText(sLanguage2.getWord(i + 1));
+            mPopupButtons[i] = new ButtonUI(new Button(this));
+            mPopupButtons[i].setButton(new Button(this));
+            mPopupButtons[i].setText(sLanguage2.getWord(i + 1));
             // Set the text size of the buttons
             if (mIsPortraitMode) {
                 float screenWidthInches = sScreenWidth / sScreenXDPI;
-                mPopUpButtons[i].getButton().setTextSize((screenWidthInches * 4));
+                mPopupButtons[i].getButton().setTextSize((screenWidthInches * 4));
             } else {
-                mPopUpButtons[i].getButton().setWidth(sScreenWidth / 8);
-                mPopUpButtons[i].getButton().setHeight(sScreenHeight / 6);
+                setPopupButtonSizeLandscape(mPopupButtons[i].getButton());
 
                 float screenHeightInches = sScreenHeight / sScreenYDPI;
-                mPopUpButtons[i].getButton().setTextSize((screenHeightInches * 4));
+                mPopupButtons[i].getButton().setTextSize((screenHeightInches * 4));
             }
-            mPopUpButtons[i].getButton().setOnClickListener(new View.OnClickListener() {
+            mPopupButtons[i].getButton().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if(sGameMode==Mode.LISTEN){
@@ -206,7 +189,7 @@ public class SudokuActivity extends AppCompatActivity {
                         t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
                     }
                     // Zoom out once a word is selected from popup menu
-                    onClickZoom(findViewById(R.id.sudoku_grid), mPopUpButtons[ii].getButton());
+                    onClickZoom(findViewById(R.id.sudoku_grid), mPopupButtons[ii].getButton());
                     // Change Cell text and check if puzzle is finished.
                     mSudokuGrid.updateSudokuModel(ii + 1,sCurrentCell);
                     if (mWordListImported) mSudokuGrid.sendModelToView(sLanguage2);
@@ -215,10 +198,10 @@ public class SudokuActivity extends AppCompatActivity {
             });
             // Create and set parameters for button, then add button with parameters to Popup Grid
             if (mIsPortraitMode) {
-                GridLayout.LayoutParams layoutParams = mPopUpButtons[i].createPopUpButtonParameters();
-                mPopupMenu.getLayout().addView(mPopUpButtons[i].getButton(), layoutParams);
+                GridLayout.LayoutParams layoutParams = mPopupButtons[i].createPopupButtonParameters();
+                mPopupMenu.getLayout().addView(mPopupButtons[i].getButton(), layoutParams);
             } else {
-                mPopupMenu.getLayout().addView(mPopUpButtons[i].getButton(), i);
+                mPopupMenu.getLayout().addView(mPopupButtons[i].getButton(), i);
             }
         }
 
@@ -327,8 +310,8 @@ public class SudokuActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), sLanguage1.getWord(mSudokuGrid.getAnswers(sCurrentCell)),Toast.LENGTH_SHORT).show();
                 sHint+=1;
                 //need CHANGE !
-//                int valueForPopUpHint = Character.getNumericValue((fullAnsw.charAt(sCurrentCell)));
-//                mPopUpButtons[valueForPopUpHint].setBackgroundResource(R.drawable.bg_btn_yellow);
+//                int valueForPopupHint = Character.getNumericValue((fullAnsw.charAt(sCurrentCell)));
+//                mPopupButtons[valueForPopupHint].setBackgroundResource(R.drawable.bg_btn_yellow);
             }
         });
         //initially hide the buttons if in Portrait mode
@@ -483,16 +466,36 @@ public class SudokuActivity extends AppCompatActivity {
     void flipLanguage() {
         for (int i = 0; i < 9; i++) {
             if (mIsLanguage1)
-                mPopUpButtons[i].setText(sLanguage2.getWord(i + 1));
+                mPopupButtons[i].setText(sLanguage2.getWord(i + 1));
             else
-                mPopUpButtons[i].setText(sLanguage1.getWord(i + 1));
+                mPopupButtons[i].setText(sLanguage1.getWord(i + 1));
         }
         mIsLanguage1 = !mIsLanguage1;
     }
 
+    // Initialize languages L1 and L2
     void initializeLanguages(String L1, String L2) {
         sLanguage1 = new Language(L1, sSize);
         sLanguage2 = new Language(L2, sSize);
+    }
+
+    // Initialize the popup menu
+    void initializePopupMenu() {
+        mPopupButtons = new ButtonUI[sSize];
+        Log.d("Test", "popupGrid");
+        final GridLayout popupGrid = findViewById(R.id.pop_up_layout);
+
+        if (mIsPortraitMode) {
+            if (sSize == 4) {
+                mPopupMenu = new GridLayoutUI(popupGrid, 2, 2);
+            } else {
+                mPopupMenu = new GridLayoutUI(popupGrid, 3, sSize / 3);
+            }
+            mPopupMenu.getLayout().setTranslationY(sScreenHeight);
+        } else {
+            mPopupMenu = new GridLayoutUI(popupGrid, (sSize + 3 + 1) / 2, 2);
+            mPopupMenu.getLayout().setTranslationX(sScreenWidth);
+        }
     }
 
     // Gets the user inputted value of the grid size.
@@ -567,7 +570,7 @@ public class SudokuActivity extends AppCompatActivity {
         decorView.setSystemUiVisibility(uiOptions);
     }
 
-    // scales the size and font size of the popup menu buttons
+    // Scales the size and font size of the popup menu buttons
     void fixMenuButtons(Button button) {
         if (mIsPortraitMode) {
             button.setHeight(sScreenHeight / 13); // Set the button's height
@@ -576,9 +579,15 @@ public class SudokuActivity extends AppCompatActivity {
         } else {
             float screenHeightInches = sScreenHeight / sScreenYDPI;
             button.setWidth(sScreenWidth / 8);
-            button.setHeight(sScreenHeight / 6); // Set the button's height
+            button.setHeight(sScreenHeight / ((sSize + 3 + 1) / 2)); // Set the button's height
             button.setTextSize(screenHeightInches * 4);
         }
+    }
+
+    // Sets the width and height of the popup buttons in landscape mode
+    private void setPopupButtonSizeLandscape(Button button) {
+        button.setWidth(sScreenWidth / 8);
+        button.setHeight(sScreenHeight / ((sSize + 3 + 1) / 2));
     }
 
     // Set the title of the Action Bar
@@ -597,7 +606,7 @@ public class SudokuActivity extends AppCompatActivity {
         // Portrait Mode
         if (mIsPortraitMode) {
             // Move Offscreen
-            if (sPopUpOnScreen) {
+            if (sPopupOnScreen) {
                 // Pan to middle of sudoku
                 mSudokuLayout.animate("translationX", 0f, 500);
                 mSudokuLayout.animate("translationY", 0f, 500);
@@ -611,7 +620,7 @@ public class SudokuActivity extends AppCompatActivity {
                 mSudokuLayout.animate("scaleX", 1f, 500);
                 mSudokuLayout.animate("scaleY", 1f, 500);
 
-                sPopUpOnScreen = false;
+                sPopupOnScreen = false;
             }
             // Move Onscreen
             else {
@@ -629,12 +638,12 @@ public class SudokuActivity extends AppCompatActivity {
                 mToggleButtonUI.animate("translationX", 0f, 400);
                 mHintButtonUI.animate("translationX", 0f, 500);
 
-                sPopUpOnScreen = true;
+                sPopupOnScreen = true;
             }
         // Landscape Mode
         } else {
             // Move Offscreen
-            if (sPopUpOnScreen) {
+            if (sPopupOnScreen) {
                 // Pan to middle of sudoku
                 mSudokuLayout.animate("translationX", 0f, 500);
                 mSudokuLayout.animate("translationY", 0f, 500);
@@ -647,7 +656,7 @@ public class SudokuActivity extends AppCompatActivity {
                 // Zoom out
                 mSudokuLayout.animate("scaleX", 1f, 500);
                 mSudokuLayout.animate("scaleY", 1f, 500);
-                sPopUpOnScreen = false;
+                sPopupOnScreen = false;
             }
             // Move Onscreen
             // KNOWN BUG: ZOOM IN ZOOM OUT DOESN'T WORK PROPERLY IN LANDSCAPE MODE
@@ -673,7 +682,7 @@ public class SudokuActivity extends AppCompatActivity {
                 mToggleButtonUI.animate("translationX", 0f, 400);
                 mHintButtonUI.animate("translationX", 0f, 500);
 
-                sPopUpOnScreen = true;
+                sPopupOnScreen = true;
             }
         }
     }
