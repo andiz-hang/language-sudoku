@@ -445,7 +445,7 @@ public class SudokuActivity extends AppCompatActivity {
     // Toggles the language of the popup buttons and
     // Flips the boolean mIsLanguage1!
     void flipLanguage() {
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < sSize; i++) {
             if (mIsLanguage1)
                 mPopupButtons[i].setText(sLanguage2.getWord(i + 1));
             else
