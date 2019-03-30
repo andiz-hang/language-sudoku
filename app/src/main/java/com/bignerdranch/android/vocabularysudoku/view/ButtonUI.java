@@ -7,8 +7,11 @@ import android.widget.GridLayout;
 import com.bignerdranch.android.vocabularysudoku.R;
 
 import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.mIsPortraitMode;
+import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sLanguage2;
 import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sScreenHeight;
 import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sScreenWidth;
+import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sScreenXDPI;
+import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sScreenYDPI;
 import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sSize;
 import static java.lang.Math.ceil;
 import static java.lang.Math.floor;
@@ -29,10 +32,7 @@ public class ButtonUI {
 
     public ButtonUI(Button button, GridLayout grid, int x, int y) {
         mButton = button;
-        mButton.setTextSize(10);
-        //mButton.setMinHeight(0);
-        //mButton.setMinWidth(0);
-        //mButton.setIncludeFontPadding(false);
+        setTextSizeScaled(24);
         mButton.setPadding(0,0,0,0);
         mButton.setBackgroundResource(R.drawable.bg_btn);
         GridLayout.LayoutParams buttonUIParams = createSudokuCellButtonParameters(x,y);
@@ -58,12 +58,49 @@ public class ButtonUI {
         mButton.setText(text);
     }
 
+    // Setup the ui parameters of a popup button
+    public void setupPopupButton(int index) {
+        setText(sLanguage2.getWord(index + 1));
+        if (mIsPortraitMode) {
+            setTextSizeScaled(36);
+        } else {
+            float screenWidthInches = sScreenWidth / sScreenXDPI;
+            mButton.setTextSize(screenWidthInches * 4);
+            setButtonSize(sScreenWidth / 8, sScreenHeight / ((sSize + 3 + 1) / 2) - 2);
+        }
+    }
+
+    // setup the ui parameters of a menu button
+    public void setupMenuButton() {
+        if (mIsPortraitMode) {
+            setButtonSize(sScreenWidth / 4, sScreenHeight / 13);
+            float screenWidthInches = sScreenWidth / sScreenXDPI;
+            mButton.setTextSize(screenWidthInches * 4);
+        } else {
+            setButtonSize(sScreenWidth / 8, sScreenHeight / ((sSize + 3 + 1) / 2));
+            float screenHeightInches = sScreenHeight / sScreenYDPI;
+            mButton.setTextSize(screenHeightInches * 4);
+        }
+    }
+
     public String getText(){
         return mButton.getText().toString();
     }
 
-    private void initializeButton(){
+    private void setTextSizeScaled(float size) {
+        if (mIsPortraitMode) {
+            float screenWidthInches = sScreenWidth / sScreenXDPI;
+            mButton.setTextSize(screenWidthInches * (size / sSize));
 
+        } else {
+            float screenHeightInches = sScreenHeight / sScreenYDPI;
+            mButton.setTextSize(screenHeightInches * (size / sSize));
+        }
+    }
+
+    private void setButtonSize(int width, int height) {
+        mButton.setWidth(width);
+        mButton.setHeight(height);
     }
 
     // Create and return layout parameters for a Sudokucell
@@ -109,17 +146,6 @@ public class ButtonUI {
         } else {
             layoutParameters.width = sScreenWidth / 8;
             layoutParameters.height = sScreenHeight / 6;
-        }
-        layoutParameters.bottomMargin = 0;
-        return layoutParameters;
-    }
-
-    // Creates and returns layout parameters for a Popup button
-    public GridLayout.LayoutParams createPopupMenuButtonParameters(){
-        GridLayout.LayoutParams layoutParameters = new GridLayout.LayoutParams();//(GridLayout.LayoutParams.WRAP_CONTENT, GridLayout.LayoutParams.WRAP_CONTENT);
-        if (mIsPortraitMode) {
-            layoutParameters.width = sScreenWidth / 4;
-            layoutParameters.height = sScreenHeight / 13;
         }
         layoutParameters.bottomMargin = 0;
         return layoutParameters;
