@@ -8,8 +8,6 @@
         android:id="@+id/sudoku_grid"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:columnCount="9"
-        android:rowCount="9"
         android:layout_gravity="fill_vertical"
         android:layout_centerHorizontal="true">
     </GridLayout>

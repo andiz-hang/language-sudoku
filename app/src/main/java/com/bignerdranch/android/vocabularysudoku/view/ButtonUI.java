@@ -9,6 +9,8 @@ import com.bignerdranch.android.vocabularysudoku.R;
 import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.mIsPortraitMode;
 import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sScreenHeight;
 import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sScreenWidth;
+import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sSize;
+import static java.lang.Math.sqrt;
 
 public class ButtonUI {
     private Button mButton;
@@ -68,19 +70,25 @@ public class ButtonUI {
 
         // In portrait mode
         if (mIsPortraitMode) {
-            layoutParameters.width = sScreenWidth / 11;
-            layoutParameters.height = sScreenWidth / 11;
+            layoutParameters.width = (int)(sScreenWidth / (sSize) * 0.9);
+            layoutParameters.height = (int)(sScreenWidth / (sSize) * 0.9);
         } else { // In landscape mode
-            layoutParameters.width = sScreenHeight / 11;
-            layoutParameters.height = sScreenHeight / 11;
+            layoutParameters.width = (int)(sScreenWidth / (sSize) * 0.9);
+            layoutParameters.height = (int)(sScreenWidth / (sSize) * 0.9);
         }
         layoutParameters.setMargins(5,5, 5, 5);
-        if (indexI==3 || indexI==6){
+        if (indexI % sqrt(sSize) == 0) {
             layoutParameters.setMargins(layoutParameters.leftMargin,15,layoutParameters.rightMargin,layoutParameters.bottomMargin);
         }
-        if (indexJ==3 || indexJ==6){
+        if (indexJ % sqrt(sSize) == 0) {
             layoutParameters.setMargins(15,layoutParameters.topMargin,layoutParameters.rightMargin,layoutParameters.bottomMargin);
         }
+//        if (indexI==3 || indexI==6){
+//            layoutParameters.setMargins(layoutParameters.leftMargin,15,layoutParameters.rightMargin,layoutParameters.bottomMargin);
+//        }
+//        if (indexJ==3 || indexJ==6){
+//            layoutParameters.setMargins(15,layoutParameters.topMargin,layoutParameters.rightMargin,layoutParameters.bottomMargin);
+//        }
 
         return layoutParameters;
     }

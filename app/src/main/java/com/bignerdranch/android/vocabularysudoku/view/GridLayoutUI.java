@@ -16,18 +16,21 @@ import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivit
 import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sIsMode1;
 import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sLanguage1;
 import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sLanguage2;
-import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sSize;
 
 public class GridLayoutUI {
     private GridLayout mLayout;
     private ButtonUI[][] mButtonUIs;
+    private int mSize;
 
 
-    public GridLayoutUI(GridLayout layout) {
+    public GridLayoutUI(GridLayout layout, int size) {
+        mSize = size;
+        layout.setRowCount(mSize);
+        layout.setColumnCount(mSize);
         mLayout = layout;
-        mButtonUIs = new ButtonUI[9][9];
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
+        mButtonUIs = new ButtonUI[mSize][mSize];
+        for (int i = 0; i < mSize; i++) {
+            for (int j = 0; j < mSize; j++) {
                 mButtonUIs[i][j] = new ButtonUI();
             }
         }
@@ -45,8 +48,8 @@ public class GridLayoutUI {
     }
 
     public void addButtonUI(ButtonUI button, int index) {
-        int y = index / sSize;
-        int x = index % sSize;
+        int y = index / mSize;
+        int x = index % mSize;
         mButtonUIs[y][x] = button;
     }
 
@@ -55,8 +58,8 @@ public class GridLayoutUI {
     }
 
     public ButtonUI getButtonUI(int index) {
-        int y = index / sSize;
-        int x = index % sSize;
+        int y = index / mSize;
+        int x = index % mSize;
         return mButtonUIs[y][x];
     }
 
@@ -81,35 +84,35 @@ public class GridLayoutUI {
 
     // Returns a SudokuCell array with possibly conflicting cells highlighted red
     private void setRowCellsRed(int rowNum) {
-        for (int i = 0; i < 9; i++) {
-            //if (getButtonUI(cellIndex / 9 * 9 + i).getButton().getBackground().getConstantState() == res.getDrawable(R.drawable.bg_btn).getConstantState())
-            //getButtonUI(cellIndex / 9 * 9 + i).getButton().setBackgroundResource(R.drawable.bg_btn_red);
-            getButtonUI(rowNum * 9 + i).getButton().setBackgroundResource(R.drawable.bg_btn_red);
+        for (int i = 0; i < mSize; i++) {
+            //if (getButtonUI(cellIndex / mSize * mSize + i).getButton().getBackground().getConstantState() == res.getDrawable(R.drawable.bg_btn).getConstantState())
+            //getButtonUI(cellIndex / mSize * mSize + i).getButton().setBackgroundResource(R.drawable.bg_btn_red);
+            getButtonUI(rowNum * mSize + i).getButton().setBackgroundResource(R.drawable.bg_btn_red);
         }
     }
 
     private void setColumnCellsRed(int colNum) {
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < mSize; i++) {
             //Log.d("Test", "Column: " + i);
-            //if (getButtonUI(cellIndex % 9 + i * 9).getButton().getBackground().getConstantState() == res.getDrawable(R.drawable.bg_btn).getConstantState())
-            //getButtonUI(cellIndex % 9 + i * 9).getButton().setBackgroundResource(R.drawable.bg_btn_red);
-            getButtonUI(colNum + i * 9).getButton().setBackgroundResource(R.drawable.bg_btn_red);
+            //if (getButtonUI(cellIndex % mSize + i * mSize).getButton().getBackground().getConstantState() == res.getDrawable(R.drawable.bg_btn).getConstantState())
+            //getButtonUI(cellIndex % mSize + i * mSize).getButton().setBackgroundResource(R.drawable.bg_btn_red);
+            getButtonUI(colNum + i * mSize).getButton().setBackgroundResource(R.drawable.bg_btn_red);
         }
     }
 
     private void setBoxCellsRed(int boxNum) {
-        for (int i = 0; i < 9; i++) {
-            //if (getButtonUI(cellIndex / 9 /3*27 + cellIndex%9/3*3 + i%3 + i/3*9).getButton().getBackground().getConstantState() == res.getDrawable(R.drawable.bg_btn).getConstantState())
-            //getButtonUI(cellIndex / 9 /3*27 + cellIndex%9/3*3 + i%3 + i/3*9).getButton().setBackgroundResource(R.drawable.bg_btn_red);
+        for (int i = 0; i < mSize; i++) {
+            //if (getButtonUI(cellIndex / mSize /3*27 + cellIndex%mSize/3*3 + i%3 + i/3*mSize).getButton().getBackground().getConstantState() == res.getDrawable(R.drawable.bg_btn).getConstantState())
+            //getButtonUI(cellIndex / mSize /3*27 + cellIndex%mSize/3*3 + i%3 + i/3*mSize).getButton().setBackgroundResource(R.drawable.bg_btn_red);
             getButtonUI((boxNum / 3) * 27 + (boxNum % 3) * 3 + i % 3 + i / 3 * 9).getButton().setBackgroundResource(R.drawable.bg_btn_red);
         }
     }
 
     public void toNumbers() {
-        for(int i = 0;i < 9; i++){
-            for(int j = 0; j < 9; j++){
+        for(int i = 0;i < mSize; i++){
+            for(int j = 0; j < mSize; j++){
                 String buttonText = getButtonUI(j,i).getText();
-                for(int k = 1; k <= 9; k++){
+                for(int k = 1; k <= mSize; k++){
                     if ((buttonText.equals(sLanguage1.getWord(k))) || (buttonText.equals(sLanguage2.getWord(k)))){
                         getButtonUI(j,i).setText(Integer.toString(k));
                     }
@@ -119,10 +122,10 @@ public class GridLayoutUI {
     }
 
     public void toWords(SudokuGrid grid) {
-        for(int i = 0;i < 9; i++){
-            for(int j = 0; j < 9; j++){
+        for(int i = 0;i < mSize; i++){
+            for(int j = 0; j < mSize; j++){
                 String buttonText = getButtonUI(j,i).getText();
-                for(int k = 1; k <= 9; k++){
+                for(int k = 1; k <= mSize; k++){
                     if (buttonText.equals(Integer.toString(k))){
                         if (grid.getSudokuCell(i,j).isLock()) getButtonUI(j,i).setText(sLanguage1.getWord(k));
                         else getButtonUI(j,i).setText(sLanguage2.getWord(k));
@@ -132,18 +135,18 @@ public class GridLayoutUI {
         }
     }
     public void defaultButtonColors(){
-        for (int y=0;y<81;y++) {
+        for (int y=0;y<mSize*mSize;y++) {
             getButtonUI(y).getButton().setBackgroundResource(R.drawable.bg_btn);
         }
     }
     public void highlightWrongCells(SudokuCell mGrid[][], boolean mWrongRows[], boolean mWrongCols[], boolean mWrongBoxes[], Language language2){
-        for(int i = 0; i < sSize; i++){
+        for(int i = 0; i < mSize; i++){
             if(mWrongRows[i]) setRowCellsRed(i);
             if(mWrongCols[i]) setColumnCellsRed(i);
             if(mWrongBoxes[i]) setBoxCellsRed(i);
         }
-        for (int i = 0; i < sSize; i++) {
-            for (int j = 0; j < sSize; j++) {
+        for (int i = 0; i < mSize; i++) {
+            for (int j = 0; j < mSize; j++) {
                 if (mGrid[i][j].isConflicting())
                     getButtonUI(i, j).getButton().setBackgroundResource(R.drawable.bg_btn_ex_red);
                 if (mGrid[i][j].isLock())
@@ -155,13 +158,13 @@ public class GridLayoutUI {
         }
     }
     public void highlightWrongCells(SudokuCell mGrid[][], boolean mWrongRows[], boolean mWrongCols[], boolean mWrongBoxes[]){
-        for(int i = 0; i < sSize; i++){
+        for(int i = 0; i < mSize; i++){
             if(mWrongRows[i]) setRowCellsRed(i);
             if(mWrongCols[i]) setColumnCellsRed(i);
             if(mWrongBoxes[i]) setBoxCellsRed(i);
         }
-        for (int i = 0; i < sSize; i++) {
-            for (int j = 0; j < sSize; j++) {
+        for (int i = 0; i < mSize; i++) {
+            for (int j = 0; j < mSize; j++) {
                 if (mGrid[i][j].isConflicting())
                     getButtonUI(i, j).getButton().setBackgroundResource(R.drawable.bg_btn_ex_red);
                 if (mGrid[i][j].isLock())

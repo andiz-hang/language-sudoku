@@ -22,6 +22,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 import android.widget.EditText;
+import static java.lang.Math.sqrt;
 
 import com.bignerdranch.android.vocabularysudoku.model.Language;
 import com.bignerdranch.android.vocabularysudoku.R;
@@ -98,6 +99,7 @@ public class SudokuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sudoku);
 
+        //Text to Speech Initializing
         t1=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
@@ -108,7 +110,6 @@ public class SudokuActivity extends AppCompatActivity {
                 }
             }
         });
-
         t2=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
@@ -120,6 +121,7 @@ public class SudokuActivity extends AppCompatActivity {
             }
         });
 
+        // Generating SudokuGrid
         res = getResources();
         Log.d("Test", "SudokuLayoutUI");
         if (savedInstanceState == null) { // First time opening the app
@@ -128,11 +130,13 @@ public class SudokuActivity extends AppCompatActivity {
             mSudokuGrid = new SudokuGrid(this, sSize, randInt);
 
             GridLayout gridLayout = findViewById(R.id.sudoku_grid);
-            mSudokuLayout = new GridLayoutUI(gridLayout);
+            mSudokuLayout = new GridLayoutUI(gridLayout, sSize);
             mSudokuGrid.setSudokuLayout(mSudokuLayout);
 //            mSudokuGrid.sendModelToView();
         } else // Restore all saved values
             restoreGridState(savedInstanceState);
+
+        Log.d("Test", "Sudoku initialized successful");
 
         // Get width and height of screen
         getWindowManager().getDefaultDisplay().getMetrics(mDisplayMetrics);
@@ -159,7 +163,7 @@ public class SudokuActivity extends AppCompatActivity {
         // Get popup layout
         Log.d("Test", "popUpGrid");
         final GridLayout popUpGrid = findViewById(R.id.pop_up_layout);
-        mPopupMenu = new GridLayoutUI(popUpGrid);
+        mPopupMenu = new GridLayoutUI(popUpGrid, (int)sqrt(sSize));
         if (mIsPortraitMode) {
             mPopupMenu.getLayout().setTranslationY(sScreenHeight);
         } else {
@@ -169,7 +173,7 @@ public class SudokuActivity extends AppCompatActivity {
         Log.d("Test", "Create Popup Buttons");
         // Create Popup Buttons
         // which fill in sudoku cells and show conflicts when pressed
-        for (int i = 0; i < 9; i++) { // CHANGE ME
+        for (int i = 0; i < sSize; i++) { // CHANGE ME
             // Final index ii allows inner functions to access index i
             final int ii = i;//0~8
             mPopUpButtons[i] = new ButtonUI(new Button(this));
@@ -423,7 +427,7 @@ public class SudokuActivity extends AppCompatActivity {
         mSudokuGrid = new SudokuGrid(this, sSize, puzzleNum);
 
         GridLayout gridLayout = findViewById(R.id.sudoku_grid);
-        mSudokuLayout = new GridLayoutUI(gridLayout);
+        mSudokuLayout = new GridLayoutUI(gridLayout, sSize);
         mSudokuGrid.setSudokuLayout(mSudokuLayout);
 
         for (int i = 0; i < sSize * sSize; i++) {
@@ -492,7 +496,7 @@ public class SudokuActivity extends AppCompatActivity {
                     csvUri = Uri.parse(tmp);
                     readWordPairs(csvUri);
                     for (int i = 1; i < 10; i++) {
-                        WordPair wordPair = getRandomWordPair(sSize);
+                        WordPair wordPair = getRandomWordPair(sSize - (i - 1));
                         sLanguage1.setWord(wordPair.getWord1(), i);
                         sLanguage2.setWord(wordPair.getWord2(), i);
                     }
@@ -511,8 +515,8 @@ public class SudokuActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        for (int i = 1; i < 10; i++) {
-            WordPair wordPair = getRandomWordPair(sSize - i + 1);
+        for (int i = 1; i < sSize + 1; i++) {
+            WordPair wordPair = getRandomWordPair(sSize - (i - 1));
             sLanguage1.setWord(wordPair.getWord1(), i);
             sLanguage2.setWord(wordPair.getWord2(), i);
         }

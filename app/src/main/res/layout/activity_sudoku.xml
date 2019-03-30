@@ -9,8 +9,6 @@
         android:id="@+id/sudoku_grid"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:columnCount="9"
-        android:rowCount="9"
         android:layout_gravity="fill_horizontal"
         android:layout_centerHorizontal="true">
     </GridLayout>
@@ -29,8 +27,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal|bottom"
             android:background="@color/colorPrimaryDark"
-            android:columnCount="3"
-            android:rowCount="3"
             android:layout_alignParentBottom="true"/>
 
         <RelativeLayout

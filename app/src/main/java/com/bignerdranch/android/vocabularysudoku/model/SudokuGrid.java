@@ -45,6 +45,10 @@ public class SudokuGrid {
         mSavedPuzzleNumber = puzzleNum;
         mAnswerKey = res.getStringArray(R.array.answ)[puzzleNum];
         mInitialValues = res.getStringArray(R.array.puzz)[puzzleNum];
+
+        //DEBUG
+//        mAnswerKey = "1234123412341234";
+//        mInitialValues = "1234123400001234";
         //mRes = res;
         initializePuzzle(mAnswerKey, mInitialValues);
     }
@@ -55,16 +59,16 @@ public class SudokuGrid {
     private void initializePuzzle(String answerKey, String initialValues) {
         // Initialize the Answer Array
         //String answerKey = mRes.getStringArray(R.array.answ)[randInt];
-        for(int i = 0; i < 81; i++) {
+        for(int i = 0; i < sSize * sSize; i++) {
             mAnswers[i] = Character.getNumericValue(answerKey.charAt(i));
         }
         // Initialize the Sudoku Grid Array
         //String initialValues = mRes.getStringArray(R.array.puzz)[randInt];
-        mGrid = new SudokuCell[9][9];
-        for(int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
+        mGrid = new SudokuCell[sSize][sSize];
+        for(int i = 0; i < sSize; i++) {
+            for (int j = 0; j < sSize; j++) {
                 mGrid[i][j] = new SudokuCell();
-                int newValue = Character.getNumericValue(initialValues.charAt(i * 9 + j));
+                int newValue = Character.getNumericValue(initialValues.charAt(i * sSize + j));
                 if (newValue != 0){
                     mGrid[i][j].setValue(newValue);
                     mGrid[i][j].setLock(true);
