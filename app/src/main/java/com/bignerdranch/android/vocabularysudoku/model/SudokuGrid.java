@@ -13,6 +13,7 @@ import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivit
 import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sLanguage1;
 import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sLanguage2;
 import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sSize;
+import static java.lang.Math.sqrt;
 
 public class SudokuGrid {
 
@@ -47,8 +48,8 @@ public class SudokuGrid {
         mInitialValues = res.getStringArray(R.array.puzz)[puzzleNum];
 
         //DEBUG
-//        mAnswerKey = "1234123412341234";
-//        mInitialValues = "1234123400001234";
+//        mAnswerKey = "1234234134124123";
+//        mInitialValues = "1234000000000000";
         //mRes = res;
         initializePuzzle(mAnswerKey, mInitialValues);
     }
@@ -90,21 +91,21 @@ public class SudokuGrid {
     // Returns true IF (the cell in question is in the same column as the current cell)
     //                 AND (the cell in question isn't the current cell)
     boolean cellConflictInColumn(int currentCellIndex, int popupIndex, int distanceIndex){
-        int targetCellIndex = currentCellIndex % 9 + distanceIndex * 9;
+        int targetCellIndex = currentCellIndex % sSize + distanceIndex * sSize;
         return popupIndex + 1 == getSudokuCell(targetCellIndex).getValue() && targetCellIndex != currentCellIndex;
     }
 
     // Returns true IF (the cell in question is in the same row as the current cell)
     //                 AND(the cell in question isn't the current cell)
     boolean cellConflictInRow(int currentCellIndex, int popupIndex, int distanceIndex){
-        int targetCellIndex = currentCellIndex / 9 * 9 + distanceIndex;
+        int targetCellIndex = currentCellIndex / sSize * sSize + distanceIndex;
         return popupIndex + 1 == getSudokuCell(targetCellIndex).getValue() && targetCellIndex != currentCellIndex;
     }
 
     // Returns true IF (the cell in question is in the same box as the current cell)
     //                 AND(the cell in question isn't the current cell)
     boolean cellConflictInBox(int currentCellIndex, int popupIndex, int distanceIndex){
-        int targetCellIndex = currentCellIndex / 9 /3*27 + currentCellIndex%9/3*3 + distanceIndex%3 + distanceIndex/3*9;
+        int targetCellIndex = currentCellIndex / sSize / (int)sqrt(sSize) * (sSize * (int)sqrt(sSize)) + currentCellIndex % sSize / (int)sqrt(sSize) * (int)sqrt(sSize) + distanceIndex % (int)sqrt(sSize) + distanceIndex / (int)sqrt(sSize) * sSize;
         return popupIndex + 1 == getSudokuCell(targetCellIndex).getValue() && targetCellIndex != currentCellIndex;
     }
 
@@ -133,10 +134,10 @@ public class SudokuGrid {
     }
 
     private int convertIndexToBoxNum(int index){
-        int boxColumn = (index % sSize) / 3;    // 0~2
-        int boxRow = (index / sSize) / 3;       // 0~2
-        int sum = (boxRow * 3) + boxColumn;
-        return (boxRow * 3) + boxColumn;        // 0~8
+        int boxColumn = (index % sSize) / (int)sqrt(sSize);    // 0~2
+        int boxRow = (index / sSize) / (int)sqrt(sSize);       // 0~2
+        int sum = (boxRow * (int)sqrt(sSize)) + boxColumn;
+        return (boxRow * (int)sqrt(sSize)) + boxColumn;        // 0~8
     }
 
     private void setCellConflicting(int index, boolean value){
@@ -175,12 +176,12 @@ public class SudokuGrid {
             getSudokuCell(CurrentCell).setValue(value);
 
             int count=0,correct;
-            for(int i = 0; i < 81; i++){
+            for(int i = 0; i < sSize * sSize; i++){
                 setWrongRows(i, false);
                 setWrongCols(i, false);
                 setWrongBoxes(i, false);
             }
-            for (int x=0;x<81;x++) {
+            for (int x=0;x<sSize * sSize;x++) {
                 correct = findConflictAtIndex(x);
                 if (correct == 1 && getSudokuCell(x).getValue() != 0)
                     count+=1;
@@ -200,7 +201,7 @@ public class SudokuGrid {
         // If a conflict is found, set that cell to wrong
         // Iterates through all cells in the same row, column, and box as the current cell
 
-        for (int j=0;j<9;j++) {
+        for (int j=0;j<sSize;j++) {
             // value           = 1-9 corresponding to the answer being put into the current cell
             // sCurrentCell = index of the current cell
             // If the current cell was correct, but the new value conflicts with a cell in the same row, column, or box:

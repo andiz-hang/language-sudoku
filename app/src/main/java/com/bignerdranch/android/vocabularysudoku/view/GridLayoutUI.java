@@ -16,6 +16,8 @@ import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivit
 import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sIsMode1;
 import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sLanguage1;
 import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sLanguage2;
+import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sSize;
+import static java.lang.Math.sqrt;
 
 public class GridLayoutUI {
     private GridLayout mLayout;
@@ -104,7 +106,7 @@ public class GridLayoutUI {
         for (int i = 0; i < mSize; i++) {
             //if (getButtonUI(cellIndex / mSize /3*27 + cellIndex%mSize/3*3 + i%3 + i/3*mSize).getButton().getBackground().getConstantState() == res.getDrawable(R.drawable.bg_btn).getConstantState())
             //getButtonUI(cellIndex / mSize /3*27 + cellIndex%mSize/3*3 + i%3 + i/3*mSize).getButton().setBackgroundResource(R.drawable.bg_btn_red);
-            getButtonUI((boxNum / 3) * 27 + (boxNum % 3) * 3 + i % 3 + i / 3 * 9).getButton().setBackgroundResource(R.drawable.bg_btn_red);
+            getButtonUI((boxNum / (int)sqrt(sSize)) * (sSize * (int)sqrt(sSize)) + (boxNum % (int)sqrt(sSize)) * (int)sqrt(sSize) + i % (int)sqrt(sSize) + i / (int)sqrt(sSize) * sSize).getButton().setBackgroundResource(R.drawable.bg_btn_red);
         }
     }
 
