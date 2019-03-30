@@ -55,7 +55,7 @@ public class SudokuActivity extends AppCompatActivity {
     // s: static
     // i: index
 
-    Resources res;// = getResources();
+    Resources mRes;// = getResources();
 
     DisplayMetrics mDisplayMetrics = new DisplayMetrics();
     ButtonUI[] mPopupButtons;
@@ -124,7 +124,7 @@ public class SudokuActivity extends AppCompatActivity {
             }
         });
 
-        res = getResources();
+        mRes = getResources();
 
         // Generating SudokuGrid
         Log.d("Test", "SudokuLayoutUI");
