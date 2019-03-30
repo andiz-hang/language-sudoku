@@ -1,7 +1,5 @@
 package com.bignerdranch.android.vocabularysudoku.controller;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
@@ -13,16 +11,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.GridLayout;
-import android.support.v7.app.AlertDialog;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
-import android.widget.EditText;
-import static java.lang.Math.sqrt;
 
 import com.bignerdranch.android.vocabularysudoku.model.Language;
 import com.bignerdranch.android.vocabularysudoku.R;
@@ -30,12 +22,9 @@ import com.bignerdranch.android.vocabularysudoku.model.SudokuGrid;
 import com.bignerdranch.android.vocabularysudoku.model.WordPair;
 import com.bignerdranch.android.vocabularysudoku.view.ButtonUI;
 import com.bignerdranch.android.vocabularysudoku.view.GridLayoutUI;
-import com.bignerdranch.android.vocabularysudoku.view.AlertUI;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -67,7 +56,6 @@ public class SudokuActivity extends AppCompatActivity {
     public static float sScreenXDPI, sScreenYDPI;
     public static boolean mIsPortraitMode;
     public boolean mListenMode;
-    public int mSavedPuzzleNumber;
     public static Mode sGameMode = Mode.PLAY;
 
     public static boolean sIsMode1 = true;//mode1 is Language1 puzzle with Language2 filled in, determines whether the first mode is the toggled mode not
