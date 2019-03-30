@@ -124,10 +124,9 @@ public class SudokuActivity extends AppCompatActivity {
             }
         });
 
-
+        res = getResources();
 
         // Generating SudokuGrid
-        res = getResources();
         Log.d("Test", "SudokuLayoutUI");
         if (savedInstanceState == null) { // First time opening the app
             Random rand = new Random();
@@ -143,14 +142,8 @@ public class SudokuActivity extends AppCompatActivity {
 
         Log.d("Test", "Sudoku initialized successful");
 
-        // Get width and height of screen
-        getWindowManager().getDefaultDisplay().getMetrics(mDisplayMetrics);
-        sScreenHeight = mDisplayMetrics.heightPixels;
-        sScreenWidth = mDisplayMetrics.widthPixels;
-        sScreenXDPI = mDisplayMetrics.xdpi;
-        sScreenYDPI = mDisplayMetrics.ydpi;
-
-        mIsPortraitMode = (sScreenHeight > sScreenWidth);
+        // Get Screen dimensions and pixel density
+        getScreenInfo();
 
         // Initialize language1 and language2
         initializeLanguages("English", "Mandarin");
@@ -252,11 +245,9 @@ public class SudokuActivity extends AppCompatActivity {
         }
 
         Button clearButton = findViewById(R.id.clear_button);//clean the filled in word
-
         fixMenuButtons(clearButton); // Set the size and font size of the clear button
 
         mClearButtonUI = new ButtonUI(clearButton);
-
         mClearButtonUI.getButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -289,8 +280,8 @@ public class SudokuActivity extends AppCompatActivity {
 
         // Setup toggleButton
         Button toggleButton = findViewById(R.id.toggle_button);//only toggle pop up buttons' language
-
         fixMenuButtons(toggleButton); // Set the size and font size of the toggle button
+
         mToggleButtonUI = new ButtonUI(toggleButton);
         mToggleButtonUI.getButton().setOnClickListener(new View.OnClickListener() {
             @Override
@@ -301,8 +292,8 @@ public class SudokuActivity extends AppCompatActivity {
 
         // Setup hintButton
         Button hintButton = findViewById(R.id.hint_button);// highlight right answer of pop up buttons
-
         fixMenuButtons(hintButton); // Set the size and font size of the hint button
+
         mHintButtonUI = new ButtonUI(hintButton);
         mHintButtonUI.getButton().setOnClickListener(new View.OnClickListener() {
             @Override
@@ -507,6 +498,16 @@ public class SudokuActivity extends AppCompatActivity {
 
         // Grid is a square if the size is 4 or 9
         mIsSquare = (sSize == 4 || sSize == 9);
+    }
+
+    void getScreenInfo() {
+        getWindowManager().getDefaultDisplay().getMetrics(mDisplayMetrics);
+        sScreenHeight = mDisplayMetrics.heightPixels;
+        sScreenWidth = mDisplayMetrics.widthPixels;
+        sScreenXDPI = mDisplayMetrics.xdpi;
+        sScreenYDPI = mDisplayMetrics.ydpi;
+
+        mIsPortraitMode = (sScreenHeight > sScreenWidth);
     }
 
     // Gets the word pairs from the imported file, or the sample file,
