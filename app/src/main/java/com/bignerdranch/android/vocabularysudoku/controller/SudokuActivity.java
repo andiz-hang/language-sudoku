@@ -82,8 +82,7 @@ public class SudokuActivity extends AppCompatActivity {
     GridLayoutUI mPopupMenu;
     ButtonUI mClearButtonUI;
     ButtonUI mToggleButtonUI;
-    ButtonUI mHintButtonUI;   // unimplemented
-//    AlertUI mAlert;
+    ButtonUI mHintButtonUI;
 
     TextToSpeech t1;
     TextToSpeech t2;
@@ -480,7 +479,7 @@ public class SudokuActivity extends AppCompatActivity {
                 }
             }
         }
-    } // end of restoreGridState
+    }
 
     // Toggles the language of the popup buttons and
     // Flips the boolean mIsLanguage1!
@@ -499,6 +498,8 @@ public class SudokuActivity extends AppCompatActivity {
         sLanguage2 = new Language(L2, sSize);
     }
 
+    // Gets the user inputted value of the grid size.
+    // Default value is 9
     void getSizeFromSpinner() {
         Intent intent = getIntent();
         sSize = intent.getIntExtra("size", 9);
@@ -534,6 +535,7 @@ public class SudokuActivity extends AppCompatActivity {
         }
     }
 
+    // Gets random words from mWordPairs and puts them into language 1 and 2
     void fileToLanguage(int id) {
         try {
             readWordPairs(id);
@@ -727,22 +729,6 @@ public class SudokuActivity extends AppCompatActivity {
 
         return wordPair;
     }
-
-//    private void addWordPair(String word1, String word2) {
-//        String FILENAME = "word_pairs.csv";
-//        FileOutputStream outputStream;
-//
-//        String line = word1 + "," + word2 + ", false\n";
-//
-//        try {
-//            outputStream = openFileOutput(FILENAME, Context.MODE_PRIVATE);
-//            outputStream.write(line.getBytes());
-//            outputStream.close();
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
 
 //    private void createAlertDialog() {
 //        // Create a dialog box popup
