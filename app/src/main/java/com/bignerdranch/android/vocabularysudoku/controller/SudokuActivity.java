@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.speech.tts.TextToSpeech;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -22,6 +23,7 @@ import com.bignerdranch.android.vocabularysudoku.model.SudokuGrid;
 import com.bignerdranch.android.vocabularysudoku.model.WordPair;
 import com.bignerdranch.android.vocabularysudoku.view.ButtonUI;
 import com.bignerdranch.android.vocabularysudoku.view.GridLayoutUI;
+import com.bignerdranch.android.vocabularysudoku.view.NoticeUI;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -484,10 +486,14 @@ public class SudokuActivity extends AppCompatActivity {
                 try {
                     csvUri = Uri.parse(tmp);
                     readWordPairs(csvUri);
-                    for (int i = 1; i < sSize + 1; i++) {
-                        WordPair wordPair = getRandomWordPair(sSize - (i - 1));
-                        sLanguage1.setWord(wordPair.getWord1(), i);
-                        sLanguage2.setWord(wordPair.getWord2(), i);
+                    // Check if there are enough word pairs
+                    if (mWordPairs.size() < sSize) notEnoughWordPairs();
+                    else {
+                        for (int i = 1; i < sSize + 1; i++) {
+                            WordPair wordPair = getRandomWordPair(sSize - (i - 1));
+                            sLanguage1.setWord(wordPair.getWord1(), i);
+                            sLanguage2.setWord(wordPair.getWord2(), i);
+                        }
                     }
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
@@ -698,6 +704,26 @@ public class SudokuActivity extends AppCompatActivity {
         mWordPairs.remove(randInt);
 
         return wordPair;
+    }
+
+    // Informs the user that they don't have enough word pairs and sends them to the main menu
+    void notEnoughWordPairs() {
+        // Create a dialog box popup
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        //View view = getLayoutInflater().inflate(R.layout.notice_alert, null);
+        View view = View.inflate(this, R.layout.not_enough_word_pairs, null);
+
+        Button okay = view.findViewById(R.id.okay_button_2);
+        final NoticeUI notice = new NoticeUI(builder, view, okay);
+
+        notice.getOkay().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                notice.dismiss();
+                Intent intent = new Intent(SudokuActivity.this, MenuActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 }
 
