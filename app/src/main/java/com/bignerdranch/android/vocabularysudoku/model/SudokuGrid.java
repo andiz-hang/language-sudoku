@@ -13,6 +13,8 @@ import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivit
 import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sLanguage1;
 import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sLanguage2;
 import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sSize;
+import static java.lang.Math.ceil;
+import static java.lang.Math.floor;
 import static java.lang.Math.sqrt;
 
 public class SudokuGrid {
@@ -50,6 +52,14 @@ public class SudokuGrid {
         //DEBUG
 //        mAnswerKey = "1234234134124123";
 //        mInitialValues = "1234000000000000";
+
+        // DEBUG
+//        mAnswerKey = "125463463125251634346512634251512346";
+//        mInitialValues = "025463000000000000000000000000000000";
+
+        // DEBUG
+//        mAnswerKey = "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
+//        mInitialValues = "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
         //mRes = res;
         initializePuzzle(mAnswerKey, mInitialValues);
     }
@@ -105,7 +115,14 @@ public class SudokuGrid {
     // Returns true IF (the cell in question is in the same box as the current cell)
     //                 AND(the cell in question isn't the current cell)
     boolean cellConflictInBox(int currentCellIndex, int popupIndex, int distanceIndex){
-        int targetCellIndex = currentCellIndex / sSize / (int)sqrt(sSize) * (sSize * (int)sqrt(sSize)) + currentCellIndex % sSize / (int)sqrt(sSize) * (int)sqrt(sSize) + distanceIndex % (int)sqrt(sSize) + distanceIndex / (int)sqrt(sSize) * sSize;
+        int boxWidth = (int)ceil(sqrt(sSize));
+        int boxHeight = (int)floor(sqrt(sSize));
+        int firstElementInCol = currentCellIndex / sSize / boxHeight * (boxHeight * sSize);
+        int columnOffset = currentCellIndex % sSize / boxWidth * boxWidth;
+        int distanceOffset = distanceIndex % boxWidth + (distanceIndex / boxWidth * sSize);
+        int targetCellIndex = firstElementInCol + columnOffset + distanceOffset;
+        //int targetCellIndex = currentCellIndex / sSize / (int)sqrt(sSize) * (sSize * (int)sqrt(sSize)) + currentCellIndex % sSize / (int)sqrt(sSize) * (int)sqrt(sSize) + distanceIndex % (int)sqrt(sSize) + distanceIndex / (int)sqrt(sSize) * sSize;
+
         return popupIndex + 1 == getSudokuCell(targetCellIndex).getValue() && targetCellIndex != currentCellIndex;
     }
 
@@ -134,10 +151,13 @@ public class SudokuGrid {
     }
 
     private int convertIndexToBoxNum(int index){
-        int boxColumn = (index % sSize) / (int)sqrt(sSize);    // 0~2
-        int boxRow = (index / sSize) / (int)sqrt(sSize);       // 0~2
-        int sum = (boxRow * (int)sqrt(sSize)) + boxColumn;
-        return (boxRow * (int)sqrt(sSize)) + boxColumn;        // 0~8
+        int boxWidth = (int)ceil(sqrt(sSize));
+        int boxHeight = (int)floor(sqrt(sSize));
+
+        int boxColumn = (index % sSize) / boxWidth;    // 0~2
+        int boxRow = (index / sSize) / boxHeight;       // 0~2
+        int sum = (boxRow * boxHeight) + boxColumn;
+        return sum;        // 0~sSize - 1
     }
 
     private void setCellConflicting(int index, boolean value){

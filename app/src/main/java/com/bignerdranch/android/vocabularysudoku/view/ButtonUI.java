@@ -10,6 +10,8 @@ import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivit
 import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sScreenHeight;
 import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sScreenWidth;
 import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sSize;
+import static java.lang.Math.ceil;
+import static java.lang.Math.floor;
 import static java.lang.Math.sqrt;
 
 public class ButtonUI {
@@ -70,17 +72,17 @@ public class ButtonUI {
 
         // In portrait mode
         if (mIsPortraitMode) {
-            layoutParameters.width = (int)(sScreenWidth / (sSize) * 0.9);
-            layoutParameters.height = (int)(sScreenWidth / (sSize) * 0.9);
+            layoutParameters.width = (int)(sScreenWidth / (sSize) * 0.85);
+            layoutParameters.height = (int)(sScreenWidth / (sSize) * 0.85);
         } else { // In landscape mode
-            layoutParameters.width = (int)(sScreenWidth / (sSize) * 0.9);
-            layoutParameters.height = (int)(sScreenWidth / (sSize) * 0.9);
+            layoutParameters.width = (int)(sScreenHeight / (sSize) * 0.85);
+            layoutParameters.height = (int)(sScreenHeight / (sSize) * 0.85);
         }
         layoutParameters.setMargins(5,5, 5, 5);
-        if (indexI % sqrt(sSize) == 0) {
+        if (indexI % (int)floor(sqrt(sSize)) == 0) {
             layoutParameters.setMargins(layoutParameters.leftMargin,15,layoutParameters.rightMargin,layoutParameters.bottomMargin);
         }
-        if (indexJ % sqrt(sSize) == 0) {
+        if (indexJ % (int)ceil(sqrt(sSize)) == 0) {
             layoutParameters.setMargins(15,layoutParameters.topMargin,layoutParameters.rightMargin,layoutParameters.bottomMargin);
         }
 //        if (indexI==3 || indexI==6){
@@ -97,8 +99,13 @@ public class ButtonUI {
     public GridLayout.LayoutParams createPopUpButtonParameters(){
         GridLayout.LayoutParams layoutParameters = new GridLayout.LayoutParams();//(GridLayout.LayoutParams.WRAP_CONTENT, GridLayout.LayoutParams.WRAP_CONTENT);
         if (mIsPortraitMode) {
-            layoutParameters.width = sScreenWidth / 4;
-            layoutParameters.height = sScreenHeight / 13;
+            if (sSize == 4) {
+                layoutParameters.width = sScreenWidth * 3 / 4 / 2;
+                layoutParameters.height = sScreenHeight * 3 / 13 / 2;
+            } else {
+                layoutParameters.width = sScreenWidth * 3 / 4 / (sSize / 3);
+                layoutParameters.height = sScreenHeight / 13;
+            }
         } else {
             layoutParameters.width = sScreenWidth / 8;
             layoutParameters.height = sScreenHeight / 6;

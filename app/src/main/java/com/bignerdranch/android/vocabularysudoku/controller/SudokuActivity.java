@@ -58,7 +58,7 @@ public class SudokuActivity extends AppCompatActivity {
     Resources res;// = getResources();
 
     DisplayMetrics mDisplayMetrics = new DisplayMetrics();
-    ButtonUI[] mPopUpButtons = new ButtonUI[9];
+    ButtonUI[] mPopUpButtons;
 
     public static int sSize = 9;
     static boolean sPopUpOnScreen = false;// for pop-up-screen
@@ -76,6 +76,7 @@ public class SudokuActivity extends AppCompatActivity {
     SudokuGrid mSudokuGrid;
     boolean mIsLanguage1 = false; // determines whether the first language is the toggled language or not
     boolean mWordListImported = false;
+    public boolean mIsSquare;
 
     GridLayoutUI mSudokuLayout;
     GridLayoutUI mPopupMenu;
@@ -121,6 +122,11 @@ public class SudokuActivity extends AppCompatActivity {
             }
         });
 
+        // Grid is a square if the size is 4 or 9
+        mIsSquare = (sSize == 4 || sSize == 9);
+
+        mPopUpButtons = new ButtonUI[sSize];
+
         // Generating SudokuGrid
         res = getResources();
         Log.d("Test", "SudokuLayoutUI");
@@ -147,15 +153,8 @@ public class SudokuActivity extends AppCompatActivity {
 
         mIsPortraitMode = (sScreenHeight > sScreenWidth);
 
-        // Changes the name of the action bar to the app name in Portrait mode
-        // Hide the action bar in Landscape mode
-        if (mIsPortraitMode) setActionBarName(getString(R.string.app_name));
-        else {
-            hideActionBar();
-            hideNoticeBar();
-        }
-
-        initializeLanguages();
+        // Initialize language1 and language2
+        initializeLanguages("English", "Mandarin");
 
         // Get the words from the imported file, if there is a file
         importWordsFromFile();
@@ -163,10 +162,18 @@ public class SudokuActivity extends AppCompatActivity {
         // Get popup layout
         Log.d("Test", "popUpGrid");
         final GridLayout popUpGrid = findViewById(R.id.pop_up_layout);
-        mPopupMenu = new GridLayoutUI(popUpGrid, (int)sqrt(sSize));
+
         if (mIsPortraitMode) {
+            if (mIsSquare) {
+                mPopupMenu = new GridLayoutUI(popUpGrid, (int) sqrt(sSize));
+            } else if (sSize == 6) {
+                mPopupMenu = new GridLayoutUI(popUpGrid, 3, 2);
+            } else if (sSize == 12) {
+                mPopupMenu = new GridLayoutUI(popUpGrid, 3, 4);
+            }
             mPopupMenu.getLayout().setTranslationY(sScreenHeight);
         } else {
+            mPopupMenu = new GridLayoutUI(popUpGrid, 6, 2);
             mPopupMenu.getLayout().setTranslationX(sScreenWidth);
         }
 
@@ -184,7 +191,6 @@ public class SudokuActivity extends AppCompatActivity {
                 float screenWidthInches = sScreenWidth / sScreenXDPI;
                 mPopUpButtons[i].getButton().setTextSize((screenWidthInches * 4));
             } else {
-
                 mPopUpButtons[i].getButton().setWidth(sScreenWidth / 8);
                 mPopUpButtons[i].getButton().setHeight(sScreenHeight / 6);
 
@@ -417,6 +423,18 @@ public class SudokuActivity extends AppCompatActivity {
         super.onPause();
     }
 
+    // Called when the app is paused
+    public void onResume(){
+        // Changes the name of the action bar to the app name in Portrait mode
+        // Hide the action bar in Landscape mode
+        if (mIsPortraitMode) setActionBarName(getString(R.string.app_name));
+        else {
+            hideActionBar();
+            hideStatusBar();
+        }
+        super.onResume();
+    }
+
     // METHODS
 
     // Restore the attributes of the grid on rotation
@@ -442,7 +460,7 @@ public class SudokuActivity extends AppCompatActivity {
             } else {
                 mSudokuGrid.getSudokuCell(i).setConflicting(false);
             }
-            if (i < 9) {
+            if (i < sSize) {
                 if (savedInstanceState.getIntegerArrayList("SUDOKU_GRID_WRONG_ROWS").get(i) == 1) {
                     mSudokuGrid.setWrongRows(i, true);
                 } else {
@@ -474,9 +492,9 @@ public class SudokuActivity extends AppCompatActivity {
         mIsLanguage1 = !mIsLanguage1;
     }
 
-    void initializeLanguages() {
-        sLanguage1 = new Language("English", sSize);
-        sLanguage2 = new Language("Mandarin", sSize);
+    void initializeLanguages(String L1, String L2) {
+        sLanguage1 = new Language(L1, sSize);
+        sLanguage2 = new Language(L2, sSize);
     }
 
     // Gets the word pairs from the imported file, or the sample file,
@@ -531,11 +549,11 @@ public class SudokuActivity extends AppCompatActivity {
         }
     }
 
-    // Hides the notification bar
-    void hideNoticeBar() {
+    // Hides the status bar
+    void hideStatusBar() {
         View decorView = getWindow().getDecorView();
 
-        int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
+        int uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
         decorView.setSystemUiVisibility(uiOptions);
     }
 

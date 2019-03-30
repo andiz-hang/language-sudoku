@@ -17,6 +17,8 @@ import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivit
 import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sLanguage1;
 import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sLanguage2;
 import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sSize;
+import static java.lang.Math.ceil;
+import static java.lang.Math.floor;
 import static java.lang.Math.sqrt;
 
 public class GridLayoutUI {
@@ -27,12 +29,25 @@ public class GridLayoutUI {
 
     public GridLayoutUI(GridLayout layout, int size) {
         mSize = size;
-        layout.setRowCount(mSize);
-        layout.setColumnCount(mSize);
+        layout.setRowCount(size);
+        layout.setColumnCount(size);
         mLayout = layout;
         mButtonUIs = new ButtonUI[mSize][mSize];
         for (int i = 0; i < mSize; i++) {
             for (int j = 0; j < mSize; j++) {
+                mButtonUIs[i][j] = new ButtonUI();
+            }
+        }
+    }
+
+    public GridLayoutUI(GridLayout layout, int rows, int cols) {
+        mSize = sSize;
+        layout.setRowCount(rows);
+        layout.setColumnCount(cols);
+        mLayout = layout;
+        mButtonUIs = new ButtonUI[rows][cols];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
                 mButtonUIs[i][j] = new ButtonUI();
             }
         }
@@ -104,9 +119,12 @@ public class GridLayoutUI {
 
     private void setBoxCellsRed(int boxNum) {
         for (int i = 0; i < mSize; i++) {
+            int boxWidth = (int)ceil(sqrt(sSize));
+            int boxHeight = (int)floor(sqrt(sSize));
+
             //if (getButtonUI(cellIndex / mSize /3*27 + cellIndex%mSize/3*3 + i%3 + i/3*mSize).getButton().getBackground().getConstantState() == res.getDrawable(R.drawable.bg_btn).getConstantState())
             //getButtonUI(cellIndex / mSize /3*27 + cellIndex%mSize/3*3 + i%3 + i/3*mSize).getButton().setBackgroundResource(R.drawable.bg_btn_red);
-            getButtonUI((boxNum / (int)sqrt(sSize)) * (sSize * (int)sqrt(sSize)) + (boxNum % (int)sqrt(sSize)) * (int)sqrt(sSize) + i % (int)sqrt(sSize) + i / (int)sqrt(sSize) * sSize).getButton().setBackgroundResource(R.drawable.bg_btn_red);
+            getButtonUI((boxNum / boxHeight) * (sSize * boxHeight) + (boxNum % boxHeight) * boxWidth + i % boxWidth + i / boxWidth * sSize).getButton().setBackgroundResource(R.drawable.bg_btn_red);
         }
     }
 
