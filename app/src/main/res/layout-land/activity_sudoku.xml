@@ -27,16 +27,12 @@
             android:layout_alignParentEnd="true"
             android:layout_gravity="center_vertical|end"
             android:background="@color/colorPrimaryDark"
-            android:orientation="vertical"
-            android:columnCount="2"
-            android:rowCount="6">
+            android:orientation="vertical">
 
             <Button
                 android:id="@+id/clear_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="1dp"
-                android:layout_marginBottom="5dp"
                 android:background="@drawable/bg_btn_green"
                 android:text="@string/clear"
                 android:textColor="@color/colorWhite" />
@@ -45,8 +41,6 @@
                 android:id="@+id/toggle_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="1dp"
-                android:layout_marginBottom="5dp"
                 android:background="@drawable/bg_btn_green"
                 android:text="@string/toggle"
                 android:textColor="@color/colorWhite" />
@@ -56,7 +50,6 @@
                 android:id="@+id/hint_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="1dp"
                 android:background="@drawable/bg_btn_green"
                 android:text="@string/hint"
                 android:textColor="@color/colorWhite" />

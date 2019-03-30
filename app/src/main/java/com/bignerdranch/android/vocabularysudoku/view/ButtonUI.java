@@ -78,12 +78,12 @@ public class ButtonUI {
             layoutParameters.width = (int)(sScreenHeight / (sSize) * 0.85);
             layoutParameters.height = (int)(sScreenHeight / (sSize) * 0.85);
         }
-        layoutParameters.setMargins(5,5, 5, 5);
+        layoutParameters.setMargins(3,3, 3, 3);
         if (indexI % (int)floor(sqrt(sSize)) == 0) {
-            layoutParameters.setMargins(layoutParameters.leftMargin,15,layoutParameters.rightMargin,layoutParameters.bottomMargin);
+            layoutParameters.setMargins(layoutParameters.leftMargin,10,layoutParameters.rightMargin,layoutParameters.bottomMargin);
         }
         if (indexJ % (int)ceil(sqrt(sSize)) == 0) {
-            layoutParameters.setMargins(15,layoutParameters.topMargin,layoutParameters.rightMargin,layoutParameters.bottomMargin);
+            layoutParameters.setMargins(10,layoutParameters.topMargin,layoutParameters.rightMargin,layoutParameters.bottomMargin);
         }
 //        if (indexI==3 || indexI==6){
 //            layoutParameters.setMargins(layoutParameters.leftMargin,15,layoutParameters.rightMargin,layoutParameters.bottomMargin);

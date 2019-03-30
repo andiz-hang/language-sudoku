@@ -2,8 +2,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
-    android:orientation="vertical"
-    android:paddingTop="10dp">
+    android:orientation="vertical">
 
     <GridLayout
         android:id="@+id/sudoku_grid"

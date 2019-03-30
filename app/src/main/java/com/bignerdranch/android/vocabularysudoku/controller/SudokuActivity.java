@@ -124,10 +124,9 @@ public class SudokuActivity extends AppCompatActivity {
             }
         });
 
-
+        res = getResources();
 
         // Generating SudokuGrid
-        res = getResources();
         Log.d("Test", "SudokuLayoutUI");
         if (savedInstanceState == null) { // First time opening the app
             Random rand = new Random();
@@ -143,14 +142,8 @@ public class SudokuActivity extends AppCompatActivity {
 
         Log.d("Test", "Sudoku initialized successful");
 
-        // Get width and height of screen
-        getWindowManager().getDefaultDisplay().getMetrics(mDisplayMetrics);
-        sScreenHeight = mDisplayMetrics.heightPixels;
-        sScreenWidth = mDisplayMetrics.widthPixels;
-        sScreenXDPI = mDisplayMetrics.xdpi;
-        sScreenYDPI = mDisplayMetrics.ydpi;
-
-        mIsPortraitMode = (sScreenHeight > sScreenWidth);
+        // Get Screen dimensions and pixel density
+        getScreenInfo();
 
         // Initialize language1 and language2
         initializeLanguages("English", "Mandarin");
@@ -158,7 +151,7 @@ public class SudokuActivity extends AppCompatActivity {
         // Get the words from the imported file, if there is a file
         importWordsFromFile();
 
-        // Get popup layout
+        // Initialize popup layout
         initializePopupMenu();
 
         Log.d("Test", "Create Popup Buttons");
@@ -170,16 +163,10 @@ public class SudokuActivity extends AppCompatActivity {
             mPopupButtons[i] = new ButtonUI(new Button(this));
             mPopupButtons[i].setButton(new Button(this));
             mPopupButtons[i].setText(sLanguage2.getWord(i + 1));
-            // Set the text size of the buttons
-            if (mIsPortraitMode) {
-                float screenWidthInches = sScreenWidth / sScreenXDPI;
-                mPopupButtons[i].getButton().setTextSize((screenWidthInches * 4));
-            } else {
-                setPopupButtonSizeLandscape(mPopupButtons[i].getButton());
 
-                float screenHeightInches = sScreenHeight / sScreenYDPI;
-                mPopupButtons[i].getButton().setTextSize((screenHeightInches * 4));
-            }
+            // Set the text size of the buttons
+            fixPopupButton(mPopupButtons[i].getButton());
+
             mPopupButtons[i].getButton().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -215,14 +202,10 @@ public class SudokuActivity extends AppCompatActivity {
                 // Initialize new sudoku cell, give it a button, and add it to SudokuCells
                 Button button = new Button(this);
                 ButtonUI buttonUI = new ButtonUI(button, mSudokuLayout.getLayout(), i, j);
-                // Set the button text size based on screen width in inches
-                if (mIsPortraitMode) {
-                    float screenWidthInches = sScreenWidth / sScreenXDPI;
-                    buttonUI.getButton().setTextSize((float)(screenWidthInches * 3.2));
-                } else {
-                    float screenHeightInches = sScreenHeight / sScreenYDPI;
-                    buttonUI.getButton().setTextSize((float)(screenHeightInches * 3.2));
-                }
+
+                // Set the button text size.
+                setButtonTextSize(buttonUI.getButton(), 24);
+
                 mSudokuLayout.addButtonUI(buttonUI, index);
                 // Create Listener for Button
                 button.setOnClickListener(new View.OnClickListener() {
@@ -252,11 +235,9 @@ public class SudokuActivity extends AppCompatActivity {
         }
 
         Button clearButton = findViewById(R.id.clear_button);//clean the filled in word
-
-        fixMenuButtons(clearButton); // Set the size and font size of the clear button
+        fixMenuButton(clearButton); // Set the size and font size of the clear button
 
         mClearButtonUI = new ButtonUI(clearButton);
-
         mClearButtonUI.getButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -289,8 +270,8 @@ public class SudokuActivity extends AppCompatActivity {
 
         // Setup toggleButton
         Button toggleButton = findViewById(R.id.toggle_button);//only toggle pop up buttons' language
+        fixMenuButton(toggleButton); // Set the size and font size of the toggle button
 
-        fixMenuButtons(toggleButton); // Set the size and font size of the toggle button
         mToggleButtonUI = new ButtonUI(toggleButton);
         mToggleButtonUI.getButton().setOnClickListener(new View.OnClickListener() {
             @Override
@@ -301,8 +282,8 @@ public class SudokuActivity extends AppCompatActivity {
 
         // Setup hintButton
         Button hintButton = findViewById(R.id.hint_button);// highlight right answer of pop up buttons
+        fixMenuButton(hintButton); // Set the size and font size of the hint button
 
-        fixMenuButtons(hintButton); // Set the size and font size of the hint button
         mHintButtonUI = new ButtonUI(hintButton);
         mHintButtonUI.getButton().setOnClickListener(new View.OnClickListener() {
             @Override
@@ -421,7 +402,7 @@ public class SudokuActivity extends AppCompatActivity {
     // METHODS
 
     // Restore the attributes of the grid on rotation
-    private void restoreGridState(Bundle savedInstanceState) {
+    void restoreGridState(Bundle savedInstanceState) {
         int puzzleNum = savedInstanceState.getInt("SUDOKU_PUZZLE_NUMBER");
         mSudokuGrid = new SudokuGrid(this, sSize, puzzleNum);
 
@@ -464,7 +445,7 @@ public class SudokuActivity extends AppCompatActivity {
     // Toggles the language of the popup buttons and
     // Flips the boolean mIsLanguage1!
     void flipLanguage() {
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < sSize; i++) {
             if (mIsLanguage1)
                 mPopupButtons[i].setText(sLanguage2.getWord(i + 1));
             else
@@ -507,6 +488,17 @@ public class SudokuActivity extends AppCompatActivity {
 
         // Grid is a square if the size is 4 or 9
         mIsSquare = (sSize == 4 || sSize == 9);
+    }
+
+    // Get the user's device's screen information
+    void getScreenInfo() {
+        getWindowManager().getDefaultDisplay().getMetrics(mDisplayMetrics);
+        sScreenHeight = mDisplayMetrics.heightPixels;
+        sScreenWidth = mDisplayMetrics.widthPixels;
+        sScreenXDPI = mDisplayMetrics.xdpi;
+        sScreenYDPI = mDisplayMetrics.ydpi;
+
+        mIsPortraitMode = (sScreenHeight > sScreenWidth);
     }
 
     // Gets the word pairs from the imported file, or the sample file,
@@ -570,24 +562,48 @@ public class SudokuActivity extends AppCompatActivity {
         decorView.setSystemUiVisibility(uiOptions);
     }
 
+    // Set the font size of the sudoku button. Scales with pixel density
+    void setButtonTextSize(Button button, float size) {
+
+        if (mIsPortraitMode) {
+            float screenWidthInches = sScreenWidth / sScreenXDPI;
+            button.setTextSize(screenWidthInches * (size / sSize));
+
+        } else {
+            float screenHeightInches = sScreenHeight / sScreenYDPI;
+            button.setTextSize(screenHeightInches * (size / sSize));
+        }
+    }
+
+    // Sets the width and height of the popup buttons in landscape mode
+    void setPopupButtonSizeLandscape(Button button) {
+        button.setWidth(sScreenWidth / 8);
+        button.setHeight(sScreenHeight / ((sSize + 3 + 1) / 2));
+    }
+
+    // Scales the size and font size of the popup buttons
+    void fixPopupButton(Button button) {
+        if (mIsPortraitMode) {
+            setButtonTextSize(button, 36);
+        } else {
+            float screenWidthInches = sScreenWidth / sScreenXDPI;
+            button.setTextSize(screenWidthInches * 4);
+            button.setWidth(sScreenWidth / 8);
+            button.setHeight(sScreenHeight / ((sSize + 3 + 1) / 2) - 2);
+        }
+    }
+
     // Scales the size and font size of the popup menu buttons
-    void fixMenuButtons(Button button) {
+    void fixMenuButton(Button button) {
         if (mIsPortraitMode) {
             button.setHeight(sScreenHeight / 13); // Set the button's height
             float screenWidthInches = sScreenWidth / sScreenXDPI;
             button.setTextSize(screenWidthInches * 4);
         } else {
+            setPopupButtonSizeLandscape(button);
             float screenHeightInches = sScreenHeight / sScreenYDPI;
-            button.setWidth(sScreenWidth / 8);
-            button.setHeight(sScreenHeight / ((sSize + 3 + 1) / 2)); // Set the button's height
             button.setTextSize(screenHeightInches * 4);
         }
-    }
-
-    // Sets the width and height of the popup buttons in landscape mode
-    private void setPopupButtonSizeLandscape(Button button) {
-        button.setWidth(sScreenWidth / 8);
-        button.setHeight(sScreenHeight / ((sSize + 3 + 1) / 2));
     }
 
     // Set the title of the Action Bar
@@ -601,7 +617,7 @@ public class SudokuActivity extends AppCompatActivity {
 
     // When a button is pressed this pulls up or pushes down the Pop Up Button
     // Zooms in on the selected button
-    private void onClickZoom(View sudoku_view, Button button) {
+    void onClickZoom(View sudoku_view, Button button) {
         float zoom_scale = 3;
         // Portrait Mode
         if (mIsPortraitMode) {
@@ -688,7 +704,7 @@ public class SudokuActivity extends AppCompatActivity {
     }
 
     // Reads words from an imported csv file and stores them in mWordPairs
-    private void readWordPairs(Uri uri) throws FileNotFoundException {
+    void readWordPairs(Uri uri) throws FileNotFoundException {
         InputStream inputStream = getContentResolver().openInputStream(uri);
         BufferedReader reader = new BufferedReader(
                 new InputStreamReader(inputStream, Charset.forName("UTF-8"))
@@ -712,7 +728,7 @@ public class SudokuActivity extends AppCompatActivity {
     }
 
     // Reads words from our sample word list file and stores them in mWordPairs
-    private void readWordPairs(int id) throws IOException {
+    void readWordPairs(int id) throws IOException {
         InputStream is = getResources().openRawResource(id);
         BufferedReader reader = new BufferedReader(
                 new InputStreamReader(is, Charset.forName("UTF-8"))
@@ -730,7 +746,7 @@ public class SudokuActivity extends AppCompatActivity {
     }
 
     // Returns a random word pair from mWordPairs
-    private WordPair getRandomWordPair(int max) {
+    WordPair getRandomWordPair(int max) {
         Random rand = new Random();
         int randInt = rand.nextInt(max);
 
