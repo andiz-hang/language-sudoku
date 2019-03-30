@@ -477,7 +477,7 @@ public class SudokuActivity extends AppCompatActivity {
         mListenMode = intent.getBooleanExtra("listen_mode", false); // MOVE ME
         if (useSampleFile) {
             mWordListImported = true;
-            fileToLanguage(R.raw.word_pairs);
+            fileToLanguage(R.raw.word_pairs, 15);
         } else  {
             if (tmp != null) {
                 mWordListImported = true;
@@ -493,20 +493,20 @@ public class SudokuActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             } else {
-                fileToLanguage(R.raw.default_values);
+                fileToLanguage(R.raw.default_values, sSize);
             }
         }
     }
 
     // Gets random words from mWordPairs and puts them into language 1 and 2
-    void fileToLanguage(int id) {
+    void fileToLanguage(int id, int max) {
         try {
             readWordPairs(id);
         } catch (IOException e) {
             e.printStackTrace();
         }
         for (int i = 1; i < sSize + 1; i++) {
-            WordPair wordPair = getRandomWordPair(sSize - (i - 1));
+            WordPair wordPair = getRandomWordPair(max - (i - 1));
             sLanguage1.setWord(wordPair.getWord1(), i);
             sLanguage2.setWord(wordPair.getWord2(), i);
         }
