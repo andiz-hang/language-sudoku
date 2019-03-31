@@ -52,7 +52,7 @@ public class SudokuGrid {
             if (count == puzzleNum) {
                 for (int i = 0; i < (sSize * sSize); i++) {
                     mInitialValues[i] = Integer.parseInt(tokens[i]);
-                    mAnswers[i] = Integer.parseInt(tokens[i]);
+                    mAnswers[i] = Integer.parseInt(tokens[i + (sSize * sSize)]);
                 }
             }
             count++;
