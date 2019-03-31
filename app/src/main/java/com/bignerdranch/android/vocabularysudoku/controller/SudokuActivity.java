@@ -435,7 +435,6 @@ public class SudokuActivity extends AppCompatActivity {
         int randInt = rand.nextInt(100);
         InputStream is;
         if (sSize == 4) {
-            randInt = 0;
             is = getResources().openRawResource(R.raw.puzzles4);
         } else if (sSize == 6) {
             is = getResources().openRawResource(R.raw.puzzles6);
