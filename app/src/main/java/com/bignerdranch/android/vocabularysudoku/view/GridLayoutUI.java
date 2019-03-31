@@ -157,24 +157,6 @@ public class GridLayoutUI {
             getButtonUI(y).getButton().setBackgroundResource(R.drawable.bg_btn);
         }
     }
-    public void highlightWrongCells(SudokuCell mGrid[][], boolean mWrongRows[], boolean mWrongCols[], boolean mWrongBoxes[], Language language2){
-        for(int i = 0; i < mSize; i++){
-            if(mWrongRows[i]) setRowCellsRed(i);
-            if(mWrongCols[i]) setColumnCellsRed(i);
-            if(mWrongBoxes[i]) setBoxCellsRed(i);
-        }
-        for (int i = 0; i < mSize; i++) {
-            for (int j = 0; j < mSize; j++) {
-                if (mGrid[i][j].isConflicting())
-                    getButtonUI(i, j).getButton().setBackgroundResource(R.drawable.bg_btn_ex_red);
-                if (mGrid[i][j].isLock())
-                    getButtonUI(i, j).setText(sLanguage1.getWord(mGrid[i][j].getValue()));
-                else
-                    getButtonUI(i, j).setText(language2.getWord(mGrid[i][j].getValue()));
-                if (mGrid[i][j].getValue() == 0) getButtonUI(i, j).setText(" ");
-            }
-        }
-    }
     public void highlightWrongCells(SudokuCell mGrid[][], boolean mWrongRows[], boolean mWrongCols[], boolean mWrongBoxes[]){
         for(int i = 0; i < mSize; i++){
             if(mWrongRows[i]) setRowCellsRed(i);

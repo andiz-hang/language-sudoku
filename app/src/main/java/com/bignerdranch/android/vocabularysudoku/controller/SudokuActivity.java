@@ -161,8 +161,7 @@ public class SudokuActivity extends AppCompatActivity {
                     onClickZoom(findViewById(R.id.sudoku_grid), mPopupButtons[ii].getButton());
                     // Change Cell text and check if puzzle is finished.
                     mSudokuGrid.updateSudokuModel(ii + 1,sCurrentCell);
-                    if (mWordListImported) mSudokuGrid.sendModelToView(sLanguage2);
-                    else mSudokuGrid.sendModelToView();
+                    mSudokuGrid.sendModelToView();
                 }
             });
             // Create and set parameters for button, then add button with parameters to Popup Grid
@@ -224,8 +223,7 @@ public class SudokuActivity extends AppCompatActivity {
                     mSudokuLayout.getButtonUI(sCurrentCell).setText("");
                     mSudokuGrid.getSudokuCell(sCurrentCell).setValue(0);
                     mSudokuGrid.updateSudokuModel(0,sCurrentCell);
-                    if (mWordListImported) mSudokuGrid.sendModelToView(sLanguage2);
-                    else mSudokuGrid.sendModelToView();
+                    mSudokuGrid.sendModelToView();
                     onClickZoom(findViewById(R.id.sudoku_grid), mSudokuLayout.getButtonUI(0).getButton());
                 }
                 //needs be figure out~~~~~~~~~~
@@ -278,8 +276,7 @@ public class SudokuActivity extends AppCompatActivity {
         }
 
         //Log.d("Test","");
-        if (mWordListImported) mSudokuGrid.sendModelToView(sLanguage2);
-        else mSudokuGrid.sendModelToView();
+        mSudokuGrid.sendModelToView();
     } // END OF ONCREATE()
 
     // When the app state changes (screen rotation), save all of the values of the app
