@@ -58,20 +58,6 @@ public class SudokuGrid {
             count++;
         }
         mSavedPuzzleNumber = puzzleNum;
-//        mAnswerKey = res.getStringArray(R.array.answ)[puzzleNum];
-//        mInitialValues = res.getStringArray(R.array.puzz)[puzzleNum];
-//
-//        // DEBUG
-//        if (sSize == 4) {
-//            mAnswerKey = "1234234134124123";
-//            mInitialValues = "1000203002030002";
-//        } else if (sSize == 6) {
-//            mAnswerKey = "125463463125251634346512634251512346";
-//            mInitialValues = "000460403025051604306510630201012000";
-//        } else if (sSize == 12) {
-//            mAnswerKey = "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
-//            mInitialValues = "123456789000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
-//        }
 
         initializePuzzle(mInitialValues);
     }

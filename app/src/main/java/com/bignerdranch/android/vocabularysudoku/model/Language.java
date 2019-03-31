@@ -10,6 +10,7 @@ public class Language {
     public Language(String name, int size) {
         mName = name;
         mWords = new String[size + 1];
+        mWords[0] = "";
     }
 
     public String getWord(int index) { return mWords[index]; }

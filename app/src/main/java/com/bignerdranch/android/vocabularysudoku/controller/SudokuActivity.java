@@ -116,23 +116,24 @@ public class SudokuActivity extends AppCompatActivity {
 
         mRes = getResources();
 
+        // Initialize language1 and language2
+        initializeLanguages("English", "Mandarin");
+
         // Generating SudokuGrid
         Log.d("Test", "SudokuLayoutUI");
         if (savedInstanceState == null) { // First time opening the app
             fetchPuzzles();
-        } else // Restore all saved values
+
+            // Get the words from the imported file, if there is a file
+            importWordsFromFile();
+        } else { // Restore all saved values
             restoreGridState(savedInstanceState);
+        }
 
         Log.d("Test", "Sudoku initialized successful");
 
         // Get Screen dimensions and pixel density
         getScreenInfo();
-
-        // Initialize language1 and language2
-        initializeLanguages("English", "Mandarin");
-
-        // Get the words from the imported file, if there is a file
-        importWordsFromFile();
 
         // Initialize popup layout
         initializePopupMenu();
@@ -299,6 +300,9 @@ public class SudokuActivity extends AppCompatActivity {
         ArrayList<Integer> mSavedWrongRows = new ArrayList<>();
         ArrayList<Integer> mSavedWrongCols = new ArrayList<>();
         ArrayList<Integer> mSavedWrongBoxes = new ArrayList<>();
+
+        ArrayList<String> mWordPairs1 = new ArrayList<>();
+        ArrayList<String> mWordPairs2 = new ArrayList<>();
         for (int i = 0; i < sSize; i++) {
             if (mSudokuGrid.getWrongRow(i)) mSavedWrongRows.add(1);
             else mSavedWrongRows.add(0);
@@ -306,6 +310,9 @@ public class SudokuActivity extends AppCompatActivity {
             else mSavedWrongCols.add(0);
             if (mSudokuGrid.getWrongBox(i)) mSavedWrongBoxes.add(1);
             else mSavedWrongBoxes.add(0);
+
+            mWordPairs1.add(sLanguage1.getWord(i + 1));
+            mWordPairs2.add(sLanguage2.getWord(i + 1));
         }
 
         outState.putIntegerArrayList("SUDOKU_GRID_VALUES", mSavedCellValues);
@@ -315,6 +322,9 @@ public class SudokuActivity extends AppCompatActivity {
         outState.putIntegerArrayList("SUDOKU_GRID_WRONG_COLS", mSavedWrongCols);
         outState.putIntegerArrayList("SUDOKU_GRID_WRONG_BOXES", mSavedWrongBoxes);
         outState.putInt("SUDOKU_PUZZLE_NUMBER", mSudokuGrid.getPuzzleNum());
+
+        outState.putStringArrayList("SUDOKU_WORD_PAIRS_1", mWordPairs1);
+        outState.putStringArrayList("SUDOKU_WORD_PAIRS_2", mWordPairs2);
 
         // call superclass to save any view hierarchy
         super.onSaveInstanceState(outState);
@@ -400,6 +410,7 @@ public class SudokuActivity extends AppCompatActivity {
 
         for (int i = 0; i < sSize * sSize; i++) {
             mSudokuGrid.getSudokuCell(i).setValue(savedInstanceState.getIntegerArrayList("SUDOKU_GRID_VALUES").get(i));
+
             if (savedInstanceState.getIntegerArrayList("SUDOKU_GRID_LOCKS").get(i) == 1) {
                 mSudokuGrid.getSudokuCell(i).setLock(true);
             } else {
@@ -426,6 +437,8 @@ public class SudokuActivity extends AppCompatActivity {
                 } else {
                     mSudokuGrid.setWrongBoxes(i, false);
                 }
+                sLanguage1.setWord(savedInstanceState.getStringArrayList("SUDOKU_WORD_PAIRS_1").get(i), i + 1);
+                sLanguage2.setWord(savedInstanceState.getStringArrayList("SUDOKU_WORD_PAIRS_2").get(i), i + 1);
             }
         }
     }
@@ -727,7 +740,7 @@ public class SudokuActivity extends AppCompatActivity {
 //        parcelFileDescriptor.close();
     }
 
-    // Returns a random word pair from mWordPairs
+    // Returns a random word pair from mWordPairs, then removes it
     WordPair getRandomWordPair(int max) {
         Random rand = new Random();
         int randInt = rand.nextInt(max);
