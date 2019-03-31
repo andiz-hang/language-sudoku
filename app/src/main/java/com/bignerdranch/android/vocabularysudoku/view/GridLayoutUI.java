@@ -5,12 +5,14 @@ import android.graphics.Color;
 import android.widget.GridLayout;
 
 import com.bignerdranch.android.vocabularysudoku.R;
+import com.bignerdranch.android.vocabularysudoku.controller.Mode;
 import com.bignerdranch.android.vocabularysudoku.model.Language;
 import com.bignerdranch.android.vocabularysudoku.model.SudokuCell;
 import com.bignerdranch.android.vocabularysudoku.model.SudokuGrid;
 
 //import static android.support.v4.graphics.drawable.IconCompat.getResources;
 import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sCurrentCell;
+import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sGameMode;
 import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sIsMode1;
 import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sLanguage1;
 import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sLanguage2;
@@ -163,15 +165,29 @@ public class GridLayoutUI {
             if(mWrongCols[i]) setColumnCellsRed(i);
             if(mWrongBoxes[i]) setBoxCellsRed(i);
         }
+
+    }
+
+    public void displayNewText(SudokuCell mGrid[][]){
         for (int i = 0; i < mSize; i++) {
             for (int j = 0; j < mSize; j++) {
                 if (mGrid[i][j].isConflicting())
                     getButtonUI(i, j).getButton().setBackgroundResource(R.drawable.bg_btn_ex_red);
-                if (mGrid[i][j].isLock())
-                    getButtonUI(i, j).setText(sLanguage1.getWord(mGrid[i][j].getValue()));
-                else {
-                    getButtonUI(i, j).getButton().setTextColor(Color.BLUE);
-                    getButtonUI(i, j).setText(sLanguage2.getWord(mGrid[i][j].getValue()));
+                if (sGameMode == Mode.PLAY) {
+                    if (mGrid[i][j].isLock())
+                        getButtonUI(i, j).setText(sLanguage1.getWord(mGrid[i][j].getValue()));
+                    else {
+                        getButtonUI(i, j).getButton().setTextColor(Color.BLUE);
+                        getButtonUI(i, j).setText(sLanguage2.getWord(mGrid[i][j].getValue()));
+                    }
+                }
+                if (sGameMode == Mode.LISTEN){
+                    if (mGrid[i][j].isLock())
+                        getButtonUI(i, j).setText(Integer.toString(mGrid[i][j].getValue()));
+                    else {
+                        getButtonUI(i, j).getButton().setTextColor(Color.BLUE);
+                        getButtonUI(i, j).setText(sLanguage1.getWord(mGrid[i][j].getValue()));
+                    }
                 }
                 if (mGrid[i][j].getValue() == 0){
                     getButtonUI(i, j).getButton().setTextColor(Color.BLUE);

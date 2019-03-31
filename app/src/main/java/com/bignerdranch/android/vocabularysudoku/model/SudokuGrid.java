@@ -251,6 +251,7 @@ public class SudokuGrid {
     public void sendModelToView() {
         mSudokuLayout.defaultButtonColors();
         mSudokuLayout.highlightWrongCells(mGrid, mWrongRows, mWrongCols, mWrongBoxes);
+        mSudokuLayout.displayNewText(mGrid);
     }
 }
 

@@ -5,8 +5,11 @@ import android.widget.Button;
 import android.widget.GridLayout;
 
 import com.bignerdranch.android.vocabularysudoku.R;
+import com.bignerdranch.android.vocabularysudoku.controller.Mode;
 
 import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.mIsPortraitMode;
+import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sGameMode;
+import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sLanguage1;
 import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sLanguage2;
 import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sScreenHeight;
 import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sScreenWidth;
@@ -60,7 +63,8 @@ public class ButtonUI {
 
     // Setup the ui parameters of a popup button
     public void setupPopupButton(int index) {
-        setText(sLanguage2.getWord(index + 1));
+        if (sGameMode== Mode.PLAY) setText(sLanguage2.getWord(index + 1));
+        else setText(sLanguage1.getWord(index + 1));
         if (mIsPortraitMode) {
             setTextSizeScaled(36);
         } else {

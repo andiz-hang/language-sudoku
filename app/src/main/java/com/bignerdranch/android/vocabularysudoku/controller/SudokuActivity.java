@@ -92,27 +92,10 @@ public class SudokuActivity extends AppCompatActivity {
         // Get the size of the grid from main menu
         getSizeFromSpinner();
 
-        //Text to Speech Initializing
-        t1=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int status) {
+        setListenMode();
 
-                if(status != TextToSpeech.ERROR) {
-                    Log.d("Test","LANGUAGE RECOGNIZED");
-                    t1.setLanguage(Locale.TRADITIONAL_CHINESE);//"zh","HK"));
-                }
-            }
-        });
-        t2=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int status) {
+        setupTextToSpeech();
 
-                if(status != TextToSpeech.ERROR) {
-                    Log.d("Test","LANGUAGE RECOGNIZED");
-                    t2.setLanguage(new Locale("zh","HK"));
-                }
-            }
-        });
 
         mRes = getResources();
 
@@ -152,11 +135,6 @@ public class SudokuActivity extends AppCompatActivity {
             mPopupButtons[i].getButton().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(sGameMode==Mode.LISTEN){
-                        String toSpeak = sLanguage2.getWord(ii+1);
-                        Log.d("Test","Word: "+toSpeak);
-                        t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
-                    }
                     // Zoom out once a word is selected from popup menu
                     onClickZoom(findViewById(R.id.sudoku_grid), mPopupButtons[ii].getButton());
                     // Change Cell text and check if puzzle is finished.
@@ -190,7 +168,8 @@ public class SudokuActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         if(sGameMode==Mode.LISTEN){
-                            String toSpeak = sLanguage2.getWord(mSudokuGrid.getSudokuCell(ii).getValue()); //sLanguage2.getWord(ii+1);
+                            //String toSpeak = sLanguage2.getWord(mSudokuGrid.getSudokuCell(ii).getValue()); //sLanguage2.getWord(ii+1);
+                            String toSpeak = sLanguage2.getWord(mSudokuGrid.getAnswers(ii));
                             Log.d("Test","Word: "+toSpeak);
                             t2.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
                         }
@@ -512,6 +491,16 @@ public class SudokuActivity extends AppCompatActivity {
         mIsPortraitMode = (sScreenHeight > sScreenWidth);
     }
 
+    void setListenMode(){
+        Intent intent = getIntent();
+        if(intent.getBooleanExtra("listen_mode", false)){
+            sGameMode = Mode.LISTEN;
+        } else {
+            sGameMode = Mode.PLAY;
+        }
+
+    }
+
     // Gets the word pairs from the imported file, or the sample file,
     // and stores them into the language classes
     void importWordsFromFile() {
@@ -767,11 +756,30 @@ public class SudokuActivity extends AppCompatActivity {
             }
         });
     }
-}
 
-enum Mode {
-    PLAY,
-    LISTEN
+    void setupTextToSpeech(){
+        //Text to Speech Initializing
+        t1=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+
+                if(status != TextToSpeech.ERROR) {
+                    Log.d("Test","LANGUAGE RECOGNIZED");
+                    t1.setLanguage(Locale.TRADITIONAL_CHINESE);//"zh","HK"));
+                }
+            }
+        });
+        t2=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+
+                if(status != TextToSpeech.ERROR) {
+                    Log.d("Test","LANGUAGE RECOGNIZED");
+                    t2.setLanguage(new Locale("zh","HK"));
+                }
+            }
+        });
+    }
 }
 
 
