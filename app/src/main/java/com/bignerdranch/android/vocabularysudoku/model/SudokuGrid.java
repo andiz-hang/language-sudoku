@@ -1,17 +1,15 @@
 package com.bignerdranch.android.vocabularysudoku.model;
 
-import android.content.Context;
-import android.content.res.Resources;
 import android.util.Log;
 
-import com.bignerdranch.android.vocabularysudoku.R;
 import com.bignerdranch.android.vocabularysudoku.view.GridLayoutUI;
 
-import java.util.Random;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 
-import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sCurrentCell;
-import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sLanguage1;
-import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sLanguage2;
 import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sSize;
 import static java.lang.Math.ceil;
 import static java.lang.Math.floor;
@@ -29,13 +27,11 @@ public class SudokuGrid {
     private int[] mAnswers;
     //private Resources mRes;
     private GridLayoutUI mSudokuLayout;
-    private String mInitialValues;
-    private String mAnswerKey;
     private int mSavedPuzzleNumber;
 
     // Methods
 
-    public SudokuGrid(Context context, int N, int puzzleNum) {
+    public SudokuGrid(int N, int puzzleNum, InputStream is) throws IOException {
 
         mGrid = new SudokuCell[N][N];
         mWrongRows = new boolean[N];
@@ -43,44 +39,56 @@ public class SudokuGrid {
         mWrongBoxes = new boolean[N];
         mAnswers = new int[N * N];
 
-        Resources res = context.getResources();
+        int[] mInitialValues = new int[N * N];
+        BufferedReader reader = new BufferedReader(
+                new InputStreamReader(is, Charset.forName("UTF-8"))
+        );
+        String line;
+        int count = 0;
+        // Reads lines until line puzzleNum is reached. Then, put the values into the puzzle
+        while ((line = reader.readLine()) != null && count <= puzzleNum) {
+            String[] tokens = line.split(",");
 
-        mSavedPuzzleNumber = puzzleNum;
-        mAnswerKey = res.getStringArray(R.array.answ)[puzzleNum];
-        mInitialValues = res.getStringArray(R.array.puzz)[puzzleNum];
-
-        // DEBUG
-        if (sSize == 4) {
-            mAnswerKey = "1234234134124123";
-            mInitialValues = "1000203002030002";
-        } else if (sSize == 6) {
-            mAnswerKey = "125463463125251634346512634251512346";
-            mInitialValues = "000460403025051604306510630201012000";
-        } else if (sSize == 12) {
-            mAnswerKey = "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
-            mInitialValues = "123456789000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
+            if (count == puzzleNum) {
+                for (int i = 0; i < (sSize * sSize); i++) {
+                    mInitialValues[i] = Integer.parseInt(tokens[i]);
+                    mAnswers[i] = Integer.parseInt(tokens[i]);
+                }
+            }
+            count++;
         }
+        mSavedPuzzleNumber = puzzleNum;
+//        mAnswerKey = res.getStringArray(R.array.answ)[puzzleNum];
+//        mInitialValues = res.getStringArray(R.array.puzz)[puzzleNum];
+//
+//        // DEBUG
+//        if (sSize == 4) {
+//            mAnswerKey = "1234234134124123";
+//            mInitialValues = "1000203002030002";
+//        } else if (sSize == 6) {
+//            mAnswerKey = "125463463125251634346512634251512346";
+//            mInitialValues = "000460403025051604306510630201012000";
+//        } else if (sSize == 12) {
+//            mAnswerKey = "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
+//            mInitialValues = "123456789000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
+//        }
 
-//        //mRes = res;
-        initializePuzzle(mAnswerKey, mInitialValues);
+        initializePuzzle(mInitialValues);
     }
 
 
     public int getPuzzleNum(){ return mSavedPuzzleNumber;}
+
     // Initialize both the grid and the answer array
-    private void initializePuzzle(String answerKey, String initialValues) {
-        // Initialize the Answer Array
-        //String answerKey = mRes.getStringArray(R.array.answ)[randInt];
-        for(int i = 0; i < sSize * sSize; i++) {
-            mAnswers[i] = Character.getNumericValue(answerKey.charAt(i));
-        }
+    private void initializePuzzle(int[] initialValues) {
+
         // Initialize the Sudoku Grid Array
         //String initialValues = mRes.getStringArray(R.array.puzz)[randInt];
         mGrid = new SudokuCell[sSize][sSize];
         for(int i = 0; i < sSize; i++) {
             for (int j = 0; j < sSize; j++) {
                 mGrid[i][j] = new SudokuCell();
-                int newValue = Character.getNumericValue(initialValues.charAt(i * sSize + j));
+                int newValue = initialValues[i * sSize + j];
                 if (newValue != 0){
                     mGrid[i][j].setValue(newValue);
                     mGrid[i][j].setLock(true);

@@ -119,14 +119,7 @@ public class SudokuActivity extends AppCompatActivity {
         // Generating SudokuGrid
         Log.d("Test", "SudokuLayoutUI");
         if (savedInstanceState == null) { // First time opening the app
-            Random rand = new Random();
-            int randInt = rand.nextInt(75);
-            mSudokuGrid = new SudokuGrid(this, sSize, randInt);
-
-            GridLayout gridLayout = findViewById(R.id.sudoku_grid);
-            mSudokuLayout = new GridLayoutUI(gridLayout, sSize);
-            mSudokuGrid.setSudokuLayout(mSudokuLayout);
-//            mSudokuGrid.sendModelToView();
+            fetchPuzzles();
         } else // Restore all saved values
             restoreGridState(savedInstanceState);
 
@@ -385,7 +378,21 @@ public class SudokuActivity extends AppCompatActivity {
     // Restore the attributes of the grid on rotation
     void restoreGridState(Bundle savedInstanceState) {
         int puzzleNum = savedInstanceState.getInt("SUDOKU_PUZZLE_NUMBER");
-        mSudokuGrid = new SudokuGrid(this, sSize, puzzleNum);
+        InputStream is;
+        if (sSize == 4) {
+            is = getResources().openRawResource(R.raw.puzzles4);
+        } else if (sSize == 6) {
+            is = getResources().openRawResource(R.raw.puzzles6);
+        } else if (sSize == 12) {
+            is = getResources().openRawResource(R.raw.puzzles12);
+        } else {
+            is = getResources().openRawResource(R.raw.puzzles9);
+        }
+        try {
+            mSudokuGrid = new SudokuGrid(sSize, puzzleNum, is);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         GridLayout gridLayout = findViewById(R.id.sudoku_grid);
         mSudokuLayout = new GridLayoutUI(gridLayout, sSize);
@@ -421,6 +428,32 @@ public class SudokuActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    void fetchPuzzles() {
+        Random rand = new Random();
+        int randInt = rand.nextInt(100);
+        InputStream is;
+        if (sSize == 4) {
+            randInt = 0;
+            is = getResources().openRawResource(R.raw.puzzles4);
+        } else if (sSize == 6) {
+            is = getResources().openRawResource(R.raw.puzzles6);
+        } else if (sSize == 12) {
+            is = getResources().openRawResource(R.raw.puzzles12);
+        } else {
+            is = getResources().openRawResource(R.raw.puzzles9);
+        }
+        try {
+            mSudokuGrid = new SudokuGrid(sSize, randInt, is);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        GridLayout gridLayout = findViewById(R.id.sudoku_grid);
+        mSudokuLayout = new GridLayoutUI(gridLayout, sSize);
+        mSudokuGrid.setSudokuLayout(mSudokuLayout);
+//            mSudokuGrid.sendModelToView();
     }
 
     // Initialize languages L1 and L2
