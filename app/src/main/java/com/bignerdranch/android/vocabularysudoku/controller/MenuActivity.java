@@ -21,14 +21,16 @@ public class MenuActivity extends AppCompatActivity {
     private String uri = null;
     private boolean useSampleFile = false;
     private boolean mListenMode = false;
-    private Spinner mSpinner;
+    private Spinner mSizeSpinner;
+    private Spinner mDiffSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
 
-        mSpinner = findViewById(R.id.size_choice_spinner);
+        mSizeSpinner = findViewById(R.id.size_choice_spinner);
+        mDiffSpinner = findViewById(R.id.difficulty_spinner);
 
         hideActionBar();
     }
@@ -38,15 +40,18 @@ public class MenuActivity extends AppCompatActivity {
         intent.putExtra("uri_key", uri);
         intent.putExtra("use_sample_file", useSampleFile);
         intent.putExtra("listen_mode", mListenMode);
-        intent.putExtra("size", getSpinnerValue());
+        intent.putExtra("size", getSizeSpinnerValue());
+        intent.putExtra("diff_opt", getDiffSpinnerValue());
         startActivity(intent);
     }
 
-    private int getSpinnerValue() {
-        int spinner_pos = mSpinner.getSelectedItemPosition();
+    private int getSizeSpinnerValue() {
+        int spinner_pos = mSizeSpinner.getSelectedItemPosition();
         String[] size_values = getResources().getStringArray(R.array.size_choices);
-        int size = Integer.valueOf(size_values[spinner_pos]);
-        return size;
+        return Integer.valueOf(size_values[spinner_pos]);
+    }
+    private String getDiffSpinnerValue() {
+        return mDiffSpinner.getSelectedItem().toString();
     }
 
     // User wishes to use sample file

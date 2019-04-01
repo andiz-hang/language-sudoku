@@ -11,10 +11,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+import java.util.Random;
 
 import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sSize;
+import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sDifficulty;
 import static java.lang.Math.ceil;
 import static java.lang.Math.floor;
+import static java.lang.Math.random;
+import static java.lang.Math.round;
 import static java.lang.Math.sqrt;
 
 public class SudokuGrid {
@@ -106,10 +110,11 @@ public class SudokuGrid {
         // Initialize the Sudoku Grid Array
         //String initialValues = mRes.getStringArray(R.array.puzz)[randInt];
         mGrid = new SudokuCell[mSize][mSize];
+        int[] newValues=difficultyAdjust(initialValues);
         for(int i = 0; i < mSize; i++) {
             for (int j = 0; j < mSize; j++) {
                 mGrid[i][j] = new SudokuCell();
-                int newValue = initialValues[i * mSize + j];
+                int newValue = newValues[i * mSize + j];
                 if (newValue != 0){
                     mGrid[i][j].setValue(newValue);
                     mGrid[i][j].setLock(true);
@@ -117,7 +122,36 @@ public class SudokuGrid {
             }
         }
     }
-
+    private int[] difficultyAdjust(int[] initialValues){
+        Random rand;
+        int count = 0,randInt,diff;
+        int[] newValues=new int[mSize*mSize];
+        if (sDifficulty.equals("Easy")){
+            diff=(int)round(mSize*mSize*.7);
+        }
+        else if (sDifficulty.equals("Medium")){
+            diff=(int)round(mSize*mSize*.5);
+        }
+        else{
+            diff=(int)round(mSize*mSize*.3);
+        }
+        for (int i=0;i<mSize*mSize;i++){
+            if (initialValues[i]!=0){
+                count+=1;
+            }
+            newValues[i]=initialValues[i];
+        }
+        while (count<=diff){
+            rand = new Random();
+            randInt = rand.nextInt(mSize*mSize);
+            if (newValues[randInt]==0){
+                Log.d("Test",Integer.toString(randInt)+" "+Integer.toString(mAnswers[randInt]));
+                newValues[randInt]=mAnswers[randInt];
+                count+=1;
+            }
+        }
+        return  newValues;
+    }
     public SudokuCell getSudokuCell(int x, int y) {
         return mGrid[y][x];
     }
