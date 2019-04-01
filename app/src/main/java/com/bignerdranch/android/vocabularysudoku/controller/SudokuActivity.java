@@ -138,7 +138,8 @@ public class SudokuActivity extends AppCompatActivity {
                     // Zoom out once a word is selected from popup menu
                     onClickZoom(findViewById(R.id.sudoku_grid), mPopupButtons[ii].getButton());
                     // Change Cell text and check if puzzle is finished.
-                    mSudokuGrid.updateSudokuModel(ii + 1,sCurrentCell, SudokuActivity.this);
+                    if(mSudokuGrid.updateSudokuModel(ii + 1,sCurrentCell))
+                        Toast.makeText(SudokuActivity.this, "Congrats! You Win!", Toast.LENGTH_LONG).show();
                     mSudokuGrid.sendModelToView();
                 }
             });
@@ -201,7 +202,7 @@ public class SudokuActivity extends AppCompatActivity {
                 if (!mSudokuGrid.getSudokuCell(sCurrentCell).isLock()) {
                     mSudokuLayout.getButtonUI(sCurrentCell).setText("");
                     mSudokuGrid.getSudokuCell(sCurrentCell).setValue(0);
-                    mSudokuGrid.updateSudokuModel(0,sCurrentCell, SudokuActivity.this);
+                    mSudokuGrid.updateSudokuModel(0,sCurrentCell);
                     mSudokuGrid.sendModelToView();
                     onClickZoom(findViewById(R.id.sudoku_grid), mSudokuLayout.getButtonUI(0).getButton());
                 }

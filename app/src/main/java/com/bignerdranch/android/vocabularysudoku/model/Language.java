@@ -16,7 +16,8 @@ public class Language {
     public String getWord(int index) { return mWords[index]; }
 
     public void setWord(String word, int index) {
-        mWords[index] = word;
+        if (index<mWords.length)
+            mWords[index] = word;
     }
 
     public String getName() { return mName; }

@@ -2,40 +2,54 @@ package com.bignerdranch.android.vocabularysudoku.model;
 
 import org.junit.Test;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 import java.util.Random;
 
 import static org.junit.Assert.*;
 
 public class SudokuGridTest {
-
     @Test
-    public void testGetSudokuCell() {
-        String initialValues = "";
+    public void testGetSudokuCell() throws IOException {
+
+
+        String testString = "0,0,0,0,9,0,0,1,6,0,0,9,7,0,5,0,0,0,3,0,0,0,0,8,0,0,0,0,0,0,0,0,0,4,7,0,0,8,1,0,5,0,3,9,0,0,2,5,0,0,0,0,0,0,0,0,0,5,0,0,0,0,3,0,0,0,1,0,6,7,0,0,5,7,0,0,3,0,0,0,0,8,4,7,3,9,2,5,1,6,2,1,9,7,6,5,8,3,4,3,5,6,4,1,8,9,2,7,6,9,3,2,8,1,4,7,5,4,8,1,6,5,7,3,9,2,7,2,5,9,4,3,6,8,1,1,6,8,5,7,9,2,4,3,9,3,4,1,2,6,7,5,8,5,7,2,8,3,4,1,6,9\n";
+        InputStream in = new ByteArrayInputStream(testString.getBytes(StandardCharsets.UTF_8));
+        
+        SudokuGrid grid = new SudokuGrid(9,0,9,in);
         for(int i = 0; i < 81; i++) {
-            Random rand = new Random();
-            initialValues=initialValues.concat(String.valueOf(rand.nextInt(9)));
+            grid.getSudokuCell(i).setValue(i);
         }
-        SudokuGrid grid = new SudokuGrid(9,initialValues, initialValues);
         for(int i = 0; i < 81; i++) {
-            assertEquals(grid.getSudokuCell(i).getValue(),Integer.parseInt(initialValues.substring(i,i+1)));
+            assertEquals(grid.getSudokuCell(i).getValue(), i);
+        }
+        for(int i = 0; i < 81; i++) {
+            grid.getSudokuCell(i).setValue(i + 1);
+        }
+        for(int i = 0; i < 81; i++) {
+            assertEquals(grid.getSudokuCell(i).getValue(),i+1);
         }
     }
 
     @Test
-    public void testCellConflictInColumn() {
+    public void testCellConflictInColumn() throws IOException {
         boolean test=false;
-        String initialValues = "";
+        String testString = "0,0,0,0,9,0,0,1,6,0,0,9,7,0,5,0,0,0,3,0,0,0,0,8,0,0,0,0,0,0,0,0,0,4,7,0,0,8,1,0,5,0,3,9,0,0,2,5,0,0,0,0,0,0,0,0,0,5,0,0,0,0,3,0,0,0,1,0,6,7,0,0,5,7,0,0,3,0,0,0,0,8,4,7,3,9,2,5,1,6,2,1,9,7,6,5,8,3,4,3,5,6,4,1,8,9,2,7,6,9,3,2,8,1,4,7,5,4,8,1,6,5,7,3,9,2,7,2,5,9,4,3,6,8,1,1,6,8,5,7,9,2,4,3,9,3,4,1,2,6,7,5,8,5,7,2,8,3,4,1,6,9\n";
+        InputStream in = new ByteArrayInputStream(testString.getBytes(StandardCharsets.UTF_8));
+        
+        SudokuGrid grid = new SudokuGrid(9,0,9,in);
         for(int i = 0; i < 81; i++) {
             if (i%9==0){
-                initialValues=initialValues.concat(String.valueOf(i/9+1));
-                //Log.d("Test","test");
-            }
-            else {
-                Random rand = new Random();
-                initialValues = initialValues.concat(String.valueOf(rand.nextInt(9)));
+                grid.getSudokuCell(i).setValue(i/9+1);
             }
         }
-        SudokuGrid grid = new SudokuGrid(9,initialValues, initialValues);
         for(int j = 0; j < 9; j++) {
             assertFalse(grid.cellConflictInColumn(0, 0, j));
         }
@@ -46,20 +60,17 @@ public class SudokuGridTest {
     }
 
     @Test
-    public void testCellConflictInRow() {
+    public void testCellConflictInRow() throws IOException {
         boolean test=false;
-        String initialValues = "";
+        String testString = "0,0,0,0,9,0,0,1,6,0,0,9,7,0,5,0,0,0,3,0,0,0,0,8,0,0,0,0,0,0,0,0,0,4,7,0,0,8,1,0,5,0,3,9,0,0,2,5,0,0,0,0,0,0,0,0,0,5,0,0,0,0,3,0,0,0,1,0,6,7,0,0,5,7,0,0,3,0,0,0,0,8,4,7,3,9,2,5,1,6,2,1,9,7,6,5,8,3,4,3,5,6,4,1,8,9,2,7,6,9,3,2,8,1,4,7,5,4,8,1,6,5,7,3,9,2,7,2,5,9,4,3,6,8,1,1,6,8,5,7,9,2,4,3,9,3,4,1,2,6,7,5,8,5,7,2,8,3,4,1,6,9\n";
+        InputStream in = new ByteArrayInputStream(testString.getBytes(StandardCharsets.UTF_8));
+        
+        SudokuGrid grid = new SudokuGrid(9,0,9,in);
         for(int i = 0; i < 81; i++) {
             if (i/9==0){
-                initialValues=initialValues.concat(String.valueOf(i%9+1));
-                //Log.d("Test","test");
-            }
-            else {
-                Random rand = new Random();
-                initialValues = initialValues.concat(String.valueOf(rand.nextInt(9)));
+                grid.getSudokuCell(i).setValue(i%9+1);
             }
         }
-        SudokuGrid grid = new SudokuGrid(9,initialValues, initialValues);
         for(int j = 0; j < 9; j++) {
             assertFalse(grid.cellConflictInRow(0, 0, j));
         }
@@ -70,20 +81,17 @@ public class SudokuGridTest {
     }
 
     @Test
-    public void cellConflictInBox() {
+    public void cellConflictInBox() throws IOException {
         boolean test=false;
-        String initialValues = "";
+        String testString = "0,0,0,0,9,0,0,1,6,0,0,9,7,0,5,0,0,0,3,0,0,0,0,8,0,0,0,0,0,0,0,0,0,4,7,0,0,8,1,0,5,0,3,9,0,0,2,5,0,0,0,0,0,0,0,0,0,5,0,0,0,0,3,0,0,0,1,0,6,7,0,0,5,7,0,0,3,0,0,0,0,8,4,7,3,9,2,5,1,6,2,1,9,7,6,5,8,3,4,3,5,6,4,1,8,9,2,7,6,9,3,2,8,1,4,7,5,4,8,1,6,5,7,3,9,2,7,2,5,9,4,3,6,8,1,1,6,8,5,7,9,2,4,3,9,3,4,1,2,6,7,5,8,5,7,2,8,3,4,1,6,9\n";
+        InputStream in = new ByteArrayInputStream(testString.getBytes(StandardCharsets.UTF_8));
+        
+        SudokuGrid grid = new SudokuGrid(9,0,9,in);
         for(int i = 0; i < 81; i++) {
             if (i/27*3 + i%9/3==0){
-                initialValues=initialValues.concat(String.valueOf(i/9*3+i%3+1));
-                //Log.d("Test","test");
-            }
-            else {
-                Random rand = new Random();
-                initialValues = initialValues.concat(String.valueOf(rand.nextInt(9)));
+                grid.getSudokuCell(i).setValue(i/9*3+i%3+1);
             }
         }
-        SudokuGrid grid = new SudokuGrid(9,initialValues, initialValues);
         for(int j = 0; j < 9; j++) {
             assertFalse(grid.cellConflictInBox(0, 0, j));
         }
@@ -94,13 +102,11 @@ public class SudokuGridTest {
     }
 
     @Test
-    public void TestSetWrongRows() {
-        String initialValues = "";
-        for(int i = 0; i < 81; i++) {
-            Random rand = new Random();
-            initialValues=initialValues.concat(String.valueOf(rand.nextInt(9)));
-        }
-        SudokuGrid grid = new SudokuGrid(9,initialValues, initialValues);
+    public void TestSetWrongRows() throws IOException {
+        String testString = "0,0,0,0,9,0,0,1,6,0,0,9,7,0,5,0,0,0,3,0,0,0,0,8,0,0,0,0,0,0,0,0,0,4,7,0,0,8,1,0,5,0,3,9,0,0,2,5,0,0,0,0,0,0,0,0,0,5,0,0,0,0,3,0,0,0,1,0,6,7,0,0,5,7,0,0,3,0,0,0,0,8,4,7,3,9,2,5,1,6,2,1,9,7,6,5,8,3,4,3,5,6,4,1,8,9,2,7,6,9,3,2,8,1,4,7,5,4,8,1,6,5,7,3,9,2,7,2,5,9,4,3,6,8,1,1,6,8,5,7,9,2,4,3,9,3,4,1,2,6,7,5,8,5,7,2,8,3,4,1,6,9\n";
+        InputStream in = new ByteArrayInputStream(testString.getBytes(StandardCharsets.UTF_8));
+        
+        SudokuGrid grid = new SudokuGrid(9,0,9,in);
         grid.setWrongRows(0,true);
         assertTrue(grid.getWrongRow(0));
         grid.setWrongRows(0,false);
@@ -108,13 +114,11 @@ public class SudokuGridTest {
     }
 
     @Test
-    public void TestSetWrongCols() {
-        String initialValues = "";
-        for(int i = 0; i < 81; i++) {
-            Random rand = new Random();
-            initialValues=initialValues.concat(String.valueOf(rand.nextInt(9)));
-        }
-        SudokuGrid grid = new SudokuGrid(9,initialValues, initialValues);
+    public void TestSetWrongCols() throws IOException {
+        String testString = "0,0,0,0,9,0,0,1,6,0,0,9,7,0,5,0,0,0,3,0,0,0,0,8,0,0,0,0,0,0,0,0,0,4,7,0,0,8,1,0,5,0,3,9,0,0,2,5,0,0,0,0,0,0,0,0,0,5,0,0,0,0,3,0,0,0,1,0,6,7,0,0,5,7,0,0,3,0,0,0,0,8,4,7,3,9,2,5,1,6,2,1,9,7,6,5,8,3,4,3,5,6,4,1,8,9,2,7,6,9,3,2,8,1,4,7,5,4,8,1,6,5,7,3,9,2,7,2,5,9,4,3,6,8,1,1,6,8,5,7,9,2,4,3,9,3,4,1,2,6,7,5,8,5,7,2,8,3,4,1,6,9\n";
+        InputStream in = new ByteArrayInputStream(testString.getBytes(StandardCharsets.UTF_8));
+        
+        SudokuGrid grid = new SudokuGrid(9,0,9,in);
         grid.setWrongCols(0,true);
         assertTrue(grid.getWrongCol(0));
         grid.setWrongCols(0,false);
@@ -122,13 +126,11 @@ public class SudokuGridTest {
     }
 
     @Test
-    public void TestSetWrongBoxes() {
-        String initialValues = "";
-        for(int i = 0; i < 81; i++) {
-            Random rand = new Random();
-            initialValues=initialValues.concat(String.valueOf(rand.nextInt(9)));
-        }
-        SudokuGrid grid = new SudokuGrid(9,initialValues, initialValues);
+    public void TestSetWrongBoxes() throws IOException {
+        String testString = "0,0,0,0,9,0,0,1,6,0,0,9,7,0,5,0,0,0,3,0,0,0,0,8,0,0,0,0,0,0,0,0,0,4,7,0,0,8,1,0,5,0,3,9,0,0,2,5,0,0,0,0,0,0,0,0,0,5,0,0,0,0,3,0,0,0,1,0,6,7,0,0,5,7,0,0,3,0,0,0,0,8,4,7,3,9,2,5,1,6,2,1,9,7,6,5,8,3,4,3,5,6,4,1,8,9,2,7,6,9,3,2,8,1,4,7,5,4,8,1,6,5,7,3,9,2,7,2,5,9,4,3,6,8,1,1,6,8,5,7,9,2,4,3,9,3,4,1,2,6,7,5,8,5,7,2,8,3,4,1,6,9\n";
+        InputStream in = new ByteArrayInputStream(testString.getBytes(StandardCharsets.UTF_8));
+        
+        SudokuGrid grid = new SudokuGrid(9,0,9,in);
         grid.setWrongBoxes(0,true);
         assertTrue(grid.getWrongBox(0));
         grid.setWrongBoxes(0,false);
@@ -136,13 +138,11 @@ public class SudokuGridTest {
     }
 
     @Test
-    public void TestGetWrongRow() {
-        String initialValues = "";
-        for(int i = 0; i < 81; i++) {
-            Random rand = new Random();
-            initialValues=initialValues.concat(String.valueOf(rand.nextInt(9)));
-        }
-        SudokuGrid grid = new SudokuGrid(9,initialValues, initialValues);
+    public void TestGetWrongRow() throws IOException {
+        String testString = "0,0,0,0,9,0,0,1,6,0,0,9,7,0,5,0,0,0,3,0,0,0,0,8,0,0,0,0,0,0,0,0,0,4,7,0,0,8,1,0,5,0,3,9,0,0,2,5,0,0,0,0,0,0,0,0,0,5,0,0,0,0,3,0,0,0,1,0,6,7,0,0,5,7,0,0,3,0,0,0,0,8,4,7,3,9,2,5,1,6,2,1,9,7,6,5,8,3,4,3,5,6,4,1,8,9,2,7,6,9,3,2,8,1,4,7,5,4,8,1,6,5,7,3,9,2,7,2,5,9,4,3,6,8,1,1,6,8,5,7,9,2,4,3,9,3,4,1,2,6,7,5,8,5,7,2,8,3,4,1,6,9\n";
+        InputStream in = new ByteArrayInputStream(testString.getBytes(StandardCharsets.UTF_8));
+        
+        SudokuGrid grid = new SudokuGrid(9,0,9,in);
         grid.setWrongRows(0,true);
         assertTrue(grid.getWrongRow(0));
         grid.setWrongRows(0,false);
@@ -150,13 +150,11 @@ public class SudokuGridTest {
     }
 
     @Test
-    public void TestGetWrongCol() {
-        String initialValues = "";
-        for(int i = 0; i < 81; i++) {
-            Random rand = new Random();
-            initialValues=initialValues.concat(String.valueOf(rand.nextInt(9)));
-        }
-        SudokuGrid grid = new SudokuGrid(9,initialValues, initialValues);
+    public void TestGetWrongCol() throws IOException {
+        String testString = "0,0,0,0,9,0,0,1,6,0,0,9,7,0,5,0,0,0,3,0,0,0,0,8,0,0,0,0,0,0,0,0,0,4,7,0,0,8,1,0,5,0,3,9,0,0,2,5,0,0,0,0,0,0,0,0,0,5,0,0,0,0,3,0,0,0,1,0,6,7,0,0,5,7,0,0,3,0,0,0,0,8,4,7,3,9,2,5,1,6,2,1,9,7,6,5,8,3,4,3,5,6,4,1,8,9,2,7,6,9,3,2,8,1,4,7,5,4,8,1,6,5,7,3,9,2,7,2,5,9,4,3,6,8,1,1,6,8,5,7,9,2,4,3,9,3,4,1,2,6,7,5,8,5,7,2,8,3,4,1,6,9\n";
+        InputStream in = new ByteArrayInputStream(testString.getBytes(StandardCharsets.UTF_8));
+        
+        SudokuGrid grid = new SudokuGrid(9,0,9,in);
         grid.setWrongCols(0,true);
         assertTrue(grid.getWrongCol(0));
         grid.setWrongCols(0,false);
@@ -164,13 +162,11 @@ public class SudokuGridTest {
     }
 
     @Test
-    public void TestGetWrongBox() {
-        String initialValues = "";
-        for(int i = 0; i < 81; i++) {
-            Random rand = new Random();
-            initialValues=initialValues.concat(String.valueOf(rand.nextInt(9)));
-        }
-        SudokuGrid grid = new SudokuGrid(9,initialValues, initialValues);
+    public void TestGetWrongBox() throws IOException {
+        String testString = "0,0,0,0,9,0,0,1,6,0,0,9,7,0,5,0,0,0,3,0,0,0,0,8,0,0,0,0,0,0,0,0,0,4,7,0,0,8,1,0,5,0,3,9,0,0,2,5,0,0,0,0,0,0,0,0,0,5,0,0,0,0,3,0,0,0,1,0,6,7,0,0,5,7,0,0,3,0,0,0,0,8,4,7,3,9,2,5,1,6,2,1,9,7,6,5,8,3,4,3,5,6,4,1,8,9,2,7,6,9,3,2,8,1,4,7,5,4,8,1,6,5,7,3,9,2,7,2,5,9,4,3,6,8,1,1,6,8,5,7,9,2,4,3,9,3,4,1,2,6,7,5,8,5,7,2,8,3,4,1,6,9\n";
+        InputStream in = new ByteArrayInputStream(testString.getBytes(StandardCharsets.UTF_8));
+        
+        SudokuGrid grid = new SudokuGrid(9,0,9,in);
         grid.setWrongBoxes(0,true);
         assertTrue(grid.getWrongBox(0));
         grid.setWrongBoxes(0,false);
@@ -178,42 +174,50 @@ public class SudokuGridTest {
     }
 
     @Test
-    public void TestGetAnswers() {
-        String initialValues = "";
+    public void TestGetAnswers() throws IOException {
+        String testString = "0,0,0,0,9,0,0,1,6,0,0,9,7,0,5,0,0,0,3,0,0,0,0,8,0,0,0,0,0,0,0,0,0,4,7,0,0,8,1,0,5,0,3,9,0,0,2,5,0,0,0,0,0,0,0,0,0,5,0,0,0,0,3,0,0,0,1,0,6,7,0,0,5,7,0,0,3,0,0,0,0,8,4,7,3,9,2,5,1,6,2,1,9,7,6,5,8,3,4,3,5,6,4,1,8,9,2,7,6,9,3,2,8,1,4,7,5,4,8,1,6,5,7,3,9,2,7,2,5,9,4,3,6,8,1,1,6,8,5,7,9,2,4,3,9,3,4,1,2,6,7,5,8,5,7,2,8,3,4,1,6,9\n";
+        InputStream in = new ByteArrayInputStream(testString.getBytes(StandardCharsets.UTF_8));
+        
+        SudokuGrid grid = new SudokuGrid(9,0,9,in);
         for(int i = 0; i < 81; i++) {
-            Random rand = new Random();
-            initialValues=initialValues.concat(String.valueOf(rand.nextInt(9)));
-        }
-        SudokuGrid grid = new SudokuGrid(9,initialValues, initialValues);
-        for(int i = 0; i < 81; i++) {
-            assertEquals(grid.getAnswers(i), Integer.parseInt(initialValues.substring(i, i + 1)));
-        }
-    }
-
-    @Test
-    public void TestSetAnswers() {
-        String initialValues = "";
-        for(int i = 0; i < 81; i++) {
-            Random rand = new Random();
-            initialValues=initialValues.concat(String.valueOf(rand.nextInt(9)));
-        }
-        SudokuGrid grid = new SudokuGrid(9,initialValues, initialValues);
-        for(int i = 0; i < 81; i++) {
-            grid.setAnswers(i,Integer.parseInt(initialValues.substring(80-i, 80-i + 1)));
+            grid.setAnswers(i,i);
         }
         for(int i = 0; i < 81; i++) {
-            assertEquals(grid.getAnswers(i), Integer.parseInt(initialValues.substring(80-i, 80-i + 1)));
+            assertEquals(grid.getAnswers(i), i);
+        }
+        for(int i = 0; i < 81; i++) {
+            grid.setAnswers(i,80-i);
+        }
+        for(int i = 0; i < 81; i++) {
+            assertEquals(grid.getAnswers(i), 80-i);
         }
     }
 
     @Test
-    public void testIsZoomed() {
-        String initialValues = "";
+    public void TestSetAnswers() throws IOException {
+        String testString = "0,0,0,0,9,0,0,1,6,0,0,9,7,0,5,0,0,0,3,0,0,0,0,8,0,0,0,0,0,0,0,0,0,4,7,0,0,8,1,0,5,0,3,9,0,0,2,5,0,0,0,0,0,0,0,0,0,5,0,0,0,0,3,0,0,0,1,0,6,7,0,0,5,7,0,0,3,0,0,0,0,8,4,7,3,9,2,5,1,6,2,1,9,7,6,5,8,3,4,3,5,6,4,1,8,9,2,7,6,9,3,2,8,1,4,7,5,4,8,1,6,5,7,3,9,2,7,2,5,9,4,3,6,8,1,1,6,8,5,7,9,2,4,3,9,3,4,1,2,6,7,5,8,5,7,2,8,3,4,1,6,9\n";
+        InputStream in = new ByteArrayInputStream(testString.getBytes(StandardCharsets.UTF_8));
+        SudokuGrid grid = new SudokuGrid(9,0,9,in);
         for(int i = 0; i < 81; i++) {
-            Random rand = new Random();
-            initialValues=initialValues.concat(String.valueOf(rand.nextInt(9)));
+            grid.setAnswers(i,i);
         }
-        SudokuGrid grid = new SudokuGrid(9,initialValues, initialValues);
+        for(int i = 0; i < 81; i++) {
+            assertEquals(grid.getAnswers(i), i);
+        }
+        for(int i = 0; i < 81; i++) {
+            grid.setAnswers(i,80-i);
+        }
+        for(int i = 0; i < 81; i++) {
+            assertEquals(grid.getAnswers(i), 80-i);
+        }
+    }
+
+    @Test
+    public void testIsZoomed() throws IOException {
+        String testString = "0,0,0,0,9,0,0,1,6,0,0,9,7,0,5,0,0,0,3,0,0,0,0,8,0,0,0,0,0,0,0,0,0,4,7,0,0,8,1,0,5,0,3,9,0,0,2,5,0,0,0,0,0,0,0,0,0,5,0,0,0,0,3,0,0,0,1,0,6,7,0,0,5,7,0,0,3,0,0,0,0,8,4,7,3,9,2,5,1,6,2,1,9,7,6,5,8,3,4,3,5,6,4,1,8,9,2,7,6,9,3,2,8,1,4,7,5,4,8,1,6,5,7,3,9,2,7,2,5,9,4,3,6,8,1,1,6,8,5,7,9,2,4,3,9,3,4,1,2,6,7,5,8,5,7,2,8,3,4,1,6,9\n";
+        InputStream in = new ByteArrayInputStream(testString.getBytes(StandardCharsets.UTF_8));
+        
+        SudokuGrid grid = new SudokuGrid(9,0,9,in);
         grid.setZoomed(true);
         assertTrue(grid.isZoomed());
         grid.setZoomed(false);
@@ -221,13 +225,11 @@ public class SudokuGridTest {
     }
 
     @Test
-    public void testSetZoomed() {
-        String initialValues = "";
-        for(int i = 0; i < 81; i++) {
-            Random rand = new Random();
-            initialValues=initialValues.concat(String.valueOf(rand.nextInt(9)));
-        }
-        SudokuGrid grid = new SudokuGrid(9,initialValues, initialValues);
+    public void testSetZoomed() throws IOException {
+        String testString = "0,0,0,0,9,0,0,1,6,0,0,9,7,0,5,0,0,0,3,0,0,0,0,8,0,0,0,0,0,0,0,0,0,4,7,0,0,8,1,0,5,0,3,9,0,0,2,5,0,0,0,0,0,0,0,0,0,5,0,0,0,0,3,0,0,0,1,0,6,7,0,0,5,7,0,0,3,0,0,0,0,8,4,7,3,9,2,5,1,6,2,1,9,7,6,5,8,3,4,3,5,6,4,1,8,9,2,7,6,9,3,2,8,1,4,7,5,4,8,1,6,5,7,3,9,2,7,2,5,9,4,3,6,8,1,1,6,8,5,7,9,2,4,3,9,3,4,1,2,6,7,5,8,5,7,2,8,3,4,1,6,9\n";
+        InputStream in = new ByteArrayInputStream(testString.getBytes(StandardCharsets.UTF_8));
+        
+        SudokuGrid grid = new SudokuGrid(9,0,9,in);
         grid.setZoomed(true);
         assertTrue(grid.isZoomed());
         grid.setZoomed(false);
@@ -249,24 +251,22 @@ public class SudokuGridTest {
     }
 
     @Test
-    public void testUpdateSudokuModel() {
-        String initialValues="";
+    public void testUpdateSudokuModel() throws IOException {
+        String testString = "0,0,0,0,9,0,0,1,6,0,0,9,7,0,5,0,0,0,3,0,0,0,0,8,0,0,0,0,0,0,0,0,0,4,7,0,0,8,1,0,5,0,3,9,0,0,2,5,0,0,0,0,0,0,0,0,0,5,0,0,0,0,3,0,0,0,1,0,6,7,0,0,5,7,0,0,3,0,0,0,0,8,4,7,3,9,2,5,1,6,2,1,9,7,6,5,8,3,4,3,5,6,4,1,8,9,2,7,6,9,3,2,8,1,4,7,5,4,8,1,6,5,7,3,9,2,7,2,5,9,4,3,6,8,1,1,6,8,5,7,9,2,4,3,9,3,4,1,2,6,7,5,8,5,7,2,8,3,4,1,6,9\n";
+        InputStream in = new ByteArrayInputStream(testString.getBytes(StandardCharsets.UTF_8));
+        
+        SudokuGrid grid = new SudokuGrid(9,0,9,in);
         for(int i = 0; i < 81; i++) {
             if (i/27*3 + i%9/3==0){
-                initialValues=initialValues.concat(String.valueOf(i/9*3+i%3+1));
+                grid.getSudokuCell(i).setValue(i/9*3+i%3+1);
             }
             else if (i/9==3){
-                initialValues=initialValues.concat(String.valueOf(i%9+1));
+                grid.getSudokuCell(i).setValue(i%9+1);
             }
             else if (i%9==3){
-                initialValues=initialValues.concat(String.valueOf(i/9+1));
-            }
-            else {
-                Random rand = new Random();
-                initialValues = initialValues.concat(String.valueOf(rand.nextInt(9)));
+                grid.getSudokuCell(i).setValue(i/9+1);
             }
         }
-        SudokuGrid grid = new SudokuGrid(9,initialValues, initialValues);
         grid.getSudokuCell(27).setLock(false);
         grid.updateSudokuModel(1,27);
         assertFalse(grid.getWrongRow(3));
@@ -290,50 +290,46 @@ public class SudokuGridTest {
     }
 
     @Test
-    public void findConflictAtIndex() {
-        String initialValues="";
+    public void findConflictAtIndex() throws IOException {
+        String testString = "0,0,0,0,9,0,0,1,6,0,0,9,7,0,5,0,0,0,3,0,0,0,0,8,0,0,0,0,0,0,0,0,0,4,7,0,0,8,1,0,5,0,3,9,0,0,2,5,0,0,0,0,0,0,0,0,0,5,0,0,0,0,3,0,0,0,1,0,6,7,0,0,5,7,0,0,3,0,0,0,0,8,4,7,3,9,2,5,1,6,2,1,9,7,6,5,8,3,4,3,5,6,4,1,8,9,2,7,6,9,3,2,8,1,4,7,5,4,8,1,6,5,7,3,9,2,7,2,5,9,4,3,6,8,1,1,6,8,5,7,9,2,4,3,9,3,4,1,2,6,7,5,8,5,7,2,8,3,4,1,6,9\n";
+        InputStream in = new ByteArrayInputStream(testString.getBytes(StandardCharsets.UTF_8));
+        
+        SudokuGrid grid = new SudokuGrid(9,0,9,in);
         for(int i = 0; i < 81; i++) {
             if (i/27*3 + i%9/3==0){
-                initialValues=initialValues.concat(String.valueOf(i/9*3+i%3+1));
+                grid.getSudokuCell(i).setValue(i/9*3+i%3+1);
             }
             else if (i/9==3){
-                initialValues=initialValues.concat(String.valueOf(i%9+1));
+                grid.getSudokuCell(i).setValue(i%9+1);
             }
             else if (i%9==3){
-                initialValues=initialValues.concat(String.valueOf(i/9+1));
-            }
-            else {
-                Random rand = new Random();
-                initialValues = initialValues.concat(String.valueOf(rand.nextInt(9)));
+                grid.getSudokuCell(i).setValue(i/9+1);
             }
         }
-        SudokuGrid grid = new SudokuGrid(9,initialValues, initialValues);
-        grid.findConflictAtIndex(3);
+        grid.findConflictAtIndex(27);
         assertFalse(grid.getWrongRow(3));
 
-        initialValues=initialValues.substring(0,27)+"2"+initialValues.substring(28,81);
-        grid = new SudokuGrid(9,initialValues, initialValues);
+        grid.getSudokuCell(27).setValue(2);
         grid.findConflictAtIndex(27);
         assertTrue(grid.getWrongRow(3));
 
-        grid.findConflictAtIndex(27);
+        grid.findConflictAtIndex(3);
         assertFalse(grid.getWrongCol(3));
 
-        initialValues=initialValues.substring(0,3)+"2"+initialValues.substring(4,81);
-        grid = new SudokuGrid(9,initialValues, initialValues);
+        grid.getSudokuCell(3).setValue(2);
         grid.findConflictAtIndex(3);
         assertTrue(grid.getWrongCol(3));
 
         grid.findConflictAtIndex(0);
         assertFalse(grid.getWrongBox(0));
 
-        initialValues="2"+initialValues.substring(1,81);
-        grid = new SudokuGrid(9,initialValues, initialValues);
+        grid.getSudokuCell(0).setValue(2);
         grid.findConflictAtIndex(0);
         assertTrue(grid.getWrongBox(0));
     }
 
     @Test
     public void sendModelToView() {
+
     }
 }
