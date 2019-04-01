@@ -258,6 +258,7 @@ public class SudokuActivity extends AppCompatActivity {
         }
 
         //Log.d("Test","");
+        mSudokuGrid.updateConflicts();
         mSudokuGrid.sendModelToView();
     } // END OF ONCREATE()
 
@@ -396,12 +397,12 @@ public class SudokuActivity extends AppCompatActivity {
             } else {
                 mSudokuGrid.getSudokuCell(i).setLock(false);
             }
-            if (savedInstanceState.getIntegerArrayList("SUDOKU_GRID_CONFLICTS").get(i) == 1) {
+            /*if (savedInstanceState.getIntegerArrayList("SUDOKU_GRID_CONFLICTS").get(i) == 1) {
                 mSudokuGrid.getSudokuCell(i).setConflicting(true);
             } else {
                 mSudokuGrid.getSudokuCell(i).setConflicting(false);
-            }
-            if (i < sSize) {
+            }*/
+            if (i < sSize) {/*
                 if (savedInstanceState.getIntegerArrayList("SUDOKU_GRID_WRONG_ROWS").get(i) == 1) {
                     mSudokuGrid.setWrongRows(i, true);
                 } else {
@@ -416,7 +417,7 @@ public class SudokuActivity extends AppCompatActivity {
                     mSudokuGrid.setWrongBoxes(i, true);
                 } else {
                     mSudokuGrid.setWrongBoxes(i, false);
-                }
+                }*/
                 sLanguage1.setWord(savedInstanceState.getStringArrayList("SUDOKU_WORD_PAIRS_1").get(i), i + 1);
                 sLanguage2.setWord(savedInstanceState.getStringArrayList("SUDOKU_WORD_PAIRS_2").get(i), i + 1);
             }

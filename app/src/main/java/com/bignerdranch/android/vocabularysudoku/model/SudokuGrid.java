@@ -145,7 +145,6 @@ public class SudokuGrid {
             rand = new Random();
             randInt = rand.nextInt(mSize*mSize);
             if (newValues[randInt]==0){
-                Log.d("Test",Integer.toString(randInt)+" "+Integer.toString(mAnswers[randInt]));
                 newValues[randInt]=mAnswers[randInt];
                 count+=1;
             }
@@ -259,19 +258,7 @@ public class SudokuGrid {
         if(!getSudokuCell(CurrentCell).isLock()){
             getSudokuCell(CurrentCell).setValue(value);
 
-            int count=0,correct;
-            for(int i = 0; i < mSize * mSize; i++){
-                setWrongRows(i, false);
-                setWrongCols(i, false);
-                setWrongBoxes(i, false);
-            }
-            for (int x=0;x<mSize * mSize;x++) {
-                correct = findConflictAtIndex(x);
-                if (correct == 1 && getSudokuCell(x).getValue() != 0)
-                    count+=1;
-            }
-            if (count==mSize * mSize)
-                return true;
+            return updateConflicts();
                 //Toast.makeText(context, "Congrats! You Win!", Toast.LENGTH_LONG).show();
 //            if (value != 0) setButtonValue(value);
 //            resetButtonImage();
@@ -279,6 +266,22 @@ public class SudokuGrid {
         return false;
     }
 
+    public boolean updateConflicts(){
+        int count=0,correct;
+        for(int i = 0; i < mSize * mSize; i++){
+            setWrongRows(i, false);
+            setWrongCols(i, false);
+            setWrongBoxes(i, false);
+        }
+        for (int x=0;x<mSize * mSize;x++) {
+            correct = findConflictAtIndex(x);
+            if (correct == 1 && getSudokuCell(x).getValue() != 0)
+                count+=1;
+        }
+        if (count==mSize * mSize)
+            return true;
+        return false;
+    }
 
 
     int findConflictAtIndex(int cellIndex){
