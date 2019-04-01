@@ -1,6 +1,8 @@
 package com.bignerdranch.android.vocabularysudoku.model;
 
+import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.bignerdranch.android.vocabularysudoku.view.GridLayoutUI;
 
@@ -185,7 +187,7 @@ public class SudokuGrid {
     }
 
 
-    public void updateSudokuModel(int value, int CurrentCell){
+    public void updateSudokuModel(int value, int CurrentCell, Context context){
         // If a cell isn't locked, set its text to the chosen word and show any conflicts
         if(!getSudokuCell(CurrentCell).isLock()){
             getSudokuCell(CurrentCell).setValue(value);
@@ -201,10 +203,10 @@ public class SudokuGrid {
                 if (correct == 1 && getSudokuCell(x).getValue() != 0)
                     count+=1;
             }
-//            if (count==81)
-//                Toast.makeText(getApplicationContext(),"Congrats! You win!",Toast.LENGTH_SHORT).show();
-            //if (value != 0) setButtonValue(value);
-            //resetButtonImage();
+            if (count==sSize * sSize)
+                Toast.makeText(context, "Congrats! You Win!", Toast.LENGTH_LONG).show();
+//            if (value != 0) setButtonValue(value);
+//            resetButtonImage();
         }
     }
 
