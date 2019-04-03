@@ -52,7 +52,7 @@ public class SudokuActivity extends AppCompatActivity {
     ButtonUI[] mPopupButtons;
 
     public static int sSize;
-    public static String sDifficulty;
+    public static int sDifficulty;
     static boolean sPopupOnScreen = false;// for pop-up-screen
     public static int sCurrentCell;
     public static int sScreenWidth, sScreenHeight;
@@ -92,7 +92,7 @@ public class SudokuActivity extends AppCompatActivity {
 
         // Get the size of the grid from main menu
         getSizeFromSpinner();
-        getDifficultyFromSpinner();
+        getDifficultyFromBar();
 
         setListenMode();
 
@@ -489,9 +489,9 @@ public class SudokuActivity extends AppCompatActivity {
     }
 
     // Gets the user inputted difficulty.
-    void getDifficultyFromSpinner() {
+    void getDifficultyFromBar() {
         Intent intent = getIntent();
-        sDifficulty = intent.getStringExtra("diff_opt");
+        sDifficulty = intent.getIntExtra("diff_opt",5);
 
     }
 

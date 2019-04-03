@@ -26,6 +26,8 @@
     <string name="notice_string_4">cow, 牛</string>
     <string name="notice_string_5">sky, 天</string>
     <string name="notice_string_6">etc.</string>
+    <string name="use_our_word_list">Use Our Word List</string>
+    <string name="reading_mode">Reading Mode</string>
 
     <string-array name="spinner_strings">
         <item>Sudoku Size: 9x9</item>
@@ -40,11 +42,5 @@
         <item>6</item>
         <item>12</item>
     </string-array>
-    <string-array name="diff_ops">
-        <item>Easy</item>
-        <item>Medium</item>
-        <item>Hard</item>
-    </string-array>
-
 
 </resources>

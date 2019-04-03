@@ -8,7 +8,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.SeekBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bignerdranch.android.vocabularysudoku.R;
@@ -16,13 +18,16 @@ import com.bignerdranch.android.vocabularysudoku.R;
 import com.bignerdranch.android.vocabularysudoku.view.NoticeUI;
 import com.bignerdranch.android.vocabularysudoku.view.SampleFileNoticeUI;
 
+import java.text.MessageFormat;
+
 public class MenuActivity extends AppCompatActivity {
     private static final int READ_REQUEST_CODE = 42;
     private String uri = null;
     private boolean useSampleFile = false;
     private boolean mListenMode = false;
     private Spinner mSizeSpinner;
-    private Spinner mDiffSpinner;
+    private TextView ProgressText;
+    private SeekBar seekBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +35,13 @@ public class MenuActivity extends AppCompatActivity {
         setContentView(R.layout.activity_menu);
 
         mSizeSpinner = findViewById(R.id.size_choice_spinner);
-        mDiffSpinner = findViewById(R.id.difficulty_spinner);
+
+        seekBar = findViewById(R.id.seekBar);
+        seekBar.setOnSeekBarChangeListener(seekBarChangeListener);
+
+        int progress = seekBar.getProgress();
+        ProgressText = findViewById(R.id.textView);
+        ProgressSetText(progress);
 
         hideActionBar();
     }
@@ -41,7 +52,7 @@ public class MenuActivity extends AppCompatActivity {
         intent.putExtra("use_sample_file", useSampleFile);
         intent.putExtra("listen_mode", mListenMode);
         intent.putExtra("size", getSizeSpinnerValue());
-        intent.putExtra("diff_opt", getDiffSpinnerValue());
+        intent.putExtra("diff_opt", getDiffBarValue());
         startActivity(intent);
     }
 
@@ -50,8 +61,8 @@ public class MenuActivity extends AppCompatActivity {
         String[] size_values = getResources().getStringArray(R.array.size_choices);
         return Integer.valueOf(size_values[spinner_pos]);
     }
-    private String getDiffSpinnerValue() {
-        return mDiffSpinner.getSelectedItem().toString();
+    private int getDiffBarValue() {
+        return seekBar.getProgress();
     }
 
     // User wishes to use sample file
@@ -142,4 +153,37 @@ public class MenuActivity extends AppCompatActivity {
             getSupportActionBar().hide();
         }
     }
+    private void ProgressSetText(int progress){
+        String diff="Difficulty: ";
+        if (progress==0){
+            diff=diff.concat("Beginner");
+        }
+        else if (progress==5){
+            diff=diff.concat("Intermediate");
+        }
+        else if (progress==10){
+            diff=diff.concat("Expert");
+        }
+        else {
+            diff=diff.concat(Integer.toString(progress));
+        }
+        ProgressText.setText(diff);
+    }
+    SeekBar.OnSeekBarChangeListener seekBarChangeListener = new SeekBar.OnSeekBarChangeListener() {
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            // updated continuously as the user slides the thumb
+            ProgressSetText(progress);
+        }
+
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {
+            // called when the user first touches the SeekBar
+        }
+
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {
+            // called after the user finishes moving the SeekBar
+        }
+    };
 }

@@ -127,15 +127,7 @@ public class SudokuGrid {
         Random rand;
         int count = 0,randInt,diff;
         int[] newValues=new int[mSize*mSize];
-        if (sDifficulty.equals("Easy")){
-            diff=(int)round(mSize*mSize*.7);
-        }
-        else if (sDifficulty.equals("Medium")){
-            diff=(int)round(mSize*mSize*.5);
-        }
-        else{
-            diff=(int)round(mSize*mSize*.3);
-        }
+        diff=(int)round(mSize*mSize*((10-sDifficulty)*.07+.15));
         for (int i=0;i<mSize*mSize;i++){
             if (initialValues[i]!=0){
                 count+=1;
@@ -145,6 +137,7 @@ public class SudokuGrid {
         while (count<=diff){
             rand = new Random();
             randInt = rand.nextInt(mSize*mSize);
+            Log.d("Test",Integer.toString(count)+" "+Integer.toString(diff));
             if (newValues[randInt]==0){
                 newValues[randInt]=mAnswers[randInt];
                 count+=1;

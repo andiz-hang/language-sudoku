@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center"
     android:orientation="vertical"
     android:background="@drawable/splash_bg">
@@ -28,7 +30,7 @@
             android:layout_marginBottom="10dp"
             android:background="@drawable/bg_btn"
             android:onClick="wordList"
-            android:text="Use Our Word List" />
+            android:text="@string/use_our_word_list" />
 
         <Button
             android:id="@+id/upload_list_button"
@@ -46,7 +48,7 @@
             android:layout_marginBottom="10dp"
             android:background="@drawable/bg_btn"
             android:onClick="setListenMode"
-            android:text="Reading Mode" />
+            android:text="@string/reading_mode" />
 
         <Spinner
             android:id="@+id/size_choice_spinner"
@@ -58,17 +60,18 @@
             android:textAlignment="center"
             android:entries="@array/spinner_strings">
         </Spinner>
-
-        <Spinner
-            android:id="@+id/difficulty_spinner"
+        <TextView
+            android:id="@+id/textView"
+            android:textStyle="bold"
+            android:layout_margin="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <SeekBar
+            android:id="@+id/seekBar"
+            android:max="10"
+            android:progress="5"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_btn"
-            android:padding="10dp"
-            android:layout_marginBottom="10dp"
-            android:textAlignment="center"
-            android:entries="@array/diff_ops">
-        </Spinner>
+            android:layout_height="wrap_content"/>
     </LinearLayout>
 
 </LinearLayout>
