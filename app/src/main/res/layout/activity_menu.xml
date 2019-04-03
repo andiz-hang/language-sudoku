@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:background="@drawable/bg_btn"
+            android:background="@drawable/bg_btn_menu"
             android:onClick="startGame"
             android:text="@string/start" />
 
@@ -28,7 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:background="@drawable/bg_btn"
+            android:background="@drawable/bg_btn_menu"
             android:onClick="wordList"
             android:text="@string/use_our_word_list" />
 
@@ -37,7 +37,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:background="@drawable/bg_btn"
+            android:background="@drawable/bg_btn_menu"
             android:onClick="uploadYourList"
             android:text="@string/upload_list" />
 
@@ -46,7 +46,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:background="@drawable/bg_btn"
+            android:background="@drawable/bg_btn_menu"
             android:onClick="setListenMode"
             android:text="@string/reading_mode" />
 
@@ -54,7 +54,7 @@
             android:id="@+id/size_choice_spinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_btn"
+            android:background="@drawable/bg_btn_menu"
             android:padding="10dp"
             android:layout_marginBottom="10dp"
             android:textAlignment="center"
