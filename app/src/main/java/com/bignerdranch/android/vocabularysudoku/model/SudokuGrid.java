@@ -35,6 +35,7 @@ public class SudokuGrid {
     private GridLayoutUI mSudokuLayout;
     private int mSavedPuzzleNumber;
     private int mSize;
+    private int mCurrent=-1;
 
     // Methods
 
@@ -240,14 +241,6 @@ public class SudokuGrid {
         return mWrongBoxes[index];
     }
 
-    boolean isZoomed() {
-        return mIsZoomed;
-    }
-
-    void setZoomed(boolean zoom) {
-        mIsZoomed=zoom;
-    }
-
     public void setSudokuLayout(GridLayoutUI layoutUI) {
         mSudokuLayout = layoutUI;
     }
@@ -282,7 +275,14 @@ public class SudokuGrid {
             return true;
         return false;
     }
-
+    public void setSelected(int index){
+        if (index==-1) {
+            mCurrent = -1;
+        }
+        else {
+            mCurrent = index;
+        }
+    }
 
     int findConflictAtIndex(int cellIndex){
         boolean row=false,column=false,box=false;
@@ -324,8 +324,9 @@ public class SudokuGrid {
 
     public void sendModelToView() {
         mSudokuLayout.defaultButtonColors();
-        mSudokuLayout.highlightWrongCells(mGrid, mWrongRows, mWrongCols, mWrongBoxes);
+        mSudokuLayout.highlightWrongCells(mWrongRows, mWrongCols, mWrongBoxes);
         mSudokuLayout.displayNewText(mGrid);
+        mSudokuLayout.highlightSelected(mCurrent);
     }
 }
 

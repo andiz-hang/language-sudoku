@@ -2,6 +2,7 @@ package com.bignerdranch.android.vocabularysudoku.view;
 
 import android.animation.ObjectAnimator;
 import android.graphics.Color;
+import android.util.Log;
 import android.widget.GridLayout;
 
 import com.bignerdranch.android.vocabularysudoku.R;
@@ -159,13 +160,20 @@ public class GridLayoutUI {
             getButtonUI(y).getButton().setBackgroundResource(R.drawable.bg_btn);
         }
     }
-    public void highlightWrongCells(SudokuCell mGrid[][], boolean mWrongRows[], boolean mWrongCols[], boolean mWrongBoxes[]){
+    public void highlightWrongCells(boolean mWrongRows[], boolean mWrongCols[], boolean mWrongBoxes[]){
         for(int i = 0; i < mSize; i++){
             if(mWrongRows[i]) setRowCellsRed(i);
             if(mWrongCols[i]) setColumnCellsRed(i);
             if(mWrongBoxes[i]) setBoxCellsRed(i);
         }
 
+    }
+
+    public void highlightSelected(int cell){
+        Log.d("Test",Integer.toString(cell));
+        if (cell!=-1) {
+            getButtonUI(cell).getButton().setBackgroundResource(R.drawable.bg_btn_blue);
+        }
     }
 
     public void displayNewText(SudokuCell mGrid[][]){
