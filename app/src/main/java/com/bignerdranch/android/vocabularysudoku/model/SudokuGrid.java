@@ -319,7 +319,7 @@ public class SudokuGrid {
         mSudokuLayout.defaultButtonColors();
         mSudokuLayout.highlightWrongCells(mWrongRows, mWrongCols, mWrongBoxes);
         mSudokuLayout.displayNewText(mGrid);
-        mSudokuLayout.highlightSelected(mCurrent);
+        mSudokuLayout.highlightSelected(mCurrent,this);
     }
 }
 

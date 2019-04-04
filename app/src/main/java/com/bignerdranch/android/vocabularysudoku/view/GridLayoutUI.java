@@ -169,9 +169,16 @@ public class GridLayoutUI {
 
     }
 
-    public void highlightSelected(int cell){
-        Log.d("Test",Integer.toString(cell));
+    public void highlightSelected(int cell, SudokuGrid grid){
         if (cell!=-1) {
+            int value=grid.getSudokuCell(cell).getValue();
+            if (value!=0) {
+                for (int i = 0; i < mSize * mSize; i++) {
+                    if (grid.getSudokuCell(i).getValue()==value) {
+                        getButtonUI(i).getButton().setBackgroundResource(R.drawable.bg_btn_lte_blue);
+                    }
+                }
+            }
             getButtonUI(cell).getButton().setBackgroundResource(R.drawable.bg_btn_blue);
         }
     }
