@@ -208,8 +208,8 @@ public class SudokuActivity extends AppCompatActivity {
                     mSudokuLayout.getButtonUI(sCurrentCell).setText("");
                     mSudokuGrid.getSudokuCell(sCurrentCell).setValue(0);
                     mSudokuGrid.updateSudokuModel(0,sCurrentCell);
-                    mSudokuGrid.sendModelToView();
                     onClickZoom(findViewById(R.id.sudoku_grid), mSudokuLayout.getButtonUI(0).getButton());
+                    mSudokuGrid.sendModelToView();
                 }
                 //needs be figure out~~~~~~~~~~
 //                for (int i=0; i<81; i++){
