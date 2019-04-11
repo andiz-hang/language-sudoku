@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
@@ -68,6 +69,10 @@ public class SudokuActivity extends AppCompatActivity {
     boolean mIsLanguage1 = false; // determines whether the first language is the toggled language or not
     boolean mWordListImported = false;
     public boolean mIsSquare;
+    private float mPrevX;
+    private float mPrevY;
+    private boolean mScreenTapped = true;
+    private int mPrevAction = 0;
 
     GridLayoutUI mSudokuLayout;
     GridLayoutUI mPopupMenu;
@@ -182,11 +187,15 @@ public class SudokuActivity extends AppCompatActivity {
                             Log.d("Test","Word: "+toSpeak);
                             t2.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
                         }
-                        onClickZoom(findViewById(R.id.sudoku_grid), mSudokuLayout.getButtonUI(ii).getButton());
-                        sCurrentCell = ii;
-                        if (sPopupOnScreen)
-                            mSudokuGrid.setSelected(sCurrentCell);
-                        mSudokuGrid.sendModelToView();
+                        if (mScreenTapped) {
+
+                            onClickZoom(findViewById(R.id.sudoku_grid), mSudokuLayout.getButtonUI(ii).getButton());
+                            if (sPopupOnScreen)
+                                mSudokuGrid.setSelected(ii);
+                            else if (sCurrentCell != ii) onClickZoom(findViewById(R.id.sudoku_grid), mSudokuLayout.getButtonUI(ii).getButton());
+                            sCurrentCell = ii;
+                            mSudokuGrid.sendModelToView();
+                        }
                     }
                 });
             }
@@ -274,6 +283,50 @@ public class SudokuActivity extends AppCompatActivity {
         createTimer();
 
     } // END OF ONCREATE()
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent e){
+        String xVal = Float.toString(e.getX());
+        String yVal = Float.toString(e.getY());
+        //Log.d("Test", "X = "+xVal);
+        //Log.d("Test", "Y = "+yVal);
+        //Log.d("Test", "Action: " + e.getAction());
+        //Log.d("Test", "Action Index:" + e.getActionIndex());
+        //Log.d("Test", "Action Masked:" + e.getActionMasked());
+        mScreenTapped = false;
+        if (mPrevAction == 0 && e.getAction()==1) mScreenTapped = true;
+
+        if(e.getAction() == 2){
+            Log.d("Test", "Distance X:" + (mPrevX - e.getX()));
+            Log.d("Test", "Distance Y:" + (mPrevY - e.getY()));
+
+            //mSudokuLayout.getLayout().setTranslationX((mPrevX - e.getX()));
+            //mSudokuLayout.getLayout().setTranslationY((mPrevY - e.getY()));
+
+            float newPosX = mSudokuLayout.getLayout().getTranslationX() + (e.getX() - mPrevX);
+            float newPosY = mSudokuLayout.getLayout().getTranslationY() + (e.getY() - mPrevY);
+
+            float scale = 2;
+            if (sPopupOnScreen) scale = 1f;
+
+            if (newPosX > sScreenWidth/scale) newPosX = sScreenWidth/scale;
+            if (newPosX < -sScreenWidth/scale) newPosX = -sScreenWidth/scale;
+            if (newPosY > sScreenHeight/scale) newPosY = sScreenHeight/scale;
+            if (newPosY < -sScreenHeight/scale) newPosY = -sScreenHeight/scale;
+
+            mSudokuLayout.getLayout().setTranslationX(newPosX);
+            mSudokuLayout.getLayout().setTranslationY(newPosY);
+            //mSudokuLayout.animate();
+        }
+        //Toast.makeText(getApplicationContext(), "X = "+xVal,Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), "Y = "+yVal,Toast.LENGTH_SHORT).show();
+
+        mPrevX = e.getX();
+        mPrevY = e.getY();
+        mPrevAction = e.getAction();
+        super.dispatchTouchEvent(e);
+        return true;
+    }
 
     // When the app state changes (screen rotation), save all of the values of the app
     @Override
