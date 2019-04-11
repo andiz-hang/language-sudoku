@@ -9,8 +9,9 @@ import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivit
 public class Timer {
     Chronometer mTimer;
 
-    public Timer(Chronometer chronometer) {
+    public Timer(Chronometer chronometer, long base) {
         mTimer = chronometer;
+        mTimer.setBase(base);
         if (mIsPortraitMode) {
             mTimer.setTranslationY(sScreenHeight * (float)1 / 12);
         }
@@ -35,5 +36,9 @@ public class Timer {
     public long stopTimer() {
         mTimer.stop();
         return SystemClock.elapsedRealtime() - mTimer.getBase();
+    }
+
+    public long getBase() {
+        return mTimer.getBase();
     }
 }

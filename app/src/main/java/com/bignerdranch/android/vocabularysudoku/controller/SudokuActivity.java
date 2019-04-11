@@ -77,6 +77,7 @@ public class SudokuActivity extends AppCompatActivity {
 
     Timer mTimer;
     long mLastPauseTime = 0;
+    long mSetBase = 0;
     long mTimeToCompletePuzzle;
 
     TextToSpeech t1;
@@ -101,7 +102,6 @@ public class SudokuActivity extends AppCompatActivity {
         setListenMode();
 
         setupTextToSpeech();
-
 
         mRes = getResources();
 
@@ -320,6 +320,7 @@ public class SudokuActivity extends AppCompatActivity {
         outState.putStringArrayList("SUDOKU_WORD_PAIRS_2", mWordPairs2);
 
         outState.putLong("SUDOKU_TIMER_LAST_PAUSED", mLastPauseTime);
+        outState.putLong("SUDOKU_TIMER_BASE", mTimer.getBase());
 
         // call superclass to save any view hierarchy
         super.onSaveInstanceState(outState);
@@ -443,6 +444,7 @@ public class SudokuActivity extends AppCompatActivity {
         }
 
         mLastPauseTime = savedInstanceState.getLong("SUDOKU_TIMER_LAST_PAUSED");
+        mSetBase = savedInstanceState.getLong("SUDOKU_TIMER_BASE");
     }
 
     void fetchPuzzles() {
@@ -820,7 +822,7 @@ public class SudokuActivity extends AppCompatActivity {
 
     void createTimer() {
         Chronometer timer = findViewById(R.id.timer);
-        mTimer = new Timer(timer);
+        mTimer = new Timer(timer, mSetBase);
         mTimer.startTimer(mLastPauseTime);
     }
 }
