@@ -76,7 +76,8 @@ public class SudokuActivity extends AppCompatActivity {
     ButtonUI mHintButtonUI;
 
     Timer mTimer;
-    public long mLastPauseTime = 0;
+    long mLastPauseTime = 0;
+    long mTimeToCompletePuzzle;
 
     TextToSpeech t1;
     TextToSpeech t2;
@@ -143,8 +144,10 @@ public class SudokuActivity extends AppCompatActivity {
                     // Zoom out once a word is selected from popup menu
                     onClickZoom(findViewById(R.id.sudoku_grid), mPopupButtons[ii].getButton());
                     // Change Cell text and check if puzzle is finished.
-                    if(mSudokuGrid.updateSudokuModel(ii + 1,sCurrentCell))
+                    if(mSudokuGrid.updateSudokuModel(ii + 1,sCurrentCell)) {
                         Toast.makeText(SudokuActivity.this, "Congrats! You Win!", Toast.LENGTH_LONG).show();
+                        mTimeToCompletePuzzle = mTimer.stopTimer(); // Time to finish the puzzle is set here
+                    }
                     mSudokuGrid.sendModelToView();
                 }
             });
