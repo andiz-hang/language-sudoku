@@ -9,10 +9,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.GridLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -20,6 +19,7 @@ import android.widget.Toast;
 import com.bignerdranch.android.vocabularysudoku.model.Language;
 import com.bignerdranch.android.vocabularysudoku.R;
 import com.bignerdranch.android.vocabularysudoku.model.SudokuGrid;
+import com.bignerdranch.android.vocabularysudoku.model.Timer;
 import com.bignerdranch.android.vocabularysudoku.model.WordPair;
 import com.bignerdranch.android.vocabularysudoku.view.ButtonUI;
 import com.bignerdranch.android.vocabularysudoku.view.GridLayoutUI;
@@ -74,6 +74,9 @@ public class SudokuActivity extends AppCompatActivity {
     ButtonUI mClearButtonUI;
     ButtonUI mToggleButtonUI;
     ButtonUI mHintButtonUI;
+
+    Timer mTimer;
+    public long mLastPauseTime = 0;
 
     TextToSpeech t1;
     TextToSpeech t2;
@@ -263,6 +266,10 @@ public class SudokuActivity extends AppCompatActivity {
         //Log.d("Test","");
         mSudokuGrid.updateConflicts();
         mSudokuGrid.sendModelToView();
+
+        // Create the timer as the LAST THING, after all other things have been created
+        createTimer();
+
     } // END OF ONCREATE()
 
     // When the app state changes (screen rotation), save all of the values of the app
@@ -309,6 +316,8 @@ public class SudokuActivity extends AppCompatActivity {
         outState.putStringArrayList("SUDOKU_WORD_PAIRS_1", mWordPairs1);
         outState.putStringArrayList("SUDOKU_WORD_PAIRS_2", mWordPairs2);
 
+        outState.putLong("SUDOKU_TIMER_LAST_PAUSED", mLastPauseTime);
+
         // call superclass to save any view hierarchy
         super.onSaveInstanceState(outState);
     }
@@ -352,6 +361,8 @@ public class SudokuActivity extends AppCompatActivity {
             t1.stop();
             t1.shutdown();
         }
+
+        mLastPauseTime = mTimer.pauseTimer();
         super.onPause();
     }
 
@@ -364,6 +375,8 @@ public class SudokuActivity extends AppCompatActivity {
             hideActionBar();
             hideStatusBar();
         }
+
+        mTimer.startTimer(mLastPauseTime);
         super.onResume();
     }
 
@@ -425,6 +438,8 @@ public class SudokuActivity extends AppCompatActivity {
                 sLanguage2.setWord(savedInstanceState.getStringArrayList("SUDOKU_WORD_PAIRS_2").get(i), i + 1);
             }
         }
+
+        mLastPauseTime = savedInstanceState.getLong("SUDOKU_TIMER_LAST_PAUSED");
     }
 
     void fetchPuzzles() {
@@ -798,6 +813,12 @@ public class SudokuActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    void createTimer() {
+        Chronometer timer = findViewById(R.id.timer);
+        mTimer = new Timer(timer);
+        mTimer.startTimer(mLastPauseTime);
     }
 }
 

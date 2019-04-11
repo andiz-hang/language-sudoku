@@ -35,7 +35,7 @@ public class SudokuGrid {
     private GridLayoutUI mSudokuLayout;
     private int mSavedPuzzleNumber;
     private int mSize;
-    private int mCurrent=-1;
+    private int mCurrent = -1;
 
     // Methods
 
@@ -70,6 +70,7 @@ public class SudokuGrid {
 
         initializePuzzle(mInitialValues);
     }
+
     public SudokuGrid(int N, int puzzleNum, InputStream is) throws IOException {
 
         mGrid = new SudokuCell[N][N];
@@ -103,7 +104,9 @@ public class SudokuGrid {
     }
 
 
-    public int getPuzzleNum(){ return mSavedPuzzleNumber;}
+    public int getPuzzleNum() {
+        return mSavedPuzzleNumber;
+    }
 
     // Initialize both the grid and the answer array
     private void initializePuzzle(int[] initialValues) {
@@ -111,45 +114,47 @@ public class SudokuGrid {
         // Initialize the Sudoku Grid Array
         //String initialValues = mRes.getStringArray(R.array.puzz)[randInt];
         mGrid = new SudokuCell[mSize][mSize];
-        int[] newValues=difficultyAdjust(initialValues);
-        for(int i = 0; i < mSize; i++) {
+        int[] newValues = difficultyAdjust(initialValues);
+        for (int i = 0; i < mSize; i++) {
             for (int j = 0; j < mSize; j++) {
                 mGrid[i][j] = new SudokuCell();
                 int newValue = newValues[i * mSize + j];
-                if (newValue != 0){
+                if (newValue != 0) {
                     mGrid[i][j].setValue(newValue);
                     mGrid[i][j].setLock(true);
                 }
             }
         }
     }
-    private int[] difficultyAdjust(int[] initialValues){
+
+    private int[] difficultyAdjust(int[] initialValues) {
         Random rand;
-        int count = 0,randInt,diff;
-        int[] newValues=new int[mSize*mSize];
-        diff=(int)round(mSize*mSize*((10-sDifficulty)*.07+.15));
-        for (int i=0;i<mSize*mSize;i++){
-            if (initialValues[i]!=0){
-                count+=1;
+        int count = 0, randInt, diff;
+        int[] newValues = new int[mSize * mSize];
+        diff = (int) round(mSize * mSize * ((10 - sDifficulty) * .07 + .15));
+        for (int i = 0; i < mSize * mSize; i++) {
+            if (initialValues[i] != 0) {
+                count += 1;
             }
-            newValues[i]=initialValues[i];
+            newValues[i] = initialValues[i];
         }
-        while (count<=diff){
+        while (count <= diff) {
             rand = new Random();
-            randInt = rand.nextInt(mSize*mSize);
-            Log.d("Test",Integer.toString(count)+" "+Integer.toString(diff));
-            if (newValues[randInt]==0){
-                newValues[randInt]=mAnswers[randInt];
-                count+=1;
+            randInt = rand.nextInt(mSize * mSize);
+            Log.d("Test", Integer.toString(count) + " " + Integer.toString(diff));
+            if (newValues[randInt] == 0) {
+                newValues[randInt] = mAnswers[randInt];
+                count += 1;
             }
         }
-        return  newValues;
+        return newValues;
     }
+
     public SudokuCell getSudokuCell(int x, int y) {
         return mGrid[y][x];
     }
 
-    public SudokuCell getSudokuCell(int index){
+    public SudokuCell getSudokuCell(int index) {
         int y = index / mSize;
         int x = index % mSize;
         return mGrid[y][x];
@@ -157,23 +162,23 @@ public class SudokuGrid {
 
     // Returns true IF (the cell in question is in the same column as the current cell)
     //                 AND (the cell in question isn't the current cell)
-    boolean cellConflictInColumn(int currentCellIndex, int popupIndex, int distanceIndex){
+    boolean cellConflictInColumn(int currentCellIndex, int popupIndex, int distanceIndex) {
         int targetCellIndex = currentCellIndex % mSize + distanceIndex * mSize;
         return popupIndex + 1 == getSudokuCell(targetCellIndex).getValue() && targetCellIndex != currentCellIndex;
     }
 
     // Returns true IF (the cell in question is in the same row as the current cell)
     //                 AND(the cell in question isn't the current cell)
-    boolean cellConflictInRow(int currentCellIndex, int popupIndex, int distanceIndex){
+    boolean cellConflictInRow(int currentCellIndex, int popupIndex, int distanceIndex) {
         int targetCellIndex = currentCellIndex / mSize * mSize + distanceIndex;
         return popupIndex + 1 == getSudokuCell(targetCellIndex).getValue() && targetCellIndex != currentCellIndex;
     }
 
     // Returns true IF (the cell in question is in the same box as the current cell)
     //                 AND(the cell in question isn't the current cell)
-    boolean cellConflictInBox(int currentCellIndex, int popupIndex, int distanceIndex){
-        int boxWidth = (int)ceil(sqrt(mSize));
-        int boxHeight = (int)floor(sqrt(mSize));
+    boolean cellConflictInBox(int currentCellIndex, int popupIndex, int distanceIndex) {
+        int boxWidth = (int) ceil(sqrt(mSize));
+        int boxHeight = (int) floor(sqrt(mSize));
         int firstElementInCol = currentCellIndex / mSize / boxHeight * (boxHeight * mSize);
         int columnOffset = currentCellIndex % mSize / boxWidth * boxWidth;
         int distanceOffset = distanceIndex % boxWidth + (distanceIndex / boxWidth * mSize);
@@ -183,23 +188,25 @@ public class SudokuGrid {
         return popupIndex + 1 == getSudokuCell(targetCellIndex).getValue() && targetCellIndex != currentCellIndex;
     }
 
-    public void setWrongRows(int index, boolean value){
+    public void setWrongRows(int index, boolean value) {
         int rowNum = index / mSize;
         mWrongRows[rowNum] = value;
         setCellConflicting(index, value);
     }
-    public void setWrongCols(int index, boolean value){
+
+    public void setWrongCols(int index, boolean value) {
         int colNum = index % mSize;
         mWrongCols[colNum] = value;
         setCellConflicting(index, value);
     }
-    public void setWrongBoxes(int index, boolean value){
+
+    public void setWrongBoxes(int index, boolean value) {
         int boxNum = convertIndexToBoxNum(index);
         mWrongBoxes[boxNum] = value;
         setCellConflicting(index, value);
     }
 
-    public int getAnswers(int index){
+    public int getAnswers(int index) {
         return mAnswers[index];
     }
 
@@ -207,9 +214,9 @@ public class SudokuGrid {
         mAnswers[index] = answer;
     }
 
-    private int convertIndexToBoxNum(int index){
-        int boxWidth = (int)ceil(sqrt(mSize));
-        int boxHeight = (int)floor(sqrt(mSize));
+    private int convertIndexToBoxNum(int index) {
+        int boxWidth = (int) ceil(sqrt(mSize));
+        int boxHeight = (int) floor(sqrt(mSize));
 
         int boxColumn = (index % mSize) / boxWidth;    // 0~2
         int boxRow = (index / mSize) / boxHeight;       // 0~2
@@ -217,11 +224,12 @@ public class SudokuGrid {
         return sum;        // 0~mSize - 1
     }
 
-    private void setCellConflicting(int index, boolean value){
+    private void setCellConflicting(int index, boolean value) {
         int y = index / mSize;
         int x = index % mSize;
         mGrid[y][x].setConflicting(value);
     }
+
     public boolean getWrongRow(int index) {
         return mWrongRows[index];
     }
@@ -239,67 +247,67 @@ public class SudokuGrid {
     }
 
 
-    public boolean updateSudokuModel(int value, int CurrentCell){
+    public boolean updateSudokuModel(int value, int CurrentCell) {
         // If a cell isn't locked, set its text to the chosen word and show any conflicts
-        if(!getSudokuCell(CurrentCell).isLock()){
+        if (!getSudokuCell(CurrentCell).isLock()) {
             getSudokuCell(CurrentCell).setValue(value);
 
             return updateConflicts();
-                //Toast.makeText(context, "Congrats! You Win!", Toast.LENGTH_LONG).show();
+            //Toast.makeText(context, "Congrats! You Win!", Toast.LENGTH_LONG).show();
 //            if (value != 0) setButtonValue(value);
 //            resetButtonImage();
         }
         return false;
     }
 
-    public boolean updateConflicts(){
-        int count=0,correct;
-        for(int i = 0; i < mSize * mSize; i++){
+    public boolean updateConflicts() {
+        int count = 0, correct;
+        for (int i = 0; i < mSize * mSize; i++) {
             setWrongRows(i, false);
             setWrongCols(i, false);
             setWrongBoxes(i, false);
         }
-        for (int x=0;x<mSize * mSize;x++) {
+        for (int x = 0; x < mSize * mSize; x++) {
             correct = findConflictAtIndex(x);
             if (correct == 1 && getSudokuCell(x).getValue() != 0)
-                count+=1;
+                count += 1;
         }
-        if (count==mSize * mSize)
+        if (count == mSize * mSize)
             return true;
         return false;
     }
-    public void setSelected(int index){
-        if (index==-1) {
+
+    public void setSelected(int index) {
+        if (index == -1) {
             mCurrent = -1;
-        }
-        else {
+        } else {
             mCurrent = index;
         }
     }
 
-    int findConflictAtIndex(int cellIndex){
-        boolean row=false,column=false,box=false;
+    int findConflictAtIndex(int cellIndex) {
+        boolean row = false, column = false, box = false;
         // Compares current cell to all potentially conflicting cells
         // If a conflict is found, set that cell to wrong
         // Iterates through all cells in the same row, column, and box as the current cell
 
-        for (int j=0;j<mSize;j++) {
+        for (int j = 0; j < mSize; j++) {
             // value           = 1-9 corresponding to the answer being put into the current cell
             // sCurrentCell = index of the current cell
             // If the current cell was correct, but the new value conflicts with a cell in the same row, column, or box:
             //     Label this cell as wrong in the mWrong array
-            if (getSudokuCell(cellIndex).getValue()!=0){
+            if (getSudokuCell(cellIndex).getValue() != 0) {
                 getSudokuCell(cellIndex).setConflicting(false);
-                if (cellConflictInColumn(cellIndex, getSudokuCell(cellIndex).getValue()-1, j)){
-                    column=true;
+                if (cellConflictInColumn(cellIndex, getSudokuCell(cellIndex).getValue() - 1, j)) {
+                    column = true;
                     setWrongCols(cellIndex, true);
                 }
-                if (cellConflictInRow(cellIndex, getSudokuCell(cellIndex).getValue()-1, j)){
-                    row=true;
+                if (cellConflictInRow(cellIndex, getSudokuCell(cellIndex).getValue() - 1, j)) {
+                    row = true;
                     setWrongRows(cellIndex, true);
                 }
-                if (cellConflictInBox(cellIndex, getSudokuCell(cellIndex).getValue()-1, j)){
-                    box=true;
+                if (cellConflictInBox(cellIndex, getSudokuCell(cellIndex).getValue() - 1, j)) {
+                    box = true;
                     setWrongBoxes(cellIndex, true);
                 }
             }
@@ -308,18 +316,16 @@ public class SudokuGrid {
         //if (column) mSudokuLayout.SetColumnCellsRed(cellIndex);
         //if (box)    mSudokuLayout.SetBoxCellsRed(cellIndex);
         //if (box||column||row)mSudokuLayout.getButtonUI(cellIndex).getButton().setBackgroundResource(R.drawable.bg_btn_ex_red);
-        if (box||column||row) {
+        if (box || column || row) {
             if (!getSudokuCell(cellIndex).isLock()) getSudokuCell(cellIndex).setConflicting(true);
             return 0;
-        }
-        else return 1;
+        } else return 1;
     }
 
     public void sendModelToView() {
         mSudokuLayout.defaultButtonColors();
         mSudokuLayout.highlightWrongCells(mWrongRows, mWrongCols, mWrongBoxes);
         mSudokuLayout.displayNewText(mGrid);
-        mSudokuLayout.highlightSelected(mCurrent,this);
+        mSudokuLayout.highlightSelected(mCurrent, this);
     }
 }
-
