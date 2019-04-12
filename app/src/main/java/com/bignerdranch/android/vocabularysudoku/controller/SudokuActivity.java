@@ -711,8 +711,8 @@ public class SudokuActivity extends AppCompatActivity {
             // Move Onscreen
             else {
                 // Pan to the selected button
-                mSudokuLayout.animate("translationX", sudoku_view.getWidth() * 1f - button.getX() * (sudoku_view.getWidth() * 2 / (sScreenWidth * 71 / 80f)), 500);
-                mSudokuLayout.animate("translationY", sudoku_view.getHeight() * 1f - button.getY() * ((sudoku_view.getHeight() + sScreenWidth * 6 / 12) / (sScreenWidth * 71 / 80f)), 500);
+                mSudokuLayout.animate("translationX", sudoku_view.getWidth() * 1f - button.getX() * (sudoku_view.getWidth() * 2 / (sScreenWidth * 65 / 80f)), 500);
+                mSudokuLayout.animate("translationY", sudoku_view.getHeight() * 1f - button.getY() * ((sudoku_view.getHeight() + sScreenWidth * 12 / 12) / (sScreenWidth * 71 / 80f)), 500);
                 // Move the pop up view on screen
                 mPopupMenu.animate("translationY", 0f, 500);
                 // Zoom in
@@ -751,15 +751,16 @@ public class SudokuActivity extends AppCompatActivity {
             // KNOWN BUG: ZOOM IN ZOOM OUT DOESN'T WORK PROPERLY IN LANDSCAPE MODE
             else {
                 // Pan to the selected button
-                Log.d("Test","Get Width "+sudoku_view.getWidth());
-                Log.d("Test","Get Height "+sudoku_view.getHeight());
-                Log.d("Test","button X "+button.getX());
-                Log.d("Test","button Y " + button.getY());
-                Log.d("Test", "Derived X" + (sudoku_view.getHeight() * 1f - button.getX() * (sudoku_view.getHeight() * 2 / (sScreenHeight * 71 / 80f))));
-                Log.d("Test", "Derived Y" + (sudoku_view.getWidth() * 1f - button.getY() * ((sudoku_view.getWidth() + sScreenHeight * 6 / 12) / (sScreenHeight * 71 / 80f))));
+                // Delete these Tests
+//                Log.d("Test","Get Width "+sudoku_view.getWidth());
+//                Log.d("Test","Get Height "+sudoku_view.getHeight());
+//                Log.d("Test","button X "+button.getX());
+//                Log.d("Test","button Y " + button.getY());
+//                Log.d("Test", "Derived X" + (sudoku_view.getHeight() * 1f - button.getX() * (sudoku_view.getHeight() * 2 / (sScreenHeight * 71 / 80f))));
+//                Log.d("Test", "Derived Y" + (sudoku_view.getWidth() * 1f - button.getY() * ((sudoku_view.getWidth() + sScreenHeight * 6 / 12) / (sScreenHeight * 71 / 80f))));
 
-                mSudokuLayout.animate("translationX", sudoku_view.getHeight() * 1f - button.getX() * (sudoku_view.getHeight() * 2.7f / (sScreenHeight * 71 / 80f)), 500);
-                mSudokuLayout.animate("translationY", sudoku_view.getWidth() * 1f - button.getY() * (1.5f*(sudoku_view.getWidth() + sScreenHeight * 6 / 12) / (sScreenHeight * 71 / 80f)), 500);
+                mSudokuLayout.animate("translationX", sudoku_view.getHeight() * 1f - button.getX() * (sudoku_view.getHeight() * 2.2f / (sScreenHeight * 71 / 80f)), 500);
+                mSudokuLayout.animate("translationY", sudoku_view.getWidth() * 1f - button.getY() * (1.4f*(sudoku_view.getWidth() + sScreenHeight * 6 / 12) / (sScreenHeight * 71 / 80f)), 500);
                 // Move the pop up view on screen
                 mPopupMenu.animate("translationX", 0f, 500);
                 // Zoom in
