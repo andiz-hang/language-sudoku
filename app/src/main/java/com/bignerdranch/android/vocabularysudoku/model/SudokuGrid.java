@@ -35,11 +35,12 @@ public class SudokuGrid {
     private GridLayoutUI mSudokuLayout;
     private int mSavedPuzzleNumber;
     private int mSize;
+    private int mDifficulty;
     private int mCurrent = -1;
 
     // Methods
 
-    public SudokuGrid(int N, int puzzleNum, int size, InputStream is) throws IOException {
+    public SudokuGrid(int N, int puzzleNum, int size, int difficulty, InputStream is) throws IOException {
 
         mGrid = new SudokuCell[N][N];
         mWrongRows = new boolean[N];
@@ -47,6 +48,8 @@ public class SudokuGrid {
         mWrongBoxes = new boolean[N];
         mAnswers = new int[N * N];
         mSize = size;
+        mDifficulty = difficulty;
+
 
         int[] mInitialValues = new int[N * N];
         BufferedReader reader = new BufferedReader(
@@ -79,6 +82,7 @@ public class SudokuGrid {
         mWrongBoxes = new boolean[N];
         mAnswers = new int[N * N];
         mSize = sSize;
+        mDifficulty = sDifficulty;
 
         int[] mInitialValues = new int[N * N];
         BufferedReader reader = new BufferedReader(
@@ -131,7 +135,7 @@ public class SudokuGrid {
         Random rand;
         int count = 0, randInt, diff;
         int[] newValues = new int[mSize * mSize];
-        diff = (int) round(mSize * mSize * ((10 - sDifficulty) * .07 + .15));
+        diff = (int) round(mSize * mSize * ((10 - mDifficulty) * .07 + .15));
         for (int i = 0; i < mSize * mSize; i++) {
             if (initialValues[i] != 0) {
                 count += 1;
@@ -279,6 +283,9 @@ public class SudokuGrid {
 
     public void setSelected(int index) {
         mCurrent = index;
+    }
+    public int getSelected() {
+        return mCurrent;
     }
 
     int findConflictAtIndex(int cellIndex) {
