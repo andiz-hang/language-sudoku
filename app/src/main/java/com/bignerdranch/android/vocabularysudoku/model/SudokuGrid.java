@@ -278,11 +278,7 @@ public class SudokuGrid {
     }
 
     public void setSelected(int index) {
-        if (index == -1) {
-            mCurrent = -1;
-        } else {
-            mCurrent = index;
-        }
+        mCurrent = index;
     }
 
     int findConflictAtIndex(int cellIndex) {

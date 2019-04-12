@@ -188,11 +188,13 @@ public class SudokuActivity extends AppCompatActivity {
                             t2.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
                         }
                         if (mScreenTapped) {
-
                             onClickZoom(findViewById(R.id.sudoku_grid), mSudokuLayout.getButtonUI(ii).getButton());
                             if (sPopupOnScreen)
                                 mSudokuGrid.setSelected(ii);
-                            else if (sCurrentCell != ii) onClickZoom(findViewById(R.id.sudoku_grid), mSudokuLayout.getButtonUI(ii).getButton());
+                            else if (sCurrentCell != ii){
+                                onClickZoom(findViewById(R.id.sudoku_grid), mSudokuLayout.getButtonUI(ii).getButton());
+                                mSudokuGrid.setSelected(ii);
+                            }
                             sCurrentCell = ii;
                             mSudokuGrid.sendModelToView();
                         }
@@ -704,6 +706,7 @@ public class SudokuActivity extends AppCompatActivity {
                 // Zoom out
                 mSudokuLayout.animate("scaleX", 1f, 500);
                 mSudokuLayout.animate("scaleY", 1f, 500);
+
                 mSudokuGrid.setSelected(-1);
 
                 sPopupOnScreen = false;
