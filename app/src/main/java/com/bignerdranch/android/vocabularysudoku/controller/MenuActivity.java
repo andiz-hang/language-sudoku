@@ -2,6 +2,7 @@ package com.bignerdranch.android.vocabularysudoku.controller;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -28,6 +29,8 @@ public class MenuActivity extends AppCompatActivity {
     private Spinner mSizeSpinner;
     private TextView ProgressText;
     private SeekBar seekBar;
+    private SharedPreferences mSharedPreferences;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +49,21 @@ public class MenuActivity extends AppCompatActivity {
         hideActionBar();
     }
 
-    public void startGame(View view) {
+    public void continueGame(View view){
         Intent intent = new Intent(MenuActivity.this, SudokuActivity.class);
+        mSharedPreferences = getPreferences(MODE_PRIVATE);
+        if(mSharedPreferences.getBoolean("saveExists", false)){
+            newGame(view);
+        }
+        else {
+            intent.putExtra("new_game", false);
+            startActivity(intent);
+        }
+    }
+
+    public void newGame(View view) {
+        Intent intent = new Intent(MenuActivity.this, SudokuActivity.class);
+        intent.putExtra("new_game", true);
         intent.putExtra("uri_key", uri);
         intent.putExtra("use_sample_file", useSampleFile);
         intent.putExtra("listen_mode", mListenMode);
