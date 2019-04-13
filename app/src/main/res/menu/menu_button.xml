@@ -5,7 +5,7 @@
         android:id="@+id/exchange"
         android:orderInCategory="100"
         android:showAsAction="never"
-        android:title="exchange puzzle" />
+        android:title="exchange puzzle languages" />
     <item
         android:id="@+id/restart"
         android:orderInCategory="200"

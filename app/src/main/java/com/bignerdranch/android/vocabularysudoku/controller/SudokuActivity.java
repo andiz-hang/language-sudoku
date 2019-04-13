@@ -414,9 +414,27 @@ public class SudokuActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.exchange:
-                ;
+                Language tempL = new Language("temp", sSize);
+                for (int i = 0; i < sSize+1; i++) {
+                    tempL.setWord(sLanguage1.getWord(i),i);
+                    sLanguage1.setWord(sLanguage2.getWord(i),i);
+                    sLanguage2.setWord(tempL.getWord(i),i);
+                }
+                mSudokuGrid.sendModelToView();
+                mIsLanguage1 = true;
+                flipLanguage();
+                return true;
             case R.id.restart:
-
+                for (int i = 0; i < sSize*sSize; i++) {
+                    if(!mSudokuGrid.getSudokuCell(i).isLock()) {
+                        mSudokuLayout.getButtonUI(i).setText("");
+                        mSudokuGrid.getSudokuCell(i).setValue(0);
+                    }
+                }
+                mSudokuGrid.updateConflicts();
+                mSudokuGrid.sendModelToView();
+                createTimer();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
