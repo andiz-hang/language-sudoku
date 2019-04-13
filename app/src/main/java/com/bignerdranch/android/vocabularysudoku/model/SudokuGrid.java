@@ -1,10 +1,7 @@
 package com.bignerdranch.android.vocabularysudoku.model;
 
-import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.bignerdranch.android.vocabularysudoku.view.GridLayoutUI;
 
@@ -38,15 +35,16 @@ public class SudokuGrid {
     private GridLayoutUI mSudokuLayout;
     private int mSavedPuzzleNumber;
     private int mSize;
+    private int mDifficulty;
     private int mCurrent = -1;
     private int[] mInitialValues;
 
     // Methods
 
-    public SudokuGrid(int puzzleNum, int size, InputStream is) throws IOException {
+    public SudokuGrid(int puzzleNum, int size, int difficulty, InputStream is) throws IOException {
 
         setupMembers(size);
-
+        mDifficulty = difficulty;
         mInitialValues = new int[size * size];
         BufferedReader reader = new BufferedReader(
                 new InputStreamReader(is, Charset.forName("UTF-8"))
@@ -141,6 +139,7 @@ public class SudokuGrid {
         mAnswers = new int[size * size];
         mSize = size;
         mInitialValues = new int[size * size];
+        mDifficulty = sDifficulty;
     }
 
 
@@ -175,7 +174,7 @@ public class SudokuGrid {
         Random rand;
         int count = 0, randInt, diff;
         int[] newValues = new int[mSize * mSize];
-        diff = (int) round(mSize * mSize * ((10 - sDifficulty) * .07 + .15));
+        diff = (int) round(mSize * mSize * ((10 - mDifficulty) * .07 + .15));
         for (int i = 0; i < mSize * mSize; i++) {
             if (initialValues[i] != 0) {
                 count += 1;
@@ -322,11 +321,10 @@ public class SudokuGrid {
     }
 
     public void setSelected(int index) {
-        if (index == -1) {
-            mCurrent = -1;
-        } else {
-            mCurrent = index;
-        }
+        mCurrent = index;
+    }
+    public int getSelected() {
+        return mCurrent;
     }
 
     int findConflictAtIndex(int cellIndex) {
