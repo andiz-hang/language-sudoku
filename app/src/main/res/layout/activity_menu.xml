@@ -15,13 +15,22 @@
         android:orientation="vertical">
 
         <Button
-            android:id="@+id/start_button"
+            android:id="@+id/new_game_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:background="@drawable/bg_btn_menu"
-            android:onClick="startGame"
-            android:text="@string/start" />
+            android:onClick="newGame"
+            android:text="@string/new_game" />
+
+        <Button
+            android:id="@+id/continue_game_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/bg_btn_menu"
+            android:onClick="continueGame"
+            android:text="@string/continue_game" />
 
         <Button
             android:id="@+id/word_list_button"

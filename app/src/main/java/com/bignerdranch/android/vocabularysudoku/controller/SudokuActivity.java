@@ -1,6 +1,7 @@
 package com.bignerdranch.android.vocabularysudoku.controller;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.speech.tts.TextToSpeech;
@@ -60,7 +61,12 @@ public class SudokuActivity extends AppCompatActivity {
     public static float sScreenXDPI, sScreenYDPI;
     public static boolean mIsPortraitMode;
     public boolean mListenMode;
+    private SharedPreferences mSharedPreferences;
+    public boolean mUseSampleFile;
     public static Mode sGameMode = Mode.PLAY;
+    public String mWordOrder = "";
+    public int mPuzzleNum;
+    public String mUri;
 
     public static boolean sIsMode1 = true;//mode1 is Language1 puzzle with Language2 filled in, determines whether the first mode is the toggled mode not
     public static Language sLanguage1;
@@ -100,11 +106,10 @@ public class SudokuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sudoku);
 
-        // Get the size of the grid from main menu
-        getSizeFromSpinner();
-        getDifficultyFromBar();
+        mSharedPreferences = getPreferences(MODE_PRIVATE);
 
-        setListenMode();
+        // Get the size of the grid from main menu
+        initializeIntents();
 
         setupTextToSpeech();
 
@@ -112,6 +117,7 @@ public class SudokuActivity extends AppCompatActivity {
 
         // Initialize language1 and language2
         initializeLanguages("English", "Mandarin");
+
 
         // Generating SudokuGrid
         Log.d("Test", "SudokuLayoutUI");
@@ -184,7 +190,7 @@ public class SudokuActivity extends AppCompatActivity {
                         if(sGameMode==Mode.LISTEN){
                             //String toSpeak = sLanguage2.getWord(mSudokuGrid.getSudokuCell(ii).getValue()); //sLanguage2.getWord(ii+1);
                             String toSpeak = sLanguage2.getWord(mSudokuGrid.getAnswers(ii));
-                            Log.d("Test","Word: "+toSpeak);
+                            //Log.d("Test","Word: "+toSpeak);
                             t2.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
                         }
                         if (mScreenTapped) {
@@ -276,6 +282,10 @@ public class SudokuActivity extends AppCompatActivity {
         }
 
         //Log.d("Test","");
+        Intent intent = getIntent();
+        if(!intent.getBooleanExtra("new_game", true)){
+                mSudokuGrid.applySavedInputs(mSharedPreferences);
+        }
         mSudokuGrid.updateConflicts();
         mSudokuGrid.sendModelToView();
 
@@ -286,20 +296,12 @@ public class SudokuActivity extends AppCompatActivity {
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent e){
-        String xVal = Float.toString(e.getX());
-        String yVal = Float.toString(e.getY());
-        //Log.d("Test", "X = "+xVal);
-        //Log.d("Test", "Y = "+yVal);
-        //Log.d("Test", "Action: " + e.getAction());
-        //Log.d("Test", "Action Index:" + e.getActionIndex());
-        //Log.d("Test", "Action Masked:" + e.getActionMasked());
+        Log.d("Test", "Language1 Word 1 :"+sLanguage1.getWord(1));
+        Log.d("Test", "Language2 Word 1 :"+sLanguage2.getWord(1));
         mScreenTapped = false;
         if (mPrevAction == 0 && e.getAction()==1) mScreenTapped = true;
 
         if(e.getAction() == 2){
-            Log.d("Test", "Distance X:" + (mPrevX - e.getX()));
-            Log.d("Test", "Distance Y:" + (mPrevY - e.getY()));
-
             //mSudokuLayout.getLayout().setTranslationX((mPrevX - e.getX()));
             //mSudokuLayout.getLayout().setTranslationY((mPrevY - e.getY()));
 
@@ -326,6 +328,12 @@ public class SudokuActivity extends AppCompatActivity {
         mPrevAction = e.getAction();
         super.dispatchTouchEvent(e);
         return true;
+    }
+
+    @Override
+    public void onBackPressed(){
+        savePuzzle();
+        super.onBackPressed();
     }
 
     // When the app state changes (screen rotation), save all of the values of the app
@@ -412,6 +420,10 @@ public class SudokuActivity extends AppCompatActivity {
 //        return super.onOptionsItemSelected(item);
 //    }
 
+    public void savePuzzle(){
+        mSudokuGrid.savePuzzle(mSharedPreferences, mUri, mListenMode, mUseSampleFile, mWordOrder);
+    }
+
     // Called when the app is paused
     public void onPause(){
         if(t1 !=null){
@@ -441,7 +453,8 @@ public class SudokuActivity extends AppCompatActivity {
 
     // Restore the attributes of the grid on rotation
     void restoreGridState(Bundle savedInstanceState) {
-        int puzzleNum = savedInstanceState.getInt("SUDOKU_PUZZLE_NUMBER");
+        Log.d("Test", "WE SHOULDNT BE RESTORING");
+        mPuzzleNum = savedInstanceState.getInt("SUDOKU_PUZZLE_NUMBER");
         InputStream is;
         if (sSize == 4) {
             is = getResources().openRawResource(R.raw.puzzles4);
@@ -453,7 +466,8 @@ public class SudokuActivity extends AppCompatActivity {
             is = getResources().openRawResource(R.raw.puzzles9);
         }
         try {
-            mSudokuGrid = new SudokuGrid(sSize, puzzleNum, is);
+            Log.d("Test", "New Puzzle Num: "+mPuzzleNum);
+            mSudokuGrid = new SudokuGrid(mPuzzleNum, sSize, is);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -502,7 +516,13 @@ public class SudokuActivity extends AppCompatActivity {
 
     void fetchPuzzles() {
         Random rand = new Random();
-        int randInt = rand.nextInt(100);
+        Intent intent = getIntent();
+        if (intent.getBooleanExtra("new_game",true)){
+            //mPuzzleNum = rand.nextInt(100);
+        } else {
+            mPuzzleNum = mSharedPreferences.getInt("SudokuNum", 0);
+        }
+        Log.d("Test", "Fetched SudokuNum: "+mPuzzleNum);
         InputStream is;
         if (sSize == 4) {
             is = getResources().openRawResource(R.raw.puzzles4);
@@ -514,7 +534,13 @@ public class SudokuActivity extends AppCompatActivity {
             is = getResources().openRawResource(R.raw.puzzles9);
         }
         try {
-            mSudokuGrid = new SudokuGrid(sSize, randInt, is);
+            Log.d("Test", "New Puzzle Num: "+mPuzzleNum);
+            if (intent.getBooleanExtra("new_game",true)) {
+                mSudokuGrid = new SudokuGrid(mPuzzleNum, sSize, is);
+            } else {
+                String initialValues = mSharedPreferences.getString("InitialValues","");
+                mSudokuGrid = new SudokuGrid(mPuzzleNum, sSize, is, initialValues);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -550,6 +576,17 @@ public class SudokuActivity extends AppCompatActivity {
         }
     }
 
+    // Get the user's device's screen information
+    void getScreenInfo() {
+        getWindowManager().getDefaultDisplay().getMetrics(mDisplayMetrics);
+        sScreenHeight = mDisplayMetrics.heightPixels;
+        sScreenWidth = mDisplayMetrics.widthPixels;
+        sScreenXDPI = mDisplayMetrics.xdpi;
+        sScreenYDPI = mDisplayMetrics.ydpi;
+
+        mIsPortraitMode = (sScreenHeight > sScreenWidth);
+    }
+
     // Gets the user inputted value of the grid size.
     // Determines if the grid is square or not
     // Default value is 9
@@ -565,18 +602,6 @@ public class SudokuActivity extends AppCompatActivity {
     void getDifficultyFromBar() {
         Intent intent = getIntent();
         sDifficulty = intent.getIntExtra("diff_opt",5);
-
-    }
-
-    // Get the user's device's screen information
-    void getScreenInfo() {
-        getWindowManager().getDefaultDisplay().getMetrics(mDisplayMetrics);
-        sScreenHeight = mDisplayMetrics.heightPixels;
-        sScreenWidth = mDisplayMetrics.widthPixels;
-        sScreenXDPI = mDisplayMetrics.xdpi;
-        sScreenYDPI = mDisplayMetrics.ydpi;
-
-        mIsPortraitMode = (sScreenHeight > sScreenWidth);
     }
 
     void setListenMode(){
@@ -589,35 +614,77 @@ public class SudokuActivity extends AppCompatActivity {
 
     }
 
+    void initializeIntents(){
+        Intent intent = getIntent();
+
+        if (intent.getBooleanExtra("new_game",true)) {
+            getSizeFromSpinner();
+            getDifficultyFromBar();
+            setListenMode();
+            Random rand = new Random();
+            mPuzzleNum = rand.nextInt(100);
+            Log.d("Test", "Generated PuzzleNum: "+mPuzzleNum);
+        }
+        else {
+            sDifficulty = mSharedPreferences.getInt("Difficulty", 5);
+            sSize = mSharedPreferences.getInt("Size",9);
+            mPuzzleNum = mSharedPreferences.getInt("SudokuNum", 0);
+            Log.d("Test", "PuzzleNum at initialize: "+mPuzzleNum);
+            mIsSquare = (sSize == 4 || sSize == 9);
+            if (mSharedPreferences.getBoolean("Listen", false)){
+                sGameMode = Mode.LISTEN;
+            } else {
+                sGameMode = Mode.PLAY;
+            }
+        }
+    }
+
     // Gets the word pairs from the imported file, or the sample file,
     // and stores them into the language classes
     void importWordsFromFile() {
         Intent intent = getIntent();
-        String tmp = intent.getStringExtra("uri_key");
-        boolean useSampleFile = intent.getBooleanExtra("use_sample_file", false);
-        mListenMode = intent.getBooleanExtra("listen_mode", false); // MOVE ME
-        if (useSampleFile) {
+        if (intent.getBooleanExtra("new_game",true)){
+            Log.d("Test", "NEW GAME");
+            mUri = intent.getStringExtra("uri_key");
+            mUseSampleFile = intent.getBooleanExtra("use_sample_file", true);
+            mListenMode = intent.getBooleanExtra("listen_mode", false); // MOVE ME
+        } else {
+            Log.d("Test", "CONTINUE GAME");
+            mUri = mSharedPreferences.getString("Uri","");
+            if (mUri == "") mUri = null;
+            mUseSampleFile = mSharedPreferences.getBoolean("SampleFile", true);
+            mListenMode = mSharedPreferences.getBoolean("Listen", false);
+            Log.d("Test", "uri: "+mUri);
+            Log.d("Test", "sample file: " + mUseSampleFile);
+        }
+
+        if (mUseSampleFile) {
             mWordListImported = true;
             fileToLanguage(R.raw.word_pairs, 15);
         } else  {
-            if (tmp != null) {
+            Log.d("Test", "Import Not used");
+            if (mUri != null) {
+                Log.d("Test", "Uri not null");
                 mWordListImported = true;
                 try {
-                    csvUri = Uri.parse(tmp);
+                    Log.d("Test", "try happens");
+                    csvUri = Uri.parse(mUri);
                     readWordPairs(csvUri);
                     // Check if there are enough word pairs
-                    if (mWordPairs.size() < sSize) notEnoughWordPairs();
+                    if (mWordPairs.size() < sSize) {
+                        notEnoughWordPairs();
+                        Log.d("Test", "not enough words");
+                    }
                     else {
-                        for (int i = 1; i < sSize + 1; i++) {
-                            WordPair wordPair = getRandomWordPair(sSize - (i - 1));
-                            sLanguage1.setWord(wordPair.getWord1(), i);
-                            sLanguage2.setWord(wordPair.getWord2(), i);
-                        }
+                        Log.d("Test", "setup word pairs");
+                        setupWordPairs();
                     }
                 } catch (FileNotFoundException e) {
+                    Log.d("Test", "catch happens");
                     e.printStackTrace();
                 }
             } else {
+                Log.d("Test", "uri null");
                 fileToLanguage(R.raw.default_values, sSize);
             }
         }
@@ -630,10 +697,44 @@ public class SudokuActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        setupWordPairs();
+        /*
         for (int i = 1; i < sSize + 1; i++) {
             WordPair wordPair = getRandomWordPair(max - (i - 1));
             sLanguage1.setWord(wordPair.getWord1(), i);
             sLanguage2.setWord(wordPair.getWord2(), i);
+        }
+        */
+    }
+
+    void setupWordPairs(){
+        Intent intent = getIntent();
+        if (intent.getBooleanExtra("new_game", true)) {
+            for (int i = 1; i < sSize + 1; i++) {
+                WordPair wordPair = getRandomWordPair(sSize - (i - 1));
+                sLanguage1.setWord(wordPair.getWord1(), i);
+                sLanguage2.setWord(wordPair.getWord2(), i);
+                //Log.d("Test", "Word Pair "+i+": "+wordPair.getWord1());
+                //Log.d("Test", "Word Pair "+i+": "+wordPair.getWord2());
+                mWordOrder = mWordOrder + wordPair.getNum();// (Integer.toString(i));
+                if(i<sSize) mWordOrder = mWordOrder + " ";//.concat(" ");
+            }
+            Log.d("Test", "Writing Word Order: "+mWordOrder);
+        } else {
+            mWordOrder = mSharedPreferences.getString("WordOrder", "");
+            Log.d("Test", "Loaded Word Order: "+mWordOrder);
+            String[] separated = mWordOrder.split(" ");
+            for (int i = 0; i < sSize; i++){
+                WordPair wordPair = mWordPairs.get(Integer.parseInt(separated[i]));
+                sLanguage1.setWord(wordPair.getWord1(), i+1);
+                sLanguage2.setWord(wordPair.getWord2(), i+1);
+                //Log.d("Test", "Word Pair "+i+": "+sLanguage1.getWord(i));
+                //Log.d("Test", "Word Pair "+i+": "+sLanguage2.getWord(i));
+            }
+        }
+        for(int i = 0; i < sSize; i++){
+            Log.d("Test", "Word Pair "+i+": "+sLanguage1.getWord(i));
+            Log.d("Test", "Word Pair "+i+": "+sLanguage2.getWord(i));
         }
     }
 
@@ -785,12 +886,14 @@ public class SudokuActivity extends AppCompatActivity {
         );
 
         String line;
+        int wordCount = 0;
         try {
             while ((line = reader.readLine()) != null) {
                 String [] tokens = line.split(",");
 
-                WordPair words = new WordPair(tokens[0], tokens[1]);
+                WordPair words = new WordPair(tokens[0], tokens[1], wordCount);
                 mWordPairs.add(words);
+                wordCount ++;
             }
         } catch(FileNotFoundException e) {
             e.printStackTrace();
@@ -807,13 +910,14 @@ public class SudokuActivity extends AppCompatActivity {
         BufferedReader reader = new BufferedReader(
                 new InputStreamReader(is, Charset.forName("UTF-8"))
         );
-
+        int wordCount = 0;
         String line;
         while ((line = reader.readLine()) != null) {
             String[] tokens = line.split(",");
 
-            WordPair words = new WordPair(tokens[0], tokens[1]);
+            WordPair words = new WordPair(tokens[0], tokens[1], wordCount);
             mWordPairs.add(words);
+            wordCount++;
         }
 //        fileInputStream.close();
 //        parcelFileDescriptor.close();
@@ -826,7 +930,6 @@ public class SudokuActivity extends AppCompatActivity {
 
         WordPair wordPair = mWordPairs.get(randInt);
         mWordPairs.remove(randInt);
-
         return wordPair;
     }
 
@@ -857,7 +960,7 @@ public class SudokuActivity extends AppCompatActivity {
             public void onInit(int status) {
 
                 if(status != TextToSpeech.ERROR) {
-                    Log.d("Test","LANGUAGE RECOGNIZED");
+                    //Log.d("Test","LANGUAGE RECOGNIZED");
                     t1.setLanguage(Locale.TRADITIONAL_CHINESE);//"zh","HK"));
                 }
             }
@@ -867,7 +970,7 @@ public class SudokuActivity extends AppCompatActivity {
             public void onInit(int status) {
 
                 if(status != TextToSpeech.ERROR) {
-                    Log.d("Test","LANGUAGE RECOGNIZED");
+                    //Log.d("Test","LANGUAGE RECOGNIZED");
                     t2.setLanguage(new Locale("zh","HK"));
                 }
             }

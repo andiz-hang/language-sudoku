@@ -16,7 +16,8 @@
     <string name="enter">Enter</string>
     <string name="cancel">Cancel</string>
 
-    <string name="start">Start Game</string>
+    <string name="new_game">New Game</string>
+    <string name="continue_game">Continue Game</string>
     <string name="word_list">Current Word List</string>
     <string name="upload_list">Upload Your List </string>
     <string name="okay">Okay</string>

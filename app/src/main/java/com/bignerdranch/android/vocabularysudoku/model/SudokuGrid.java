@@ -1,6 +1,8 @@
 package com.bignerdranch.android.vocabularysudoku.model;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -13,6 +15,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.Random;
 
+import static android.content.Context.MODE_PRIVATE;
 import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sSize;
 import static com.bignerdranch.android.vocabularysudoku.controller.SudokuActivity.sDifficulty;
 import static java.lang.Math.ceil;
@@ -36,19 +39,15 @@ public class SudokuGrid {
     private int mSavedPuzzleNumber;
     private int mSize;
     private int mCurrent = -1;
+    private int[] mInitialValues;
 
     // Methods
 
-    public SudokuGrid(int N, int puzzleNum, int size, InputStream is) throws IOException {
+    public SudokuGrid(int puzzleNum, int size, InputStream is) throws IOException {
 
-        mGrid = new SudokuCell[N][N];
-        mWrongRows = new boolean[N];
-        mWrongCols = new boolean[N];
-        mWrongBoxes = new boolean[N];
-        mAnswers = new int[N * N];
-        mSize = size;
+        setupMembers(size);
 
-        int[] mInitialValues = new int[N * N];
+        mInitialValues = new int[size * size];
         BufferedReader reader = new BufferedReader(
                 new InputStreamReader(is, Charset.forName("UTF-8"))
         );
@@ -68,19 +67,12 @@ public class SudokuGrid {
         }
         mSavedPuzzleNumber = puzzleNum;
 
-        initializePuzzle(mInitialValues);
+        mInitialValues = initializePuzzle(mInitialValues, false);
     }
 
-    public SudokuGrid(int N, int puzzleNum, InputStream is) throws IOException {
+    public SudokuGrid(int puzzleNum, InputStream is) throws IOException {
 
-        mGrid = new SudokuCell[N][N];
-        mWrongRows = new boolean[N];
-        mWrongCols = new boolean[N];
-        mWrongBoxes = new boolean[N];
-        mAnswers = new int[N * N];
-        mSize = sSize;
-
-        int[] mInitialValues = new int[N * N];
+        setupMembers(sSize);
         BufferedReader reader = new BufferedReader(
                 new InputStreamReader(is, Charset.forName("UTF-8"))
         );
@@ -100,7 +92,55 @@ public class SudokuGrid {
         }
         mSavedPuzzleNumber = puzzleNum;
 
-        initializePuzzle(mInitialValues);
+        mInitialValues = initializePuzzle(mInitialValues, false);
+    }
+
+    public SudokuGrid(int puzzleNum, int size, InputStream is, String initialValues) throws IOException {
+
+        setupMembers(size);
+
+        BufferedReader reader = new BufferedReader(
+                new InputStreamReader(is, Charset.forName("UTF-8"))
+        );
+        String line;
+        int count = 0;
+        // Reads lines until line puzzleNum is reached. Then, put the values into the puzzle
+        while ((line = reader.readLine()) != null && count <= puzzleNum) {
+            String[] tokens = line.split(",");
+
+            if (count == puzzleNum) {
+                for (int i = 0; i < (mSize * mSize); i++) {
+                    mInitialValues[i] = Integer.parseInt(tokens[i]);
+                    mAnswers[i] = Integer.parseInt(tokens[i + (mSize * mSize)]);
+                }
+            }
+            count++;
+        }
+
+        mInitialValues = valueStringToArray(size, initialValues);
+
+        mSavedPuzzleNumber = puzzleNum;
+
+        mInitialValues = initializePuzzle(mInitialValues, true);
+    }
+
+    private int[] valueStringToArray(int size, String initialValues){
+        String[] tokens = initialValues.split(" ");
+        int[] values = new int[size*size];
+        for(int i = 0; i < size * size; i++){
+            values[i] = Integer.parseInt(tokens[i]);
+        }
+        return values;
+    }
+
+    public void setupMembers(int size){
+        mGrid = new SudokuCell[size][size];
+        mWrongRows = new boolean[size];
+        mWrongCols = new boolean[size];
+        mWrongBoxes = new boolean[size];
+        mAnswers = new int[size * size];
+        mSize = size;
+        mInitialValues = new int[size * size];
     }
 
 
@@ -109,12 +149,14 @@ public class SudokuGrid {
     }
 
     // Initialize both the grid and the answer array
-    private void initializePuzzle(int[] initialValues) {
+    private int[] initializePuzzle(int[] initialValues, boolean isAdjusted) {
 
         // Initialize the Sudoku Grid Array
-        //String initialValues = mRes.getStringArray(R.array.puzz)[randInt];
         mGrid = new SudokuCell[mSize][mSize];
-        int[] newValues = difficultyAdjust(initialValues);
+        int[] newValues = initialValues;
+        if (!isAdjusted) {
+            newValues = difficultyAdjust(initialValues);
+        }
         for (int i = 0; i < mSize; i++) {
             for (int j = 0; j < mSize; j++) {
                 mGrid[i][j] = new SudokuCell();
@@ -125,7 +167,9 @@ public class SudokuGrid {
                 }
             }
         }
+        return newValues;
     }
+
 
     private int[] difficultyAdjust(int[] initialValues) {
         Random rand;
@@ -141,7 +185,7 @@ public class SudokuGrid {
         while (count <= diff) {
             rand = new Random();
             randInt = rand.nextInt(mSize * mSize);
-            Log.d("Test", Integer.toString(count) + " " + Integer.toString(diff));
+            //Log.d("Test", Integer.toString(count) + " " + Integer.toString(diff));
             if (newValues[randInt] == 0) {
                 newValues[randInt] = mAnswers[randInt];
                 count += 1;
@@ -328,4 +372,72 @@ public class SudokuGrid {
         mSudokuLayout.displayNewText(mGrid);
         mSudokuLayout.highlightSelected(mCurrent, this);
     }
+
+    public String sudokuToString(){
+        String sudokuString = "";
+        for(int i = 0; i < sSize * sSize; i++){
+            sudokuString += getSudokuCell(i).getValue();
+        }
+        return sudokuString;
+    }
+
+    public String sudokuAnswersToString(){
+        String sudokuString = "";
+        for(int i = 0; i < sSize * sSize; i++){
+            sudokuString += mAnswers[i];
+        }
+        return sudokuString;
+    }
+
+    String valueArrayToString(int[] initialValues){
+        String values = "";
+        for(int i = 0; i < sSize * sSize; i++){
+            values = values + Integer.toString(initialValues[i]);
+            if (i < ((sSize * sSize)-1)) values = values + " ";
+        }
+        return values;
+    }
+    String getInputs(){
+        String inputs = "";
+        for(int i = 0; i < sSize; i++){
+            for(int j = 0; j < sSize; j++){
+                if(!mGrid[i][j].isLock()) {
+                    inputs = inputs + Integer.toString(i*9+j);
+                    inputs = inputs + ",";
+                    inputs = inputs + Integer.toString(mGrid[i][j].getValue());
+                    if (i < sSize - 1 || j < sSize - 1) inputs = inputs + " ";
+                }
+            }
+        }
+        return inputs;
+    }
+
+    public void applySavedInputs(SharedPreferences preferences){
+        String inputs = preferences.getString("InputValues", "");
+        String[] values = inputs.split(" ");
+        for(int i = 0; i < values.length; i++){
+            String[] pair = values[i].split(",");
+            mGrid[Integer.parseInt(pair[0])/9][Integer.parseInt(pair[0])%9].setValue(Integer.parseInt(pair[1]));
+        }
+    }
+    public void savePuzzle(SharedPreferences preferences, String uri, boolean listeningMode, boolean sampleFile, String wordOrder){
+        SharedPreferences.Editor editor = preferences.edit();
+        String sudokuCurrentString = sudokuToString();
+        String sudokuAnswersString = sudokuAnswersToString();
+        editor.putString("SudokuCurrent", sudokuCurrentString);
+        editor.putInt("SudokuNum", mSavedPuzzleNumber);
+        editor.putBoolean("SaveExists", true);
+        editor.putBoolean("Listen", listeningMode);
+        editor.putInt("Size", sSize);
+        editor.putInt("Difficulty", sDifficulty);
+        editor.putBoolean("SampleFile", sampleFile);
+        editor.putString("Uri", uri);
+        editor.putString("WordOrder", wordOrder);
+        editor.putString("InitialValues", valueArrayToString(mInitialValues));
+        editor.putString("InputValues", getInputs());
+        Log.d("Test", "Saved Word Order: "+wordOrder);
+        Log.d("Test", "Puzzle Number: "+mSavedPuzzleNumber);
+        editor.commit();
+    }
+
 }
