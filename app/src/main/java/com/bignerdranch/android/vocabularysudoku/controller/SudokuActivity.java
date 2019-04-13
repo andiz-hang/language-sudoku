@@ -110,7 +110,7 @@ public class SudokuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sudoku);
 
-        mSharedPreferences = getPreferences(MODE_PRIVATE);
+        mSharedPreferences = getSharedPreferences("Sudoku", MODE_PRIVATE);
 
         // Get the size of the grid from main menu
         initializeIntents();
@@ -191,7 +191,7 @@ public class SudokuActivity extends AppCompatActivity {
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(sGameMode==Mode.LISTEN){
+                        if(sGameMode==Mode.LISTEN && mSudokuGrid.getSudokuCell(ii).isLock()){
                             //String toSpeak = sLanguage2.getWord(mSudokuGrid.getSudokuCell(ii).getValue()); //sLanguage2.getWord(ii+1);
                             String toSpeak = sLanguage2.getWord(mSudokuGrid.getAnswers(ii));
                             //Log.d("Test","Word: "+toSpeak);
