@@ -469,7 +469,7 @@ public class SudokuActivity extends AppCompatActivity {
         }
         try {
             Log.d("Test", "New Puzzle Num: "+mPuzzleNum);
-            mSudokuGrid = new SudokuGrid(mPuzzleNum, sSize, is);
+            mSudokuGrid = new SudokuGrid(mPuzzleNum, sSize, sDifficulty, is);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -538,7 +538,7 @@ public class SudokuActivity extends AppCompatActivity {
         try {
             Log.d("Test", "New Puzzle Num: "+mPuzzleNum);
             if (intent.getBooleanExtra("new_game",true)) {
-                mSudokuGrid = new SudokuGrid(mPuzzleNum, sSize, is);
+                mSudokuGrid = new SudokuGrid(mPuzzleNum, sSize, sDifficulty, is);
             } else {
                 String initialValues = mSharedPreferences.getString("InitialValues","");
                 mSudokuGrid = new SudokuGrid(mPuzzleNum, sSize, is, initialValues);
