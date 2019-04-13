@@ -52,7 +52,7 @@ public class MenuActivity extends AppCompatActivity {
     public void continueGame(View view){
         Intent intent = new Intent(MenuActivity.this, SudokuActivity.class);
         mSharedPreferences = getPreferences(MODE_PRIVATE);
-        if(mSharedPreferences.contains("saveExists")){
+        if(!mSharedPreferences.contains("saveExists")){
             newGame(view);
         }
         else {
