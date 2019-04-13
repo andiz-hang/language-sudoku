@@ -10,12 +10,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.GridLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bignerdranch.android.vocabularysudoku.model.Language;
@@ -269,7 +271,16 @@ public class SudokuActivity extends AppCompatActivity {
         mHintButtonUI.getButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), sLanguage1.getWord(mSudokuGrid.getAnswers(sCurrentCell)),Toast.LENGTH_SHORT).show();
+               //Toast.makeText(getApplicationContext(), sLanguage1.getWord(mSudokuGrid.getAnswers(sCurrentCell)),Toast.LENGTH_SHORT).show();
+                Toast toast = new Toast(getApplicationContext());
+                toast.setGravity(Gravity.TOP, 0, 0);
+                TextView tv = new TextView(getApplicationContext());
+                tv.setBackgroundResource(R.drawable.bg_btn_yellow);
+                tv.setTextSize(30);
+                tv.setPadding(10, 10, 10, 10);
+                tv.setText(sLanguage1.getWord(mSudokuGrid.getAnswers(sCurrentCell)));
+                toast.setView(tv);
+                toast.show();
                 sHint+=1;
                 //need CHANGE !
 //                int valueForPopupHint = Character.getNumericValue((fullAnsw.charAt(sCurrentCell)));
