@@ -108,7 +108,7 @@ public class SudokuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sudoku);
 
-        mSharedPreferences = getPreferences(MODE_PRIVATE);
+        mSharedPreferences = getSharedPreferences("Sudoku", MODE_PRIVATE);
 
         // Get the size of the grid from main menu
         initializeIntents();
