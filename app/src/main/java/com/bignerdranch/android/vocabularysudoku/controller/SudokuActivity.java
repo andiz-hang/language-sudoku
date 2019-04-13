@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -400,38 +402,25 @@ public class SudokuActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
     }
 
-//     Shouldn't be here
-//    // Create an action bar button
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.menu_button, menu);
-//        return super.onCreateOptionsMenu(menu);
-//    }
-//
-//    // Called when a Menu Button is clicked
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        int id = item.getItemId();
-//        // When "Listen Mode" is clicked, allow the user to input a word for the word pair thing
-//        if (id == R.id.listen_mode_button) {
-//            if(sGameMode==Mode.PLAY) {
-//                sGameMode = Mode.LISTEN;
-//                mSudokuLayout.toNumbers();
-//                Toast.makeText(getApplicationContext(), "Listen Mode",Toast.LENGTH_SHORT).show();
-//            }
-//            else if(sGameMode==Mode.LISTEN) {
-//                sGameMode = Mode.PLAY;
-//                mSudokuLayout.toWords(mSudokuGrid);
-//                Toast.makeText(getApplicationContext(), "Play Mode",Toast.LENGTH_SHORT).show();
-//            }
-//
-//            //String toSpeak = "Test";//.toString();
-//            //Toast.makeText(getApplicationContext(), toSpeak,Toast.LENGTH_SHORT).show();
-//            //t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
-//            //createAlertDialog();
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
+
+    // Create an action bar menu button
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_button, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+    // Called when a Menu Button is clicked
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.exchange:
+                ;
+            case R.id.restart:
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
     public void savePuzzle(){
         mSudokuGrid.savePuzzle(mSharedPreferences, mUri, mListenMode, mUseSampleFile, mWordOrder);
