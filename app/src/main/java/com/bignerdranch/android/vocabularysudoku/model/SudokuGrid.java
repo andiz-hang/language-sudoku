@@ -43,7 +43,7 @@ public class SudokuGrid {
 
     public SudokuGrid(int puzzleNum, int size, int difficulty, InputStream is) throws IOException {
 
-        setupMembers(size);
+        setupMembers(size,difficulty);
         mDifficulty = difficulty;
         mInitialValues = new int[size * size];
         BufferedReader reader = new BufferedReader(
@@ -68,34 +68,9 @@ public class SudokuGrid {
         mInitialValues = initializePuzzle(mInitialValues, false);
     }
 
-    public SudokuGrid(int puzzleNum, InputStream is) throws IOException {
-
-        setupMembers(sSize);
-        BufferedReader reader = new BufferedReader(
-                new InputStreamReader(is, Charset.forName("UTF-8"))
-        );
-        String line;
-        int count = 0;
-        // Reads lines until line puzzleNum is reached. Then, put the values into the puzzle
-        while ((line = reader.readLine()) != null && count <= puzzleNum) {
-            String[] tokens = line.split(",");
-
-            if (count == puzzleNum) {
-                for (int i = 0; i < (mSize * mSize); i++) {
-                    mInitialValues[i] = Integer.parseInt(tokens[i]);
-                    mAnswers[i] = Integer.parseInt(tokens[i + (mSize * mSize)]);
-                }
-            }
-            count++;
-        }
-        mSavedPuzzleNumber = puzzleNum;
-
-        mInitialValues = initializePuzzle(mInitialValues, false);
-    }
-
     public SudokuGrid(int puzzleNum, int size, InputStream is, String initialValues) throws IOException {
 
-        setupMembers(size);
+        setupMembers(size,-1);
 
         BufferedReader reader = new BufferedReader(
                 new InputStreamReader(is, Charset.forName("UTF-8"))
@@ -131,7 +106,7 @@ public class SudokuGrid {
         return values;
     }
 
-    public void setupMembers(int size){
+    public void setupMembers(int size, int difficulty){
         mGrid = new SudokuCell[size][size];
         mWrongRows = new boolean[size];
         mWrongCols = new boolean[size];
@@ -139,7 +114,7 @@ public class SudokuGrid {
         mAnswers = new int[size * size];
         mSize = size;
         mInitialValues = new int[size * size];
-        mDifficulty = sDifficulty;
+        mDifficulty = difficulty;
     }
 
 
@@ -368,7 +343,7 @@ public class SudokuGrid {
         mSudokuLayout.defaultButtonColors();
         mSudokuLayout.highlightWrongCells(mWrongRows, mWrongCols, mWrongBoxes);
         mSudokuLayout.displayNewText(mGrid);
-        mSudokuLayout.highlightSelected(mCurrent, this);
+        mSudokuLayout.highlightSelected(getSelected(), this);
     }
 
     public String sudokuToString(){
