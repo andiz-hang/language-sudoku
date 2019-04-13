@@ -189,7 +189,7 @@ public class SudokuActivity extends AppCompatActivity {
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(sGameMode==Mode.LISTEN){
+                        if(sGameMode==Mode.LISTEN && mSudokuGrid.getSudokuCell(ii).isLock()){
                             //String toSpeak = sLanguage2.getWord(mSudokuGrid.getSudokuCell(ii).getValue()); //sLanguage2.getWord(ii+1);
                             String toSpeak = sLanguage2.getWord(mSudokuGrid.getAnswers(ii));
                             //Log.d("Test","Word: "+toSpeak);
