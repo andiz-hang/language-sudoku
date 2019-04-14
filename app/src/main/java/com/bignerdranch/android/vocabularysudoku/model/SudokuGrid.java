@@ -414,20 +414,21 @@ public class SudokuGrid {
         editor.apply();
     }
     public void uploadHighscore(SharedPreferences preferences, long score) {
-        SharedPreferences.Editor editor = preferences.edit();
-        Log.d("Test",Long.toString(score));
-        for (int i = 1; i < 11; i++) {
-            if (Long.parseLong(Objects.requireNonNull(preferences.getString("SUDOKU_HIGHSCORE_" + Integer.toString(i) + "_" + Integer.toString(mDifficulty), "10000000")))>score){
-                editor.putString("SUDOKU_HIGHSCORE_" + Integer.toString(i) + "_" + Integer.toString(mDifficulty),Long.toString(score));
+        if (mSize == 9) {
+            SharedPreferences.Editor editor = preferences.edit();
+            Log.d("Test", Long.toString(score));
+            for (int i = 1; i < 11; i++) {
+                if (Long.parseLong(Objects.requireNonNull(preferences.getString("SUDOKU_HIGHSCORE_" + Integer.toString(i) + "_" + Integer.toString(mDifficulty), "10000000"))) > score) {
+                    editor.putString("SUDOKU_HIGHSCORE_" + Integer.toString(i) + "_" + Integer.toString(mDifficulty), Long.toString(score));
                     for (int j = i; j < 10; j++) {
-                    String tmp=preferences.getString("SUDOKU_HIGHSCORE_" + Integer.toString(i) + "_" + Integer.toString(mDifficulty),"Not set");
-                    if (!Objects.requireNonNull(tmp).equals("Not set"))
-                        editor.putString("SUDOKU_HIGHSCORE_" + Integer.toString(i+1) + "_" + Integer.toString(mDifficulty),tmp);
+                        String tmp = preferences.getString("SUDOKU_HIGHSCORE_" + Integer.toString(i) + "_" + Integer.toString(mDifficulty), "Not set");
+                        if (!Objects.requireNonNull(tmp).equals("Not set"))
+                            editor.putString("SUDOKU_HIGHSCORE_" + Integer.toString(i + 1) + "_" + Integer.toString(mDifficulty), tmp);
+                    }
+                    break;
                 }
-                break;
             }
+            editor.apply();
         }
-        editor.apply();
     }
-
 }
