@@ -4,12 +4,12 @@
     <item
         android:id="@+id/exchange"
         android:orderInCategory="100"
-        android:showAsAction="never"
-        android:title="exchange puzzle languages" />
+        app:showAsAction="never"
+        android:title="Swap Puzzle Language" />
     <item
         android:id="@+id/restart"
         android:orderInCategory="200"
-        android:showAsAction="never"
-        android:title="restart current game"/>
+        app:showAsAction="never"
+        android:title="Restart Puzzle"/>
 
 </menu>

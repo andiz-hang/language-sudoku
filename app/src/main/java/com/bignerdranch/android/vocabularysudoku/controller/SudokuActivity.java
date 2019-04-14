@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.net.Uri;
+import android.os.SystemClock;
 import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -76,7 +77,7 @@ public class SudokuActivity extends AppCompatActivity {
     public static Language sLanguage1;
     public static Language sLanguage2;
     SudokuGrid mSudokuGrid;
-    boolean mIsLanguage1 = false; // determines whether the first language is the toggled language or not
+    boolean mSameLanguage = false; // whether puzzle language is same as input menu language
     boolean mWordListImported = false;
     public boolean mIsSquare;
     private float mPrevX;
@@ -264,7 +265,7 @@ public class SudokuActivity extends AppCompatActivity {
         mToggleButtonUI.getButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                flipLanguage();
+                flipInputLanguage();
                 if (sLanguage2.getName()=="English") setupTextToSpeech(Locale.ENGLISH);
                 else if (sLanguage2.getName()=="Mandarin") setupTextToSpeech(Locale.TRADITIONAL_CHINESE);
             }
@@ -284,7 +285,7 @@ public class SudokuActivity extends AppCompatActivity {
                 TextView tv = new TextView(getApplicationContext());
                 tv.setBackgroundResource(R.drawable.bg_btn_yellow);
                 tv.setTextSize(30);
-                tv.setPadding(10, 10, 10, 10);
+                tv.setPadding(10, 10, 15, 10);
                 tv.setText(sLanguage1.getWord(mSudokuGrid.getAnswers(sCurrentCell)));
                 toast.setView(tv);
                 toast.show();
@@ -304,6 +305,7 @@ public class SudokuActivity extends AppCompatActivity {
         //Log.d("Test","");
         Intent intent = getIntent();
         if(!intent.getBooleanExtra("new_game", true)){
+            restoreTimer(mSharedPreferences);
                 mSudokuGrid.applySavedInputs(mSharedPreferences);
         }
         mSudokuGrid.updateConflicts();
@@ -353,6 +355,8 @@ public class SudokuActivity extends AppCompatActivity {
     @Override
     public void onBackPressed(){
         savePuzzle();
+        mLastPauseTime = mTimer.pauseTimer();
+        saveTimer(mSharedPreferences);
         super.onBackPressed();
     }
 
@@ -419,15 +423,12 @@ public class SudokuActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.exchange:
-                Language tempL = new Language("temp", sSize);
-                for (int i = 0; i < sSize+1; i++) {
-                    tempL.setWord(sLanguage1.getWord(i),i);
-                    sLanguage1.setWord(sLanguage2.getWord(i),i);
-                    sLanguage2.setWord(tempL.getWord(i),i);
-                }
+                Language holder1 = sLanguage1;
+                sLanguage1 = sLanguage2;
+                sLanguage2 = holder1;
                 mSudokuGrid.sendModelToView();
-                mIsLanguage1 = true;
-                flipLanguage();
+                mSameLanguage = !mSameLanguage;
+                if (mSameLanguage) flipInputLanguage();
                 return true;
             case R.id.restart:
                 for (int i = 0; i < sSize*sSize; i++) {
@@ -439,6 +440,7 @@ public class SudokuActivity extends AppCompatActivity {
                 mSudokuGrid.updateConflicts();
                 mSudokuGrid.sendModelToView();
                 createTimer();
+                if (mSameLanguage) flipInputLanguage();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -801,22 +803,33 @@ public class SudokuActivity extends AppCompatActivity {
         }
     }
 
-    // Toggles the language of the popup buttons and
-    // Flips the boolean mIsLanguage1!
-    void flipLanguage() {
-        switchLanguages();
-        for (int i = 0; i < sSize; i++) {
-            mPopupButtons[i].setText(sLanguage1.getWord(i+1));
+    // Toggles the language of the popup buttons
+    void flipInputLanguage() {
+        // Default: Language1 be the puzzle language, recognized by its name;
+        // Language2 be the input language, recognized by its name
+        Language holder1 = sLanguage1;
+        Language holder2 = sLanguage2;
+        if (mSameLanguage){
+            for (int i = 0; i < sSize; i++) {
+                mPopupButtons[i].setText(holder2.getWord(i+1));
+            }
+            mSameLanguage = false;
         }
-        mIsLanguage1 = !mIsLanguage1;
-
+        else {
+            for (int i = 0; i < sSize; i++) {
+                mPopupButtons[i].setText(holder1.getWord(i+1));
+            }
+            mSameLanguage = true;
+        }
     }
 
-    void switchLanguages(){
-        Language holder = sLanguage1;
-        sLanguage1 = sLanguage2;
-        sLanguage2 = holder;
-    }
+//    void switchLanguages(){
+//        Language holder = sLanguage1;
+//        sLanguage1 = sLanguage2;
+//        sLanguage2 = holder;
+//    }
+
+
     // When a button is pressed this pulls up or pushes down the Pop Up Button
     // Zooms in on the selected button
     void onClickZoom(View sudoku_view, Button button) {
@@ -1017,6 +1030,20 @@ public class SudokuActivity extends AppCompatActivity {
         Chronometer timer = findViewById(R.id.timer);
         mTimer = new Timer(timer, mSetBase);
         mTimer.startTimer(mLastPauseTime);
+    }
+
+    public void restoreTimer(SharedPreferences preferences){
+        mLastPauseTime = preferences.getLong("LastPaused", 0);
+        mLastPauseTime += 800;
+        mSetBase = preferences.getLong("TimerBase", SystemClock.elapsedRealtime());
+    }
+    public void saveTimer(SharedPreferences preferences){
+        SharedPreferences.Editor editor = preferences.edit();
+
+
+        editor.putLong("LastPaused", mLastPauseTime);
+        editor.putLong("TimerBase", mTimer.getBase());
+        editor.commit();
     }
 }
 
