@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.net.Uri;
+import android.os.SystemClock;
 import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -303,6 +304,7 @@ public class SudokuActivity extends AppCompatActivity {
         //Log.d("Test","");
         Intent intent = getIntent();
         if(!intent.getBooleanExtra("new_game", true)){
+            restoreTimer(mSharedPreferences);
                 mSudokuGrid.applySavedInputs(mSharedPreferences);
         }
         mSudokuGrid.updateConflicts();
@@ -352,6 +354,8 @@ public class SudokuActivity extends AppCompatActivity {
     @Override
     public void onBackPressed(){
         savePuzzle();
+        mLastPauseTime = mTimer.pauseTimer();
+        saveTimer(mSharedPreferences);
         super.onBackPressed();
     }
 
@@ -1013,6 +1017,20 @@ public class SudokuActivity extends AppCompatActivity {
         Chronometer timer = findViewById(R.id.timer);
         mTimer = new Timer(timer, mSetBase);
         mTimer.startTimer(mLastPauseTime);
+    }
+
+    public void restoreTimer(SharedPreferences preferences){
+        mLastPauseTime = preferences.getLong("LastPaused", 0);
+        mLastPauseTime += 800;
+        mSetBase = preferences.getLong("TimerBase", SystemClock.elapsedRealtime());
+    }
+    public void saveTimer(SharedPreferences preferences){
+        SharedPreferences.Editor editor = preferences.edit();
+
+
+        editor.putLong("LastPaused", mLastPauseTime);
+        editor.putLong("TimerBase", mTimer.getBase());
+        editor.commit();
     }
 }
 
