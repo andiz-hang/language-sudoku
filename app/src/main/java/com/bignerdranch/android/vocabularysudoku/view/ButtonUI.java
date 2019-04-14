@@ -77,7 +77,7 @@ public class ButtonUI {
     // setup the ui parameters of a menu button
     public void setupMenuButton() {
         if (mIsPortraitMode) {
-            setButtonSize(sScreenWidth / 4, sScreenHeight / 13);
+            setButtonSize(sScreenWidth / 4, sScreenHeight / 14);
             float screenWidthInches = sScreenWidth / sScreenXDPI;
             mButton.setTextSize(screenWidthInches * 4);
         } else {
