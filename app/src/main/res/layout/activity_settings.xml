@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:background="@drawable/splash_bg">
+
+
+    <LinearLayout
+        android:layout_width="268dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/word_list_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/bg_btn_menu"
+            android:onClick="wordList"
+            android:text="@string/use_our_word_list" />
+
+        <Button
+            android:id="@+id/upload_list_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/bg_btn_menu"
+            android:onClick="uploadYourList"
+            android:text="@string/upload_list" />
+
+        <Button
+            android:id="@+id/listen_mode_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/bg_btn_menu"
+            android:onClick="setListenMode"
+            android:text="@string/reading_mode" />
+
+        <Spinner
+            android:id="@+id/size_choice_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_btn_menu"
+            android:padding="10dp"
+            android:layout_marginBottom="10dp"
+            android:textAlignment="center"
+            android:entries="@array/spinner_strings">
+        </Spinner>
+        <TextView
+            android:id="@+id/textView"
+            android:textStyle="bold"
+            android:layout_margin="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <SeekBar
+            android:id="@+id/seekBar"
+            android:max="10"
+            android:progress="5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <Button
+            android:id="@+id/back_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/bg_btn_menu"
+            android:onClick="goBack"
+            android:text="@string/back_to_main_menu"/>
+    </LinearLayout>
+</LinearLayout>
