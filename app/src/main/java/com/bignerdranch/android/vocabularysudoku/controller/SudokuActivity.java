@@ -283,7 +283,7 @@ public class SudokuActivity extends AppCompatActivity {
                 TextView tv = new TextView(getApplicationContext());
                 tv.setBackgroundResource(R.drawable.bg_btn_yellow);
                 tv.setTextSize(30);
-                tv.setPadding(10, 10, 10, 10);
+                tv.setPadding(10, 10, 15, 10);
                 tv.setText(sLanguage1.getWord(mSudokuGrid.getAnswers(sCurrentCell)));
                 toast.setView(tv);
                 toast.show();
