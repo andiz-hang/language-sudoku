@@ -24,9 +24,9 @@ import java.util.ArrayList;
 
 public class SettingsActivity extends AppCompatActivity {
     private static final int READ_REQUEST_CODE = 42;
-    private String uri = null;
-    private boolean useSampleFile = false;
-    private boolean mListenMode = false;
+    private String uri;
+    private boolean useSampleFile;
+    private boolean mListenMode;
     private Spinner mSizeSpinner;
     private TextView ProgressText;
     private SeekBar seekBar;
@@ -42,7 +42,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         mSizeSpinner = findViewById(R.id.size_choice_spinner);
         setSizeSpinnerValue();
-        Log.d("Test","step 2");
+
         seekBar = findViewById(R.id.seekBar);
         seekBar.setProgress(mSharedPreferences.getInt("SUDOKU_BAR_DIFFICULTY_VALUE",5));
         seekBar.setOnSeekBarChangeListener(seekBarChangeListener);
@@ -50,6 +50,16 @@ public class SettingsActivity extends AppCompatActivity {
         int progress = seekBar.getProgress();
         ProgressText = findViewById(R.id.textView);
         ProgressSetText(progress);
+
+        uri = mSharedPreferences.getString("SUDOKU_URI_KEY_STRING",null);
+        useSampleFile = mSharedPreferences.getBoolean("SUDOKU_USE_SAMPLE_FILE_BOOLEAN",false);
+        mListenMode = mSharedPreferences.getBoolean("SUDOKU_LISTEN_MODE_BOOLEAN",false);
+        Button button = findViewById(R.id.listen_mode_button);
+        if (mListenMode){
+            button.setText(getString(R.string.listen_mode));
+        } else {
+            button.setText(getString(R.string.reading_mode));
+        }
 
         hideActionBar();
     }
@@ -193,6 +203,9 @@ public class SettingsActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = mSharedPreferences.edit();
         editor.putInt("SUDOKU_SPINNER_GRID_VALUE", getSizeSpinnerValue());
         editor.putInt("SUDOKU_BAR_DIFFICULTY_VALUE", getDiffBarValue());
+        editor.putString("SUDOKU_URI_KEY_STRING", uri);
+        editor.putBoolean("SUDOKU_USE_SAMPLE_FILE_BOOLEAN", useSampleFile);
+        editor.putBoolean("SUDOKU_LISTEN_MODE_BOOLEAN", mListenMode);
         editor.apply();
         finish();
     }
