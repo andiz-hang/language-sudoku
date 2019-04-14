@@ -31,6 +31,14 @@
             android:onClick="continueGame"
             android:text="@string/continue_game" />
         <Button
+            android:id="@+id/highscore_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/bg_btn_menu"
+            android:onClick="highscore"
+            android:text="@string/highscores"/>
+        <Button
             android:id="@+id/settings_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

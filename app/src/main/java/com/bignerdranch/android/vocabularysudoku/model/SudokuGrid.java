@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+import java.util.Objects;
 import java.util.Random;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -44,7 +45,7 @@ public class SudokuGrid {
     public SudokuGrid(int puzzleNum, int size, int difficulty, InputStream is) throws IOException {
 
         setupMembers(size,difficulty);
-        mDifficulty = difficulty;
+
         mInitialValues = new int[size * size];
         BufferedReader reader = new BufferedReader(
                 new InputStreamReader(is, Charset.forName("UTF-8"))
@@ -68,9 +69,9 @@ public class SudokuGrid {
         mInitialValues = initializePuzzle(mInitialValues, false);
     }
 
-    public SudokuGrid(int puzzleNum, int size, InputStream is, String initialValues) throws IOException {
+    public SudokuGrid(int puzzleNum, int size, int difficulty, InputStream is, String initialValues) throws IOException {
 
-        setupMembers(size,-1);
+        setupMembers(size,difficulty);
 
         BufferedReader reader = new BufferedReader(
                 new InputStreamReader(is, Charset.forName("UTF-8"))
@@ -410,7 +411,23 @@ public class SudokuGrid {
         editor.putString("InputValues", getInputs());
         Log.d("Test", "Saved Word Order: "+wordOrder);
         Log.d("Test", "Puzzle Number: "+mSavedPuzzleNumber);
-        editor.commit();
+        editor.apply();
+    }
+    public void uploadHighscore(SharedPreferences preferences, long score) {
+        SharedPreferences.Editor editor = preferences.edit();
+        Log.d("Test",Long.toString(score));
+        for (int i = 1; i < 11; i++) {
+            if (Long.parseLong(Objects.requireNonNull(preferences.getString("SUDOKU_HIGHSCORE_" + Integer.toString(i) + "_" + Integer.toString(mDifficulty), "10000000")))>score){
+                editor.putString("SUDOKU_HIGHSCORE_" + Integer.toString(i) + "_" + Integer.toString(mDifficulty),Long.toString(score));
+                    for (int j = i; j < 10; j++) {
+                    String tmp=preferences.getString("SUDOKU_HIGHSCORE_" + Integer.toString(i) + "_" + Integer.toString(mDifficulty),"Not set");
+                    if (!Objects.requireNonNull(tmp).equals("Not set"))
+                        editor.putString("SUDOKU_HIGHSCORE_" + Integer.toString(i+1) + "_" + Integer.toString(mDifficulty),tmp);
+                }
+                break;
+            }
+        }
+        editor.apply();
     }
 
 }

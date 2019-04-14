@@ -32,6 +32,7 @@
     <string name="listen_mode">Listen Mode</string>
     <string name="back_to_main_menu">Back to main menu</string>
     <string name="settings">Settings</string>
+    <string name="highscores">Highscores</string>
 
     <string-array name="spinner_strings">
         <item>Sudoku Size: 9x9</item>

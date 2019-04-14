@@ -162,6 +162,7 @@ public class SudokuActivity extends AppCompatActivity {
                     if(mSudokuGrid.updateSudokuModel(ii + 1,sCurrentCell)) {
                         Toast.makeText(SudokuActivity.this, "Congrats! You Win!", Toast.LENGTH_LONG).show();
                         mTimeToCompletePuzzle = mTimer.stopTimer(); // Time to finish the puzzle is set here
+                        uploadHighscore(mTimeToCompletePuzzle);
                     }
                     mSudokuGrid.sendModelToView();
                 }
@@ -447,7 +448,9 @@ public class SudokuActivity extends AppCompatActivity {
     public void savePuzzle(){
         mSudokuGrid.savePuzzle(mSharedPreferences, mUri, mListenMode, mUseSampleFile, mWordOrder);
     }
-
+    public void uploadHighscore(long score){
+        mSudokuGrid.uploadHighscore(mSharedPreferences,score);
+    }
     // Called when the app is paused
     public void onPause(){
         if(t1 !=null){
@@ -563,7 +566,8 @@ public class SudokuActivity extends AppCompatActivity {
                 mSudokuGrid = new SudokuGrid(mPuzzleNum, sSize, sDifficulty, is);
             } else {
                 String initialValues = mSharedPreferences.getString("InitialValues","");
-                mSudokuGrid = new SudokuGrid(mPuzzleNum, sSize, is, initialValues);
+                int difficulty = mSharedPreferences.getInt("difficulty",5);
+                mSudokuGrid = new SudokuGrid(mPuzzleNum, sSize, difficulty, is, initialValues);
             }
         } catch (IOException e) {
             e.printStackTrace();

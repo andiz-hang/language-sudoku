@@ -22,6 +22,7 @@
             android:label="SudokuActivity">
         </activity>
         <activity android:name=".controller.SettingsActivity" />
+        <activity android:name=".controller.HighscoreActivity" />
     </application>
 
 </manifest>
