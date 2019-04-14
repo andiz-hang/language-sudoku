@@ -29,6 +29,9 @@
     <string name="notice_string_6">etc.</string>
     <string name="use_our_word_list">Use Our Word List</string>
     <string name="reading_mode">Reading Mode</string>
+    <string name="listen_mode">Listen Mode</string>
+    <string name="back_to_main_menu">Back to main menu</string>
+    <string name="settings">Settings</string>
 
     <string-array name="spinner_strings">
         <item>Sudoku Size: 9x9</item>

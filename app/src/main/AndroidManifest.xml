@@ -21,6 +21,7 @@
             android:name=".controller.SudokuActivity"
             android:label="SudokuActivity">
         </activity>
+        <activity android:name=".controller.SettingsActivity" />
     </application>
 
 </manifest>
