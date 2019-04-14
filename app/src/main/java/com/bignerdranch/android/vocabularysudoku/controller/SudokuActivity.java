@@ -115,7 +115,7 @@ public class SudokuActivity extends AppCompatActivity {
         // Get the size of the grid from main menu
         initializeIntents();
 
-        setupTextToSpeech();
+        setupTextToSpeech(Locale.TRADITIONAL_CHINESE);
 
         mRes = getResources();
 
@@ -194,6 +194,8 @@ public class SudokuActivity extends AppCompatActivity {
                         if(sGameMode==Mode.LISTEN && mSudokuGrid.getSudokuCell(ii).isLock()){
                             //String toSpeak = sLanguage2.getWord(mSudokuGrid.getSudokuCell(ii).getValue()); //sLanguage2.getWord(ii+1);
                             String toSpeak = sLanguage2.getWord(mSudokuGrid.getAnswers(ii));
+                            Log.d("Test", "Language: "+sLanguage2.getName());
+                            Log.d("Test", "Tospeak: "+toSpeak);
                             //Log.d("Test","Word: "+toSpeak);
                             t2.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
                         }
@@ -262,6 +264,8 @@ public class SudokuActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 flipLanguage();
+                if (sLanguage2.getName()=="English") setupTextToSpeech(Locale.ENGLISH);
+                else if (sLanguage2.getName()=="Mandarin") setupTextToSpeech(Locale.TRADITIONAL_CHINESE);
             }
         });
 
@@ -796,15 +800,19 @@ public class SudokuActivity extends AppCompatActivity {
     // Toggles the language of the popup buttons and
     // Flips the boolean mIsLanguage1!
     void flipLanguage() {
+        switchLanguages();
         for (int i = 0; i < sSize; i++) {
-            if (mIsLanguage1)
-                mPopupButtons[i].setText(sLanguage2.getWord(i + 1));
-            else
-                mPopupButtons[i].setText(sLanguage1.getWord(i + 1));
+            mPopupButtons[i].setText(sLanguage1.getWord(i+1));
         }
         mIsLanguage1 = !mIsLanguage1;
+
     }
 
+    void switchLanguages(){
+        Language holder = sLanguage1;
+        sLanguage1 = sLanguage2;
+        sLanguage2 = holder;
+    }
     // When a button is pressed this pulls up or pushes down the Pop Up Button
     // Zooms in on the selected button
     void onClickZoom(View sudoku_view, Button button) {
@@ -974,7 +982,7 @@ public class SudokuActivity extends AppCompatActivity {
         });
     }
 
-    void setupTextToSpeech(){
+    void setupTextToSpeech(final Locale locale){
         //Text to Speech Initializing
         t1=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
             @Override
@@ -982,7 +990,8 @@ public class SudokuActivity extends AppCompatActivity {
 
                 if(status != TextToSpeech.ERROR) {
                     //Log.d("Test","LANGUAGE RECOGNIZED");
-                    t1.setLanguage(Locale.TRADITIONAL_CHINESE);//"zh","HK"));
+                    t1.setLanguage(locale);
+                    //t1.setLanguage(Locale.TRADITIONAL_CHINESE);//"zh","HK"));
                 }
             }
         });
@@ -992,7 +1001,9 @@ public class SudokuActivity extends AppCompatActivity {
 
                 if(status != TextToSpeech.ERROR) {
                     //Log.d("Test","LANGUAGE RECOGNIZED");
-                    t2.setLanguage(new Locale("zh","HK"));
+                    t2.setLanguage(locale);
+
+                    //t2.setLanguage(new Locale("zh","HK"));
                 }
             }
         });

@@ -4,14 +4,6 @@
     android:gravity="center"
     android:orientation="horizontal">
 
-    <Chronometer
-        android:id="@+id/timer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:textSize="36sp"
-        android:background="@color/colorWhite"/>
-
     <GridLayout
         android:id="@+id/sudoku_grid"
         android:layout_width="wrap_content"
@@ -19,6 +11,14 @@
         android:layout_gravity="fill_vertical"
         android:layout_centerHorizontal="true">
     </GridLayout>
+
+    <Chronometer
+        android:id="@+id/timer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:textSize="36sp"
+        android:background="@color/colorWhite"/>
 
     <RelativeLayout
         android:id="@+id/InnerRelativeLayout"
